@@ -3,3 +3,8 @@
 body{
     font-family: "Poppins", sans-serif;
 }
+
+@theme {
+    --color-grisTarde: #cdcdcd;
+    --color-grisMasTarde: #666666;
+}

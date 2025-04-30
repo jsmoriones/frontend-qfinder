@@ -1,11 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router';
 
 const LoginPage = () => {
   return (
     <>
         <div className="mx-16 min-h-screen flex items-center">
             <div className="container mx-auto flex gap-12 h-full">
-                <div className="w-2/5">
+                <div className="w-2/5 py-8">
                     <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>
                     <p className="text-[rgba(102,102,102,80%)] text-2xl">Para un mejor despertar, soñemos con la protección social</p>
 
@@ -28,7 +29,7 @@ const LoginPage = () => {
                         </div>
                     </form>
                     <div className="flex justify-between items-center">
-                        <p className="text-[#333333] text-base">¿No tienes una cuenta? <a href="#" className='underline'>Registrate</a></p>
+                        <p className="text-[#333333] text-base">¿No tienes una cuenta? <Link to={"/register"} className='underline'>Registrate</Link> </p>
                         <a href="#" className='text-[#666666] text-base'>Olvidaste tu contraseña</a>
                     </div>
                     <div className="flex flex-row items-center justify-between my-8">

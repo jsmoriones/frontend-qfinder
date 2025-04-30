@@ -19,7 +19,7 @@ export const registerSchema = z
       }),
 
     identificacion_usuario: z
-      .number({
+      .string({
         required_error: "El Número de Identificación es Obligatorio"
       })
       .min(9, {
@@ -29,14 +29,17 @@ export const registerSchema = z
     direccion_usuario: z
       .string({
         required_error: "La Dirección Residencial del Usuario es Obligatoria"
+      })
+      .min(3, {
+        message: "La Dirección debe contener por lo menos  3 caracteres"
       }),
 
     telefono_usuario: z
       .string({
-        required_error: "El Apellido del Usuario es Requerido",
+        required_error: "El Télefono del Usuario es Oblogatorio",
       })
       .min(8, {
-        message: "El Apellido del Usuario debe tener por lo menos 8 carácteres",
+        message: "El Télefono del Usuario debe Contener como minimo 8 digitos",
       }),
     correo_usuario: z
       .string()

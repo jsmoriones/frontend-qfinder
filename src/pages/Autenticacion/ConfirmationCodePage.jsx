@@ -1,0 +1,50 @@
+import React from 'react'
+import VerificationInput from "react-verification-input";
+import {ButtonLarge} from "../../components/ui/"
+
+const ConfirmationCodePage = () => {
+  return (
+    <>
+        <div className="mx-16 min-h-screen flex items-center">
+            <div className="container mx-auto flex gap-12 h-full">
+                <div className="w-2/5 py-8">
+                    <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>
+                    <p className="text-grisRatonRodilla text-2xl">Porque tu eres lo más importante para nosotros, esperamos ofrecer el mejor servicio para ti</p>
+
+                    <div className="text-center mt-6">
+                        <i class="fa-solid fa-envelope-open text-azulRodilla text-6xl"></i>
+                        <p className="text-3xl font-semibold my-1">Ingresa tu Código</p>
+                        <p className="text-grisRatonRodilla text-xl">Nosotros enviamos un código al correo: <br /> <span className='font-bold'>info@gmail.com</span></p>
+                    </div>
+                    <div className="mt-6 flex flex-col items-center">
+                        <form className='mb-10'>
+                            <div className=" flex gap-4 justify-center">
+                                <VerificationInput
+                                    length={5}
+                                    placeholder=""
+                                    classNames={{
+                                        container: "container",
+                                        character: "character",
+                                        characterInactive: "character--inactive",
+                                        characterSelected: "character--selected",
+                                        characterFilled: "character--filled",
+                                    }}
+                                    onComplete={(e) => console.log(e)}
+                                    autoFocus={true}
+                                />
+                            </div>
+                        </form>
+                        <ButtonLarge text={"Enviar"}/>
+                    </div>
+                    
+                </div>
+                <div className="w-3/5 flex justify-center items-center">
+                    <img src="/images/send-code-email.png" alt="Imagen de verificacion de codigo" />
+                </div>
+            </div>
+        </div>
+    </>
+  )
+}
+
+export default ConfirmationCodePage

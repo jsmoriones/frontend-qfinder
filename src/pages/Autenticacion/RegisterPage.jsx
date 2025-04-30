@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Label } from "../../components/ui/";
 import { registerSchema } from '../../schemas/auth';
+import { useAuth } from "../../context/PacienteContext/AuthContext";
 
 const RegisterPage = () => {
   const {
@@ -14,8 +15,11 @@ const RegisterPage = () => {
     resolver: zodResolver(registerSchema)
   })
 
+  const {signup} = useAuth()
+
+
   const hanldeSendData = (data) => {
-    console.log(data)
+    signup(data)
   }
 
   return (
@@ -26,14 +30,17 @@ const RegisterPage = () => {
                     <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>
                     <p className="text-[rgba(102,102,102,80%)] text-2xl">Para un mejor despertar, soñemos con la protección social</p>
 
-                    <form className='mt-14' onSubmit={handleSubmit}>
+                    <form className='mt-14' onSubmit={handleSubmit(hanldeSendData)}>
                       <div className="flex flex-col mb-3">
                         <Label htmlFor="names">Nombres:</Label>
                         <Input
                           type="text"
                           id="names"
                           name="nombre_usuario"
-                          {...register("nombre_usuario")}
+                          {...register(
+                            "nombre_usuario",
+                            {required: true}
+                          )}
                           autoFocus
                         />
                         {errors.nombre_usuario?.message && (
@@ -46,7 +53,8 @@ const RegisterPage = () => {
                           type="text"
                           id="lastName"
                           name="apellido_usuario"
-                          {...register("apellido_usuario")}
+                          {...register("apellido_usuario",
+                            {required: true})}
                           autoFocus
                         />
                         {errors.apellido_usuario?.message && (
@@ -56,10 +64,11 @@ const RegisterPage = () => {
                       <div className="flex flex-col mb-3">
                         <Label htmlFor="identification">Identificación:</Label>
                         <Input
-                          type="number"
+                          type="text"
                           id="identification"
                           name="identificacion_usuario"
-                          {...register("identificacion_usuario")}
+                          {...register("identificacion_usuario",
+                            {required: true})}
                           autoFocus
                         />
                         {errors.identificacion_usuario?.message && (
@@ -72,7 +81,8 @@ const RegisterPage = () => {
                           type="text"
                           id="address"
                           name="direccion_usuario"
-                          {...register("direccion_usuario")}
+                          {...register("direccion_usuario",
+                            {required: true})}
                           autoFocus
                         />
                         {errors.direccion_usuario?.message && (
@@ -85,7 +95,8 @@ const RegisterPage = () => {
                             type="phone"
                             id="telephone"
                             name="telefono_usuario"
-                            {...register("telefono_usuario")}
+                            {...register("telefono_usuario",
+                              {required: true})}
                             autoFocus
                           />
                           {errors.telefono_usuario?.message && (
@@ -98,7 +109,8 @@ const RegisterPage = () => {
                           type="email"
                           id="email"
                           name="correo_usuario"
-                          {...register("correo_usuario")}
+                          {...register("correo_usuario",
+                            {required: true})}
                           autoFocus
                         />
                         {errors.correo_usuario?.message && (
@@ -111,7 +123,8 @@ const RegisterPage = () => {
                           type="password"
                           id="password"
                           name="contrasena_usuario"
-                          {...register("contrasena_usuario")}
+                          {...register("contrasena_usuario",
+                            {required: true})}
                           autoFocus
                         />
                         {errors.contrasena_usuario?.message && (

@@ -1,34 +1,58 @@
 import React, { useState } from 'react'
 import VerificationInput from "react-verification-input";
+import { jwtDecode } from 'jwt-decode';
+import StatusAlert, { StatusAlertService } from 'react-status-alert'
+import Cookies from 'universal-cookie';
 import {ButtonLarge} from "../../components/ui/"
 import { verifyCount } from '../../services/AuthService';
+import { useAuth } from '../../context/PacienteContext/AuthContext';
+import 'react-status-alert/dist/status-alert.css'
 
 const ConfirmationCodePage = () => {
     const [code, setCode] = useState(null);
     const [msgError, setMsgError] = useState(false);
 
+    const { user } = useAuth();
+    const cookies = new Cookies();
+
     const handleCode = async () => {
         if(!code){
-            console.log("No existe")
             setMsgError(true)
         }else{
             if(code.length > 4){
                 setMsgError(false)
-                const result = await verifyCount({
-                    correo_usuario: "juan@jmuan.com",
-                    codigo: code
-                });
-                console.log(result);
+                try {
+                    const result = await verifyCount({
+                        correo_usuario: user.correo,
+                        codigo: code
+                    });
+                    console.log(result);
+                    StatusAlertService.showSuccess(result.data.message);
+                    try {
+                        const authToken = jwtDecode(result.data.token)
+                        console.log(authToken)
+                        if(authToken){
+                            cookies.set("login_authorization", result.data.token, {
+                                expires: new Date(authToken.exp * 1000)
+                            })
+                            console.log( cookies.get("login_authorization") )
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                } catch (error) {
+                    StatusAlertService.showError(error.message);
+                }
                 
                 //console.log("Existe code: ", code)
             }else{
-                console.log("asdasd")
                 setMsgError(true)
             }
         }
     }
   return (
     <>
+        <StatusAlert />
         <div className="mx-16 min-h-screen flex items-center">
             <div className="container mx-auto flex gap-12 h-full">
                 <div className="w-2/5 py-8">
@@ -38,7 +62,7 @@ const ConfirmationCodePage = () => {
                     <div className="text-center mt-6">
                         <i className="fa-solid fa-envelope-open text-azulRodilla text-6xl"></i>
                         <p className="text-3xl font-semibold my-1">Ingresa tu Código</p>
-                        <p className="text-grisRatonRodilla text-xl">Nosotros enviamos un código al correo: <br /> <span className='font-bold'>info@gmail.com</span></p>
+                        <p className="text-grisRatonRodilla text-xl">Nosotros enviamos un código al correo: <br /> <span className='font-bold'>{user.correo || "ejemplo@ejemplo.com"}</span></p>
                     </div>
                     <div className="mt-6 flex flex-col items-center">
                         <div className="flex flex-col gap-4 justify-center mb-10">

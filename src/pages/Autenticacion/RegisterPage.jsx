@@ -2,9 +2,11 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
+import StatusAlert, { StatusAlertService } from 'react-status-alert'
 import { Input, Label } from "../../components/ui/";
 import { registerSchema } from '../../schemas/auth';
 import { useAuth } from "../../context/PacienteContext/AuthContext";
+import 'react-status-alert/dist/status-alert.css'
 
 const RegisterPage = () => {
   const {
@@ -16,14 +18,27 @@ const RegisterPage = () => {
   })
 
   const {signup} = useAuth()
+  const navigate = useNavigate()
 
+  const hanldeSendData = async (data) => {
+    try {
+      const response = await signup(data)
+      StatusAlertService.showSuccess(response);
 
-  const hanldeSendData = (data) => {
-    signup(data)
+      setTimeout(() => {
+        navigate("/verify");
+      }, 4000)
+      
+    } catch (error) {
+      const errorAwait = await error;
+      console.log(errorAwait)
+      StatusAlertService.showError(errorAwait.message);
+    }
   }
 
   return (
     <>
+      <StatusAlert />
         <div className="mx-16 min-h-screen flex items-center">
             <div className="container mx-auto flex gap-12 h-full">
                 <div className="w-2/5 py-8">
@@ -41,6 +56,7 @@ const RegisterPage = () => {
                             "nombre_usuario",
                             {required: true}
                           )}
+                          value="Julito"
                           autoFocus
                         />
                         {errors.nombre_usuario?.message && (
@@ -55,6 +71,7 @@ const RegisterPage = () => {
                           name="apellido_usuario"
                           {...register("apellido_usuario",
                             {required: true})}
+                          value="Maraña"
                           autoFocus
                         />
                         {errors.apellido_usuario?.message && (
@@ -69,6 +86,7 @@ const RegisterPage = () => {
                           name="identificacion_usuario"
                           {...register("identificacion_usuario",
                             {required: true})}
+                            value="112354789"
                           autoFocus
                         />
                         {errors.identificacion_usuario?.message && (
@@ -83,6 +101,7 @@ const RegisterPage = () => {
                           name="direccion_usuario"
                           {...register("direccion_usuario",
                             {required: true})}
+                          value="Calle sin salida"
                           autoFocus
                         />
                         {errors.direccion_usuario?.message && (
@@ -97,6 +116,7 @@ const RegisterPage = () => {
                             name="telefono_usuario"
                             {...register("telefono_usuario",
                               {required: true})}
+                            value="88888888"
                             autoFocus
                           />
                           {errors.telefono_usuario?.message && (
@@ -111,6 +131,7 @@ const RegisterPage = () => {
                           name="correo_usuario"
                           {...register("correo_usuario",
                             {required: true})}
+                          value="juanmoriones012@gmail.com"
                           autoFocus
                         />
                         {errors.correo_usuario?.message && (
@@ -125,6 +146,7 @@ const RegisterPage = () => {
                           name="contrasena_usuario"
                           {...register("contrasena_usuario",
                             {required: true})}
+                           value="123456789"
                           autoFocus
                         />
                         {errors.contrasena_usuario?.message && (

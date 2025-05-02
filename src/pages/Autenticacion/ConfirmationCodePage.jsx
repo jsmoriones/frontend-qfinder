@@ -1,8 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import VerificationInput from "react-verification-input";
 import {ButtonLarge} from "../../components/ui/"
+import { verifyCount } from '../../services/AuthService';
 
 const ConfirmationCodePage = () => {
+    const [code, setCode] = useState(null);
+    const [msgError, setMsgError] = useState(false);
+
+    const handleCode = async () => {
+        if(!code){
+            console.log("No existe")
+            setMsgError(true)
+        }else{
+            if(code.length > 4){
+                setMsgError(false)
+                const result = await verifyCount({
+                    correo_usuario: "juan@jmuan.com",
+                    codigo: code
+                });
+                console.log(result);
+                
+                //console.log("Existe code: ", code)
+            }else{
+                console.log("asdasd")
+                setMsgError(true)
+            }
+        }
+    }
   return (
     <>
         <div className="mx-16 min-h-screen flex items-center">
@@ -12,29 +36,34 @@ const ConfirmationCodePage = () => {
                     <p className="text-grisRatonRodilla text-2xl">Porque tu eres lo más importante para nosotros, esperamos ofrecer el mejor servicio para ti</p>
 
                     <div className="text-center mt-6">
-                        <i class="fa-solid fa-envelope-open text-azulRodilla text-6xl"></i>
+                        <i className="fa-solid fa-envelope-open text-azulRodilla text-6xl"></i>
                         <p className="text-3xl font-semibold my-1">Ingresa tu Código</p>
                         <p className="text-grisRatonRodilla text-xl">Nosotros enviamos un código al correo: <br /> <span className='font-bold'>info@gmail.com</span></p>
                     </div>
                     <div className="mt-6 flex flex-col items-center">
-                        <form className='mb-10'>
-                            <div className=" flex gap-4 justify-center">
-                                <VerificationInput
-                                    length={5}
-                                    placeholder=""
-                                    classNames={{
-                                        container: "container",
-                                        character: "character",
-                                        characterInactive: "character--inactive",
-                                        characterSelected: "character--selected",
-                                        characterFilled: "character--filled",
-                                    }}
-                                    onComplete={(e) => console.log(e)}
-                                    autoFocus={true}
-                                />
-                            </div>
-                        </form>
-                        <ButtonLarge text={"Enviar"}/>
+                        <div className="flex flex-col gap-4 justify-center mb-10">
+                            <VerificationInput
+                                value={code}
+                                length={5}
+                                placeholder=""
+                                classNames={{
+                                    container: "container",
+                                    character: "character",
+                                    characterInactive: "character--inactive",
+                                    characterSelected: "character--selected",
+                                    characterFilled: "character--filled",
+                                }}
+                                onChange={prev => setCode(prev)}
+                                autoFocus={true}
+                            />
+                            {msgError && (
+                                <p className="text-red-700 text-center text-md">Debes Completar el Código***</p>
+                            )}
+                        </div>
+                        <ButtonLarge
+                            text={"Enviar"}
+                            onClick={handleCode}
+                        />
                     </div>
                     
                 </div>

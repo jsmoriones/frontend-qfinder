@@ -7,6 +7,7 @@ import {ButtonLarge} from "../../components/ui/"
 import { verifyCount } from '../../services/AuthService';
 import { useAuth } from '../../context/PacienteContext/AuthContext';
 import 'react-status-alert/dist/status-alert.css'
+import { useNavigate } from 'react-router-dom';
 
 const ConfirmationCodePage = () => {
     const [code, setCode] = useState(null);
@@ -14,6 +15,7 @@ const ConfirmationCodePage = () => {
 
     const { user } = useAuth();
     const cookies = new Cookies();
+    const navigate = useNavigate()
 
     const handleCode = async () => {
         if(!code){
@@ -36,6 +38,10 @@ const ConfirmationCodePage = () => {
                                 expires: new Date(authToken.exp * 1000)
                             })
                             console.log( cookies.get("login_authorization") )
+
+                            setTimeout(() => {
+                                navigate("/")
+                            }, 4000)
                         }
                     } catch (error) {
                         console.log(error)

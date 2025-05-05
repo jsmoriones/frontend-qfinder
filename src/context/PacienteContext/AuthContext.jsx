@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { registerRequest } from "../../services/AuthService"
+import { loginService, registerRequest } from "../../services/AuthService"
 
 //creamos el context
 export const AuthContext = createContext();
@@ -14,6 +14,7 @@ export const useAuth = () =>{
 
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     //Cuando se monta el componente, obtengo lo que este en localstorage y lo guardo en la variable de estado user
     useEffect(() => {
@@ -36,6 +37,7 @@ export const AuthProvider = ({children}) => {
         try {
             const res = await registerRequest(user);
             setUser(res.data.user);
+            setIsAuthenticated(true);
             return res.data.message;
         } catch (error) {
             console.log(error)
@@ -44,10 +46,25 @@ export const AuthProvider = ({children}) => {
             }
         }
     }
+
+    const signIn = async (user) => {
+        try {
+            const response = await  loginService(user);
+            setIsAuthenticated(true);
+            return response;
+        } catch (error) {
+            if(error.status !== 200  || error.status !== 201){
+                throw new Error(error.response.data.error)
+            }
+        }
+    }
+
     return (
         <AuthContext.Provider value={{
             signup,
-            user
+            signIn,
+            user,
+            isAuthenticated
         }}>
             {children}
         </AuthContext.Provider>

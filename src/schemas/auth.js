@@ -1,5 +1,19 @@
 import { z } from "zod";
 
+export const loginSchema = z
+  .object({
+    email: z
+      .string()
+      .email({
+        message: "Porfavor Ingresa un Email Válido",
+      }),
+    password: z
+      .string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+      .regex(/[A-Z]/, { message: "La contraseña debe contener al menos una letra mayúscula" })
+      .regex(/[^\w\s]/, { message: "La contraseña debe contener al menos un símbolo" }),
+  })
+
 export const registerSchema = z
   .object({
     nombre_usuario: z

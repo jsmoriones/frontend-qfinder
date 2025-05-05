@@ -1,7 +1,6 @@
 import axios from "./axios";
 
-export const registerRequest = async (user) =>
-    axios.post(`/auth/register`, user)
+export const registerRequest = async (user) => axios.post(`/auth/register`, user)
 
 export const verifyCount = async (data) =>{
     try {
@@ -15,3 +14,18 @@ export const verifyCount = async (data) =>{
         }
     }
 }
+
+export const loginService = async (data) => await axios.post("/auth/login", data)
+
+/*export const loginService = async (data) => {
+    try {
+        const response = await axios.post("/auth/login", data);
+        console.log("Response Login: ", response);
+        return response;
+    } catch (error) {
+        console.log(error)
+        if(error.status === 401){
+            throw new Error(error.response.data.error)
+        }
+    }
+}*/

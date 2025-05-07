@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import VerificationInput from "react-verification-input";
 import { jwtDecode } from 'jwt-decode';
 import StatusAlert, { StatusAlertService } from 'react-status-alert'
-import Cookies from 'universal-cookie';
+import Cookies from "js-cookie";
 import {ButtonLarge} from "../../components/ui/"
 import { verifyCount } from '../../services/AuthService';
 import { useAuth } from '../../context/PacienteContext/AuthContext';
@@ -40,7 +40,7 @@ const ConfirmationCodePage = () => {
                             console.log( cookies.get("login_authorization") )
 
                             setTimeout(() => {
-                                navigate("/")
+                                navigate("/dashboard")
                             }, 4000)
                         }
                     } catch (error) {
@@ -59,7 +59,7 @@ const ConfirmationCodePage = () => {
   return (
     <>
         <StatusAlert />
-        <div className="mx-16 min-h-screen flex items-center">
+        <div className="mx-16 min-h-screen flex items-center line-bg">
             <div className="container mx-auto flex gap-12 h-full">
                 <div className="w-2/5 py-8">
                     <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>

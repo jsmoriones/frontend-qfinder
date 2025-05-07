@@ -39,7 +39,7 @@ const RegisterPage = () => {
   return (
     <>
       <StatusAlert />
-        <div className="mx-16 min-h-screen flex items-center">
+        <div className="mx-16 min-h-screen flex items-center line-bg">
             <div className="container mx-auto flex gap-12 h-full">
                 <div className="w-2/5 py-8">
                     <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>

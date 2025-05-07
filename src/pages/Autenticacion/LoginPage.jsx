@@ -1,17 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import StatusAlert, { StatusAlertService } from 'react-status-alert'
 import { jwtDecode } from 'jwt-decode';
-import Cookies from 'universal-cookie';
 import { Input, Label } from '../../components/ui';
 import { loginSchema } from '../../schemas/auth';
 import { loginService } from '../../services/AuthService';
 import { useAuth } from "../../context/PacienteContext/AuthContext";
 
+//Estilos componentes Autenticacion
+import "./style.css";
+
 const LoginPage = () => {
     const [viewPassword, setViewPassword] = useState(false);
+
+    
     const {
         register,
         handleSubmit,
@@ -19,10 +23,15 @@ const LoginPage = () => {
     } = useForm({
         resolver: zodResolver(loginSchema)
     })
-
-    const {signIn} = useAuth();
-    const cookies = new Cookies();
+    
+    const {signIn, isAuthenticated} = useAuth();
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (isAuthenticated) {
+          navigate("/dashboard");
+        }
+    }, [isAuthenticated]);
 
     const handleSendData = async (data) => {
         try {
@@ -35,16 +44,15 @@ const LoginPage = () => {
             if(response.status === 200){
                 try {
                     const authToken = jwtDecode(response.data.token)
-                    console.log(authToken)
                     if(authToken){
-                        cookies.set("login_authorization", response.data.token, {
+                        /*cookies.set("login_authorization", response.data.token, {
                             expires: new Date(authToken.exp * 1000)
                         })
-                        console.log( cookies.get("login_authorization") )
+                        console.log( cookies.get("login_authorization") )*/
                         StatusAlertService.showSuccess("Tus datos son correctos, te redijiremos al Dashboard automaticamente");
 
                         setTimeout(() => {
-                            navigate("/")
+                            navigate("/dashboard")
                         }, 4000)
                     }
                 } catch (error) {
@@ -59,7 +67,7 @@ const LoginPage = () => {
   return (
     <>
         <StatusAlert />
-        <div className="mx-16 min-h-screen flex items-center">
+        <div className="mx-16 min-h-screen flex items-center line-bg">
             <div className="container mx-auto flex gap-12 h-full">
                 <div className="w-2/5 py-8">
                     <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>

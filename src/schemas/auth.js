@@ -63,8 +63,8 @@ export const registerSchema = z
 
     contrasena_usuario: z
       .string()
-      .min(6, {
-        message: "La Contraseña debe contar con 6 caracteres por lo menos",
-      })
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+      .regex(/[A-Z]/, { message: "La contraseña debe contener al menos una letra mayúscula" })
+      .regex(/[^\w\s]/, { message: "La contraseña debe contener al menos un símbolo" }),
 
   })

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import VerificationInput from "react-verification-input";
 import { jwtDecode } from 'jwt-decode';
 import StatusAlert, { StatusAlertService } from 'react-status-alert'
-import Cookies from "js-cookie";
+//import Cookies from "js-cookie";
 import {ButtonLarge} from "../../components/ui/"
 import { verifyCount } from '../../services/AuthService';
 import { useAuth } from '../../context/PacienteContext/AuthContext';
@@ -14,7 +14,7 @@ const ConfirmationCodePage = () => {
     const [msgError, setMsgError] = useState(false);
 
     const { user } = useAuth();
-    const cookies = new Cookies();
+    //const cookies = new Cookies();
     const navigate = useNavigate()
 
     const handleCode = async () => {
@@ -30,7 +30,10 @@ const ConfirmationCodePage = () => {
                     });
                     console.log(result);
                     StatusAlertService.showSuccess(result.data.message);
-                    try {
+                    setTimeout(() => {
+                        navigate("/dashboard")
+                    }, 4000)
+                    /*try {
                         const authToken = jwtDecode(result.data.token)
                         console.log(authToken)
                         if(authToken){
@@ -39,13 +42,10 @@ const ConfirmationCodePage = () => {
                             })
                             console.log( cookies.get("login_authorization") )
 
-                            setTimeout(() => {
-                                navigate("/dashboard")
-                            }, 4000)
                         }
                     } catch (error) {
                         console.log(error)
-                    }
+                    }*/
                 } catch (error) {
                     StatusAlertService.showError(error.message);
                 }

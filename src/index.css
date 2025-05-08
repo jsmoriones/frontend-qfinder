@@ -6,10 +6,20 @@ body{
 
 @theme {
     --color-grisTarde: #cdcdcd;
+    --color-grisTarde2:#C3C3C3;
     --color-grisMasTarde: #666666;
     --color-azulRodilla: #3A5E95;
+    --color-azulPastel1: #ADC9FF;
+    --color-azulPastel2: #2592FF;
+    --color-azulPastel3:#8FBFFF;
+    --color-azulPastel4: #2FACFF;
+    --color-azulPiso:#3BB1DA;
     --color-grisAzul: #374957;
+    --color-grisClaro: #F0F0F0;
+    --color-lila: #8090FF;
     --color-grisRatonRodilla: rgba(102,102,102,80%);
+    --color-blancoGris: #F9F9F9;
+    --color-verdeClaro: #00FF08;
 }
 
 .vi__character.character{
@@ -23,4 +33,32 @@ body{
 .vi__container{
     gap: 17px;
     width: 325px;
+}
+
+.embla {
+    overflow: hidden;
+  }
+  .embla__container {
+    display: flex;
+    column-gap: 20px;
+  }
+  .embla__slide {
+    flex: 0 0 calc(33.3% - 20px);
+    min-width: 0;
+  }
+
+.avatar-status::after{
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: var(--color-verdeClaro);
+    z-index: 10;
+    top: 4px;
+    right: 1px;
+}
+
+.tablaPacienteHorario, .tablaPacienteHorario tr, .tablaPacienteHorario th{
+    border-bottom: 1px solid #817E7E;
 }

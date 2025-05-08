@@ -339,6 +339,9 @@ const Dashboard = () => {
               <div className="w-1/2 p-4 bg-azulPastel1">
                   <div className="bg-white rounded-lg p-5">
                     <p className="text-3xl text-center">Accesos Rapidos</p>
+                    <div className="grid-cols-3">
+                      
+                    </div>
                   </div>
               </div>
             </div>

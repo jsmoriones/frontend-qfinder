@@ -27,12 +27,6 @@ const LoginPage = () => {
     const {signIn, isAuthenticated} = useAuth();
     const navigate = useNavigate()
 
-    useEffect(() => {
-        if (isAuthenticated) {
-          navigate("/dashboard");
-        }
-    }, [isAuthenticated]);
-
     const handleSendData = async (data) => {
         try {
             const buildData = {

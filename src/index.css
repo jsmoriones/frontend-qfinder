@@ -13,13 +13,16 @@ body{
     --color-azulPastel2: #2592FF;
     --color-azulPastel3:#8FBFFF;
     --color-azulPastel4: #2FACFF;
+    --color-azulPastel5: #6D8AFD;
     --color-azulPiso:#3BB1DA;
     --color-grisAzul: #374957;
     --color-grisClaro: #F0F0F0;
+    --color-azulFuerte: #3210F4;
     --color-lila: #8090FF;
     --color-grisRatonRodilla: rgba(102,102,102,80%);
     --color-blancoGris: #F9F9F9;
     --color-verdeClaro: #00FF08;
+    --aspect-11: 1 / 1;
 }
 
 .vi__character.character{

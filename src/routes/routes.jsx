@@ -6,6 +6,8 @@ import { ConfirmationCodePage } from "../pages/";
 import { AuthProvider } from "../context/PacienteContext/AuthContext";
 import { ProtectedRoute } from "../protected";
 import Dashboard from "../pages/Dashboard/Index";
+import Layout from "../pages/Dashboard/Layout";
+import PerfilCuidador from "../pages/Dashboard/PerfilCuidador";
 
 const AppRoutes = () => {
   return (
@@ -13,9 +15,12 @@ const AppRoutes = () => {
       <BrowserRouter>
         <Routes>
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<h1>Home</h1>} />
-            <Route path="/paciente" element={<PacientePage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route element={<Layout />}>
+              <Route path="/" element={<h1>Home</h1>} />
+              <Route path="/paciente" element={<PacientePage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/cuidador-perfil" element={<PerfilCuidador />} />
+            </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

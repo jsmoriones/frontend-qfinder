@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import useEmblaCarousel from 'embla-carousel-react'
-import { useAuth } from "../../context/PacienteContext/AuthContext";
 import CardPaciente from "../../components/CardPaciente";
 
 const Dashboard = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const avatarButtonRef = useRef(null);
   const [emblaRef, emblaApi] = useEmblaCarousel()
-
-  const navigate = useNavigate();
-  const {logout, infoUser} = useAuth();
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
@@ -23,10 +17,6 @@ const Dashboard = () => {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext()
   }, [emblaApi])
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
 
   const handleClickOutside = (event) => {
     if (
@@ -56,10 +46,6 @@ const Dashboard = () => {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -68,200 +54,11 @@ const Dashboard = () => {
   }, [isDropdownOpen]);
   
 
-  // Lista de elementos de menú con sus iconos y nombres
-  const menuItems = [
-    {
-      name: "Kanban",
-      icon: (
-        <i className="fa-solid fa-house text-2xl text-[#374957]"></i>
-      ),
-      badge: (
-        <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-          Pro
-        </span>
-      ),
-    },
-    {
-      name: "Inbox",
-      icon: (
-        <i className="fa-regular fa-user text-2xl text-[#374957]"></i>
-      ),
-      badge: (
-        <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-          3
-        </span>
-      ),
-    },
-    {
-      name: "Users",
-      icon: (
-        <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
-      ),
-      badge: null,
-    },
-    {
-      name: "Products",
-      icon: (
-        <i className="fa-solid fa-magnifying-glass text-2xl text-[#374957]"></i>
-      ),
-      badge: null,
-    },
-    {
-      name: "Sign In",
-      icon: (
-        <i className="fa-solid fa-gear text-2xl text-[#374957]"></i>
-      ),
-      badge: null,
-    }
-  ];
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  }
 
   return (
-    <div className="flex">
-      {/* Botón para móviles */}
-      <button
-        data-drawer-target="default-sidebar"
-        data-drawer-toggle="default-sidebar"
-        aria-controls="default-sidebar"
-        type="button"
-        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-        onClick={toggleSidebar}
-      >
-        <span className="sr-only">Open sidebar</span>
-        <svg
-          className="w-6 h-6"
-          aria-hidden="true"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            clipRule="evenodd"
-            fillRule="evenodd"
-            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-          ></path>
-        </svg>
-      </button>
-
-      {/* Barra lateral */}
-      <nav
-        className={`${
-          isMobile ? "fixed" : "sticky top-0"
-        } h-screen transition-all duration-300 ease-in-out ${
-          isExpanded ? "w-64" : "w-16"
-        } ${isMobile && !isExpanded ? "-translate-x-full" : "translate-x-0"}`}
-      >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-[#6D8AFD] ">
-          <ul className="space-y-10 font-medium">
-            <li>
-              <a
-                href="#"
-                className={`flex items-center p-2  text-gray-900 rounded-full dark:text-white hover:bg-gray-100 group`}
-                onClick={toggleSidebar}
-              >
-                <i class="fa-solid fa-bars text-2xl text-[#374957]"></i>
-                <span
-                  className={`ms-3 whitespace-nowrap transition-opacity duration-300 text-[#374957] ${
-                    isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
-                  }`}
-                >
-                  Dashboard
-                </span>
-                {/*isExpanded && item.badge*/}
-              </a>
-            </li>
-            {menuItems.map((item, index) => (
-              <li key={index}>
-                <a
-                  href="#"
-                  className={`flex items-center p-2 ${isExpanded ? "" : "bg-white"} text-gray-900 rounded-full dark:text-white hover:bg-[#5879ff] group`}
-                  onClick={index === 0 ? toggleSidebar : undefined}
-                >
-                  {item.icon}
-                  <span
-                    className={`ms-3 whitespace-nowrap transition-opacity duration-300 text-white ${
-                      isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
-                    }`}
-                  >
-                    {item.name}
-                  </span>
-                  {/*isExpanded && item.badge*/}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
-      {/* Contenido principal */}
-      <main className="flex-1 transition-all duration-300 ease-in-out">
-      <div className="px-4 py-3 flex justify-between items-center bg-blancoGris">
-        <div className="logo">
-          <img src="/images/logo.png" alt="Logo QfindeR" className="logo-img" />
-        </div>
-        <div className="right-topbar flex justify-center items-center relative"> {/* Añadimos 'relative' aquí */}
-          <button className={`cursor-pointer text-white text-xl px-4 py-2 rounded-xl border-[#7D0000] border-2 bg-[#FF4949]`}>
-            Emergencia
-          </button>
-          <button className="mx-5 cursor-pointer">
-            <i className="fa-regular fa-bell text-grisAzul text-3xl"></i>
-          </button>
-          <button
-            type="button"
-            ref={avatarButtonRef}
-            onClick={toggleDropdown}
-            className="w-10 h-10 rounded-full cursor-pointer"
-            aria-expanded={isDropdownOpen}
-            aria-controls="userDropdown"
-          >
-            <img src="/images/avatar-dashboard.png" alt="Avatar de registrado en dashboard" />
-          </button>
-          {/* Dropdown menu */}
-          <div
-            ref={dropdownRef}
-            id="userDropdown"
-            className={`z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-full right-0 origin-top-right mt-2 ${
-              isDropdownOpen ? 'block' : 'hidden'
-            }`}
-          >
-            <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-              <div>{infoUser.nombre} {infoUser.apellido}</div>
-              <div className="font-medium truncate">{infoUser.email}</div>
-            </div>
-            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
-              <li>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                  Settings
-                </a>
-              </li>
-              <li>
-                <button
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  Sign out
-                </button>
-              </li>
-            </ul>
-          </div>
-
-
-
-          </div>
-        </div>
-
-        <div className="p-8">
-          {/* Carousel Pacientes */}
-            <div className="relative py-5">
+    <>
+      {/* Carousel Pacientes */}
+      <div className="relative py-5">
               <button className="embla__prev cursor-pointer bg-azulPiso p-.5 w-[35px] h-[35px] rounded-full absolute left-0 top-[45%] z-40 text-2xl" onClick={scrollPrev}>
                 <i className="fa-solid fa-angles-left"></i>
               </button>
@@ -286,12 +83,12 @@ const Dashboard = () => {
                   <p className="text-xl font-bold">Actividades mas cerca a realizar.</p>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <div className="div-date bg-white p-3">
-                    <p className="bg-grisClaro border-2 border-lila flex flex-col text-center text-2xl font-bold px-3 py-2 mb-6">
+                  <div className="div-date bg-white p-3 flex flex-col gap-5">
+                    <p className="bg-grisClaro border-2 border-lila flex flex-col justify-center text-center text-2xl font-bold px-3 py-2 flex-1">
                       <span>28</span>
                       <span>Abril</span>
                     </p>
-                    <p className="bg-grisClaro border-2 border-lila flex flex-col text-center text-2xl font-bold px-3 py-2">
+                    <p className="bg-grisClaro border-2 border-lila flex flex-col justify-center text-center text-2xl font-bold px-3 py-2 flex-1">
                       <span>29</span>
                       <span>Abril</span>
                     </p>
@@ -339,15 +136,48 @@ const Dashboard = () => {
               <div className="w-1/2 p-4 bg-azulPastel1">
                   <div className="bg-white rounded-lg p-5">
                     <p className="text-3xl text-center">Accesos Rapidos</p>
-                    <div className="grid-cols-3">
-                      
+                    <div className="grid grid-cols-3 grid-rows-2 mt-6">
+                      <div className="flex flex-col items-center aspect-11 p-3">
+                        <figure className="bg-azulPastel5 rounded-lg border-2 border-azulFuerte overflow-hidden max-w-40 p-6 h-40">
+                          <img src="/images/perfil-enfermero.png" alt="Icono Perfil ENfermero" className="w-full h-full object-contain" />
+                        </figure>
+                        <p className="text-xl mt-2 text-center">Perfil</p>
+                      </div>
+                      <div className="flex flex-col items-center aspect-11 p-3">
+                        <figure className="bg-azulPastel5 rounded-lg border-2 border-azulFuerte overflow-hidden max-w-40 p-6 h-40">
+                          <img src="/images/notes-pencil.png" alt="Icono Perfil ENfermero" className="w-full h-full object-contain" />
+                        </figure>
+                        <p className="text-xl mt-2 text-center">Registro de cuidados</p>
+                      </div>
+                      <div className="flex flex-col items-center aspect-11 p-3">
+                        <figure className="bg-azulPastel5 rounded-lg border-2 border-azulFuerte overflow-hidden max-w-40 p-6 h-40">
+                          <img src="/images/service-client.png" alt="Icono Perfil ENfermero" className="w-full h-full object-contain" />
+                        </figure>
+                        <p className="text-xl mt-2 text-center">Servicio al cliente</p>
+                      </div>
+                      <div className="flex flex-col items-center aspect-11 p-3">
+                        <figure className="bg-azulPastel5 rounded-lg border-2 border-azulFuerte overflow-hidden max-w-40 p-6 h-40">
+                          <img src="/images/community.png" alt="Icono Perfil ENfermero" className="w-full h-full object-contain" />
+                        </figure>
+                        <p className="text-xl mt-2 text-center">Comunidad</p>
+                      </div>
+                      <div className="flex flex-col items-center aspect-11 p-3">
+                        <figure className="bg-azulPastel5 rounded-lg border-2 border-azulFuerte overflow-hidden max-w-40 p-6 h-40">
+                          <img src="/images/activitys.png" alt="Icono Perfil ENfermero" className="w-full h-full object-contain" />
+                        </figure>
+                        <p className="text-xl mt-2 text-center">Actividades</p>
+                      </div>
+                      <div className="flex flex-col items-center aspect-11 p-3">
+                        <figure className="bg-azulPastel5 rounded-lg border-2 border-azulFuerte overflow-hidden max-w-40 p-6 h-40">
+                          <img src="/images/medicina.png" alt="Icono Perfil ENfermero" className="w-full h-full object-contain" />
+                        </figure>
+                        <p className="text-xl mt-2 text-center">Medicamentos</p>
+                      </div>
                     </div>
                   </div>
               </div>
             </div>
-        </div>
-      </main>
-    </div>
+    </>
   );
 };
 

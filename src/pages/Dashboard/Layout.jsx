@@ -68,6 +68,7 @@ const Layout = () => {
           Pro
         </span>
       ),
+      link: "dashboard"
     },
     {
       name: "Inbox",
@@ -86,6 +87,7 @@ const Layout = () => {
         <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
       ),
       badge: null,
+      link: "recordatorio"
     },
     {
       name: "Products",
@@ -164,8 +166,8 @@ const Layout = () => {
             </li>
             {menuItems.map((item, index) => (
               <li key={index}>
-                <a
-                  href="#"
+                <Link
+                  to={item.link}
                   className={`flex items-center p-2 ${isExpanded ? "" : "bg-white"} text-gray-900 rounded-full dark:text-white hover:bg-[#5879ff] group`}
                   onClick={index === 0 ? toggleSidebar : undefined}
                 >
@@ -178,7 +180,7 @@ const Layout = () => {
                     {item.name}
                   </span>
                   {/*isExpanded && item.badge*/}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

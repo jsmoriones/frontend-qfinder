@@ -8,6 +8,7 @@ import { ProtectedRoute } from "../protected";
 import Dashboard from "../pages/Dashboard/Index";
 import Layout from "../pages/Dashboard/Layout";
 import PerfilCuidador from "../pages/Dashboard/PerfilCuidador";
+import Recordatorios from "../pages/Dashboard/Recordatorios";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoutes = () => {
               <Route path="/paciente" element={<PacientePage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/cuidador-perfil" element={<PerfilCuidador />} />
+              <Route path="/recordatorio" element={<Recordatorios />} />
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />

@@ -22,7 +22,7 @@ const RegisterPage = () => {
 
   const hanldeSendData = async (data) => {
     try {
-      const response = await signup(data)
+      const response = await signup({...data, tipo_usuario: "Usuario"})
       StatusAlertService.showSuccess(response);
 
       setTimeout(() => {

@@ -8,6 +8,9 @@ body{
     --color-grisTarde: #cdcdcd;
     --color-grisTarde2:#C3C3C3;
     --color-grisTarde3: #B8B6B6;
+    --color-grisTarde4: #A6A6A6;
+    --color-grisTarde5: #CECFD0;
+    --color-grisTarde6: #F2F2F2;
     --color-grisMasTarde: #666666;
     --color-azulRodilla: #3A5E95;
     --color-azulPastel1: #ADC9FF;
@@ -17,6 +20,8 @@ body{
     --color-azulPastel4Opacity:rgba(47, 172, 255, .5);
     --color-azulPastel5: #6D8AFD;
     --color-azulPastel6: #4285F4;
+    --color-azulPastel17: #5BA2FF;
+    --color-azulPastel18: #4E9EFB;
     --color-azulPiso:#3BB1DA;
     --color-grisAzul: #374957;
     --color-grisClaro: #F0F0F0;
@@ -27,8 +32,13 @@ body{
     --color-blancoGris: #F9F9F9;
     --color-verdeClaro: #00FF08;
     --color-verdebtn: #11C939;
+    --color-verde1: #31BA46;
+    --color-verde2: #ABF9B6;
     --color-rojopdf:#bb2524;
     --color-rojobtn:#FD6D6F;
+    --color-oscurity: #333333;
+    --color-rosa: #EF98E6;
+    --color-rosa2: #BF36A6;
     --aspect-11: 1 / 1;
 }
 
@@ -72,3 +82,6 @@ body{
 .tablaPacienteHorario, .tablaPacienteHorario tr, .tablaPacienteHorario th{
     border-bottom: 1px solid #817E7E;
 }
+
+/* Estilos calendario */
+.rbc-toolbar .rbc-btn-group:last-child{display: none !important;}

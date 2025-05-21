@@ -219,8 +219,8 @@ const Layout = () => {
             }`}
           >
             <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-              <div>{infoUser.nombre || ""} {infoUser.apellido || ""}</div>
-              <div className="font-medium truncate">{infoUser.email || ""}</div>
+              <div>Michael Solano</div>
+              <div className="font-medium truncate">michaelsolano@gmail.com</div>
             </div>
             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
               <li>

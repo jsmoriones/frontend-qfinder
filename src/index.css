@@ -36,10 +36,12 @@ body{
     --color-verde2: #ABF9B6;
     --color-rojopdf:#bb2524;
     --color-rojobtn:#FD6D6F;
+    --color-rojo1: #F94D4D;
     --color-oscurity: #333333;
     --color-rosa: #EF98E6;
     --color-rosa2: #BF36A6;
     --aspect-11: 1 / 1;
+    --font-fontPoppins:"Poetsen One", sans-serif;
 }
 
 .vi__character.character{

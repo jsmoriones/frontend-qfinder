@@ -1,6 +1,6 @@
-export function Label({ htmlFor, children }) {
+export function Label({ props, htmlFor, children }) {
   return (
-    <label htmlFor={htmlFor} className="text-base text-grisMasTarde mb-1">
+    <label {...props} htmlFor={htmlFor} className="text-base text-grisMasTarde mb-1">
       {children}
     </label>
   );

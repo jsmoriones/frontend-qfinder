@@ -9,6 +9,7 @@ import Dashboard from "../pages/Dashboard/Index";
 import Layout from "../pages/Dashboard/Layout";
 import PerfilCuidador from "../pages/Dashboard/PerfilCuidador";
 import Recordatorios from "../pages/Dashboard/Recordatorios";
+import RegistroPaciente from "../pages/Dashboard/RegistroPaciente";
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/cuidador-perfil" element={<PerfilCuidador />} />
               <Route path="/recordatorio" element={<Recordatorios />} />
+              <Route path="/registro-paciente" element={<RegistroPaciente />} />
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />

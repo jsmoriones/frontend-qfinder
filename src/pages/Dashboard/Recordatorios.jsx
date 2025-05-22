@@ -32,10 +32,6 @@ const Recordatorios = () => {
 
   const [typeRecord, setTypeRecord] = useState([
     {
-      value: "Medicamentos",
-      status: true,
-    },
-    {
       value: "Citas",
       status: false,
     }
@@ -117,10 +113,8 @@ const Recordatorios = () => {
   }
 
   const handleMeetingTimeChange = (newTime) => {
-    // Guarda la hora en el estado (si necesitas que sea un string con AM/PM)
     //setMeetingTime(newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
-    
-    // Obtén la cadena de tiempo con AM/PM para verificar
+
     const timeString = newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     setMeetingTime(timeString)
 
@@ -135,8 +129,8 @@ const Recordatorios = () => {
       />
 
       <div className="bg-azulPastel1 rounded-xl p-3 flex gap-5">
-        <div className="w-1/2 bg-white rounded-xl p-3">
-          <div className='bg-grisTarde6 rounded-xl overflow-hidden' style={{ height: 400 }}>
+        <div className="w-1/2 bg-white rounded-xl p-3 flex items-center">
+          <div className='bg-grisTarde6 rounded-xl overflow-hidden w-full' style={{ height: 400 }}>
             <Calendar
               localizer={localizer}
               events={eventosEjempo}
@@ -172,7 +166,7 @@ const Recordatorios = () => {
               <img src="/images/patient.png" alt="imagen de paciente" className='w-full' />
             </div>
           </div>
-          <div className="w-full p-3 bg-white rounded-xl flex flex-col gap-5">
+          <div className="w-full p-3 bg-white rounded-xl flex flex-col gap-5 pb-8">
             <div className="bg-rosa p-3 py-5 border-rosa2 border-1 rounded-xl">
               <p className='font-bold text-oscurity text-xl'>Citas</p>
               <ul className='pl-6 mt-2 flex flex-col gap-1'>

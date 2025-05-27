@@ -59,7 +59,7 @@ const Layout = () => {
   // Lista de elementos de menú con sus iconos y nombres
   const menuItems = [
     {
-      name: "Kanban",
+      name: "Inicio",
       icon: (
         <i className="fa-solid fa-house text-2xl text-[#374957]"></i>
       ),
@@ -71,7 +71,7 @@ const Layout = () => {
       link: "dashboard"
     },
     {
-      name: "Inbox",
+      name: "Paciente",
       icon: (
         <i className="fa-regular fa-user text-2xl text-[#374957]"></i>
       ),
@@ -80,16 +80,17 @@ const Layout = () => {
           3
         </span>
       ),
+      link: "registro-paciente"
     },
     {
-      name: "Users",
+      name: "Recordatorio",
       icon: (
         <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
       ),
       badge: null,
-      link: "registro-paciente"
+      link: "recordatorio"
     },
-    {
+    /*{
       name: "Products",
       icon: (
         <i className="fa-solid fa-magnifying-glass text-2xl text-[#374957]"></i>
@@ -102,7 +103,7 @@ const Layout = () => {
         <i className="fa-solid fa-gear text-2xl text-[#374957]"></i>
       ),
       badge: null,
-    }
+    }*/
   ];
 
   const handleLogout = () => {

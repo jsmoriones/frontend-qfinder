@@ -249,7 +249,7 @@ const Layout = () => {
           </div>
         </div>
 
-        <div className="p-8">
+        <div>
           <Outlet />
         </div>
       </main>

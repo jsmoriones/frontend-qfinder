@@ -87,3 +87,10 @@ body{
 
 /* Estilos calendario */
 .rbc-toolbar .rbc-btn-group:last-child{display: none !important;}
+
+
+/* Estilos de carousel de pacientes */
+.slick-track{
+    display: flex;
+    gap: 15px;
+}

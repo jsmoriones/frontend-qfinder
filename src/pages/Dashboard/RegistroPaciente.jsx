@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TitleDashboardSection } from "../../components/ui/TitleDashboardSection";
 import { useNavigate } from "react-router-dom";
 import { Input, Label2 } from "../../components/ui";
-import { patientSchema } from "../../schemas/patient";
+import { PacienteSchema } from "../../schemas/patient";
+import { registerPatient } from "../../services/PacienteService";
 
 const RegistroPaciente = () => {
 
@@ -13,13 +14,18 @@ const RegistroPaciente = () => {
           handleSubmit,
           formState: {errors}
       } = useForm({
-          resolver: zodResolver(patientSchema)
+          resolver: zodResolver(PacienteSchema)
       })
 
   const navigate = useNavigate()
 
-  const handleSendData = () => {
-
+  const handleSendData = async (data) => {
+    console.log(data)
+    try {
+      await registerPatient(data)
+    } catch (error) {
+      console.log("Error al registrar un paciente: ", error)
+    }
   }
 
   return (
@@ -33,10 +39,10 @@ const RegistroPaciente = () => {
               <img src="/images/patient.png" alt="Paciente avatar" className="w-full" />
             </div>
             <div className="w-full bg-white p-3 rounded-2xl">
-              <p className="text-2xl text-black font-fontPoppins mb-1">
+              <p className="text-2xl text-center text-black font-fontPoppins mb-1">
                 Ingresa la información del paciente
               </p>
-              <div className="flex justify-between items-center ml-5 mt-6 gap-12">
+              <div className="flex justify-center items-center ml-5 mt-6 gap-12">
                 <div className="w-1/2 flex flex-col gap-5">
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between">
@@ -76,121 +82,101 @@ const RegistroPaciente = () => {
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between">
-                      <Label2 htmlFor="email">Email-Acudiente:</Label2>
+                      <Label2 htmlFor="fecha_nacimiento">Fecha de nacimiento:</Label2>
                       <Input
-                        type="email"
-                        id="email"
-                        name="email"
+                        type="date"
+                        id="fecha_nacimiento"
+                        name="fecha_nacimiento"
                         {...register(
-                          "correo_usuario",
+                          "fecha_nacimiento",
                           {required: true}
                         )}
                         autoFocus
                       />
                     </div>
-                    {errors.correo_usuario && (
-                      <p className="text-red-500 text-right">{errors.correo_usuario?.message}</p>
+                    {errors.fecha_nacimiento && (
+                      <p className="text-red-500 text-right">{errors.fecha_nacimiento?.message}</p>
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between">
-                      <Label2 htmlFor="genero">Género:</Label2>
-                      <select name="genero" id="genero" className="text-center w-1/2">
-                        <option value="M">--- Seleccionar ---</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Femenino</option>
+                      <Label2 htmlFor="sexo">Género:</Label2>
+                      <select
+                        name="sexo"
+                        id="sexo"
+                        className="text-center w-1/2"
+                        {...register(
+                          "sexo",
+                          {required: true}
+                        )}
+                      >
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                        <option value="otro">Otro</option>
+                        <option value="prefiero_no_decir">Prefiero no decir</option>
                       </select>
                     </div>
-                    {errors.genero?.message && (
-                      <p className="text-red-500 text-right">{errors.genero?.message}</p>
+                    {errors.sexo?.message && (
+                      <p className="text-red-500 text-right">{errors.sexo?.message}</p>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-5">
                     <div className="flex justify-between">
-                      <Label2 htmlFor="direccion">Dirección:</Label2>
+                      <Label2 htmlFor="identificacion">Identificacion:</Label2>
                       <Input
                         type="text"
-                        id="direccion"
-                        name="direccion"
+                        id="identificacion"
+                        name="identificacion"
                         {...register(
-                          "direccion",
+                          "identificacion",
                           {required: true}
                         )}
                         autoFocus
-                        />
+                      />
                     </div>
-                    {errors.direccion?.message && (
-                      <p className="text-red-500 text-right">{errors.direccion?.message}</p>
+                    {errors.identificacion?.message && (
+                      <p className="text-red-500 text-right">{errors.identificacion?.message}</p>
                     )}
                   </div>
-                </div>
-                <div className="w-1/2 flex flex-col gap-5">
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-5">
                     <div className="flex justify-between">
-                      <Label2 htmlFor="edad">Edad:</Label2>
+                      <Label2 htmlFor="diagnostico_principal">Diagnostico Principal:</Label2>
                       <Input
-                        type="number"
-                        id="edad"
-                        name="edad"
+                        type="text"
+                        id="diagnostico_principal"
+                        name="diagnostico_principal"
                         {...register(
-                          "edad",
+                          "diagnostico_principal",
                           {required: true}
                         )}
                         autoFocus
-                        />
+                      />
                     </div>
-                    {errors.edad?.message && (
-                      <p className="text-red-500 text-right">{errors.edad?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="flex justify-between">
-                      <Label2 htmlFor="telefonoAcudiente">Número-Acudiente:</Label2>
-                      <Input
-                        type="number"
-                        id="telefonoAcudiente"
-                        name="telefonoAcudiente"
-                        {...register(
-                          "telefonoAcudiente",
-                          {required: true}
-                        )}
-                        autoFocus
-                        />
-                    </div>
-                    {errors.telefonoAcudiente?.message && (
-                      <p className="text-red-500 text-right">{errors.telefonoAcudiente?.message}</p>
+                    {errors.diagnostico_principal?.message && (
+                      <p className="text-red-500 text-right">{errors.diagnostico_principal?.message}</p>
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between">
-                      <Label2 htmlFor="numeroEmergencia">Número de Emergencia:</Label2>
-                      <Input
-                        type="number"
-                        id="numeroEmergencia"
-                        name="numeroEmergencia"
+                      <Label2 htmlFor="autonomia">Nivel de Autonomia:</Label2>
+                      <select
+                        name="autonomia"
+                        id="autonomia"
+                        className="text-center w-1/2"
                         {...register(
-                          "numeroEmergencia",
+                          "nivel_autonomia",
                           {required: true}
                         )}
-                        autoFocus
-                        />
+                      >
+                        <option value="">--- Seleccionar ---</option>
+                        <option value="alta">Alta</option>
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                      </select>
                     </div>
-                    {errors.numeroEmergencia?.message && (
-                      <p className="text-red-500 text-right">{errors.numeroEmergencia?.message}</p>
+                    {errors.autonomia?.message && (
+                      <p className="text-red-500 text-right">{errors.autonomia?.message}</p>
                     )}
-                  </div>
-                  <div className="flex justify-between">
-                    <Label2 htmlFor="discapacidad">Discapacidad-(si posee):</Label2>
-                    <Input
-                      type="text"
-                      id="discapacidad"
-                      name="discapacidad"
-                      {...register(
-                        "discapacidad",
-                        {required: true}
-                      )}
-                      autoFocus
-                    />
                   </div>
                 </div>
               </div>
@@ -198,7 +184,7 @@ const RegistroPaciente = () => {
           </div>
         </div>
         <div className="bg-azulPastel1 w-full rounded-xl p-4">
-          <p className="text-2xl text-black font-fontPoppins mb-1">
+          {/* <p className="text-2xl text-black font-fontPoppins mb-1">
             Ingresa la información del paciente
           </p>
           <div className="flex justify-between gap-5 my-8">
@@ -226,7 +212,7 @@ const RegistroPaciente = () => {
               </p>
               <textarea name="alergias_txt" id="alergiastxt" className="w-full p-2 rounded-lg border-1 border-grisTarde4 outline-0 resize-none" rows={"5"}></textarea>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex justify-between w-1/3 mx-auto">
             <button

@@ -1,62 +1,41 @@
-import { z } from "zod";
-export const patientSchema = z
-  .object({
-    nombre: z
-      .string({
-        message: "El Nombre de Usuario es Requerido",
-      })
-      .min(3, {
-        message: "El Nombre de Usuario debe tener por lo menos 3 caracteres",
-      }),
-    apellido: z
-      .string({
-        message: "El Apellido del Usuario es Requerido",
-      })
-      .min(3, {
-        message: "El Apellido del Usuario debe tener por lo menos 3 carácteres",
-      }),
-    correo_usuario: z
-      .string({
-        message: "El correo es Obligatorio"
-      })
-      .email({
-        message: "Porfavor Ingresa un Email Válido",
-      }),
-    genero: z
-      .string()
-      .nonempty("El género es obligatorio."),
-    direccion: z
-      .string()
-      .min(5, {
-        message: "La dirección es obligatoria, como minimo debe haber 5 carácteres"
-      }),
-    edad: z
-      .number({
-        message: "El valor debe ser numerico"
-      })
-      .min(0, {
-        message: "La edad debe ser mayor a 0"
-      })
-      .max(120, {
-        message: "La edad debe ser menor a 120"
-      }),
-    telefonoAcudiente: z
-      .string({
-        message: "El Télefono del Acudiente es Obligatorio",
-      })
-      .min(8, {
-        message: "El Télefono del Acudiente debe Contener como minimo 8 digitos",
-      }),
-    numeroEmergencia: z
-      .string({
-        message: "El número de emergencia es obligatorio",
-      })
-      .min(8, {
-        message: "El número de emergencia debe contener como minimo 8 digitos",
-      }),
-    discapacidad: z.string().optional(),
-    alergias: z.string().optional(),
-    antecedentes: z.string().optional(),
-    diagnostico: z.string().optional(),
-    otrosDatos: z.string().optional()
-  })
+// src/schemas/pacienteSchema.js
+import { z } from 'zod';
+
+export const PacienteSchema = z.object({
+  nombre: z.string()
+    .min(2, {
+      message: "El nombre del paciente debe tener al menos 2 carácteres"
+    })
+    .max(100, {
+      message: "El nombre del paciente no puede exceder los 100 carácteres"
+    }),
+  apellido: z.string()
+    .min(2, {
+      message: "El apellido del paciente debe tener al menos 2 carácteres"
+    })
+    .max(100, {
+      message: "El apellido del paciente no puede exceder los 100 carácteres"
+    }),
+  identificacion: z.string()
+    .min(5, {
+      message: "La identificación del paciente debe tener al menos 5 carácteres"
+    }),
+  fecha_nacimiento: z.string()
+    .transform((str) => new Date(str))
+    .refine((date) => {
+      return date.getTime() <= new Date().getTime();
+    }, {
+      message: "La fecha no puede estar en el futuro.",
+    }),
+  sexo: z.enum(['masculino', 'femenino', 'otro', 'prefiero_no_decir'], {
+    message: "La orientación sexual debe ser obligatoria"
+  }).nullable().optional(),
+  diagnostico_principal: z.string()
+    .min(10, {
+      message: "El Diagnostico Principal debe tener al menos 10 carácteres"
+    })
+    .max(100, {
+      message: "La escritura del diagnostico no puede exceder los 100 carácteres"
+    }),
+  nivel_autonomia: z.enum(['alta', 'baja', 'media']).optional()
+});

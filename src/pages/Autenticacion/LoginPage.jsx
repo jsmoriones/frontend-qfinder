@@ -74,6 +74,7 @@ const LoginPage = () => {
                                 type="email"
                                 id="email"
                                 name="email"
+                                defaultValue="juanmoriones012@gmail.com"
                                 {...register(
                                 "email",
                                 {required: true}
@@ -101,6 +102,7 @@ const LoginPage = () => {
                                 type={viewPassword ? "text" : "password"}
                                 id="password"
                                 name="password"
+                                defaultValue="Juan1234@"
                                 {...register(
                                 "password",
                                 {required: true}

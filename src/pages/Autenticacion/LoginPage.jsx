@@ -61,82 +61,88 @@ const LoginPage = () => {
   return (
     <>
         <StatusAlert />
-        <div className="mx-16 min-h-screen flex items-center line-bg">
-            <div className="container mx-auto flex gap-12 h-full">
-                <div className="w-2/5 py-8">
-                    <h1 className="text-5xl text-[#111111] font-semibold my-6">Bienvenido a QfindeR</h1>
-                    <p className="text-[rgba(102,102,102,80%)] text-2xl">Para un mejor despertar, soñemos con la protección social</p>
+        <div className="line-bg">
+            <div className="mx-16 min-h-screen flex items-center">
+                <div className="container mx-auto flex flex-col lg:flex-row gap-12 h-full">
+                    <div className="w-full lg:w-2/5 py-8">
+                        <h1 className="text-4xl md:text-5xl text-[#111111] font-semibold my-6 text-center lg:text-left">Bienvenido a QfindeR</h1>
+                        <p className="text-[rgba(102,102,102,80%)] text-lg md:text-2xl text-center lg:text-left">Para un mejor despertar, soñemos con la protección social</p>
 
-                    <form className='mt-14' onSubmit={handleSubmit(handleSendData)}>
-                        <div className="flex flex-col mb-3">
-                            <Label htmlFor="email">Nombre de usuario o Email:</Label>
-                            <Input
-                                type="email"
-                                id="email"
-                                name="email"
-                                defaultValue="juanmoriones012@gmail.com"
-                                {...register(
-                                "email",
-                                {required: true}
-                                )}
-                                
-                                autoFocus
-                            />
-                            {errors.email?.message && (
-                                <p className="text-red-500">{errors.email?.message}</p>
-                            )}
+                        <div className="w-full justify-center items-center flex lg:hidden">
+                            <img src="/images/grandfather-doctor.png" alt="Imagen de login, se encuentra anciano con doctores" />
                         </div>
-                        <div className="flex flex-col mb-3">
-                            <div className="flex justify-between items-center mb-1">
-                                <Label htmlFor="password">Tu contraseña:</Label>
-                                <button
-                                    type='button'
-                                    className='cursor-pointer'
-                                    onClick={() => setViewPassword(prev => !prev)}
-                                >
-                                    <i className={`fa-solid ${!viewPassword ? "fa-eye" : "fa-eye-slash"} text-[rgba(102,102,102,80%)]`}></i>
-                                    <span className='text-[rgba(102,102,102,80%)] ml-2'>Hiden</span>
-                                </button>
+
+                        <form className='mt-10 lg:mt-14' onSubmit={handleSubmit(handleSendData)}>
+                            <div className="flex flex-col mb-3">
+                                <Label htmlFor="email">Nombre de usuario o Email:</Label>
+                                <Input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    defaultValue="juanmoriones012@gmail.com"
+                                    {...register(
+                                    "email",
+                                    {required: true}
+                                    )}
+                                    
+                                    autoFocus
+                                />
+                                {errors.email?.message && (
+                                    <p className="text-red-500">{errors.email?.message}</p>
+                                )}
                             </div>
-                            <Input
-                                type={viewPassword ? "text" : "password"}
-                                id="password"
-                                name="password"
-                                defaultValue="Juan1234@"
-                                {...register(
-                                "password",
-                                {required: true}
+                            <div className="flex flex-col mb-3">
+                                <div className="flex justify-between items-center mb-1">
+                                    <Label htmlFor="password">Tu contraseña:</Label>
+                                    <button
+                                        type='button'
+                                        className='cursor-pointer'
+                                        onClick={() => setViewPassword(prev => !prev)}
+                                    >
+                                        <i className={`fa-solid ${!viewPassword ? "fa-eye" : "fa-eye-slash"} text-[rgba(102,102,102,80%)]`}></i>
+                                        <span className='text-[rgba(102,102,102,80%)] ml-2'>Hiden</span>
+                                    </button>
+                                </div>
+                                <Input
+                                    type={viewPassword ? "text" : "password"}
+                                    id="password"
+                                    name="password"
+                                    defaultValue="Juan1234@"
+                                    {...register(
+                                    "password",
+                                    {required: true}
+                                    )}
+                                    
+                                    autoFocus
+                                />
+                                {errors.password?.message && (
+                                    <p className="text-red-500">{errors.password?.message}</p>
                                 )}
-                                
-                                autoFocus
-                            />
-                            {errors.password?.message && (
-                                <p className="text-red-500">{errors.password?.message}</p>
-                            )}
+                            </div>
+                            <div className="text-center my-6">
+                                <button className='cursor-pointer bg-[#505ABB] text-white text-lg px-2 w-2/5 py-3 rounded-4xl' type='submit'>Iniciar sesión</button>
+                            </div>
+                        </form>
+                        <div className="flex flex-col sm2:flex-row justify-center sm2:justify-between items-center">
+                            <p className="text-[#333333] text-base text-center sm2:text-left">¿No tienes una cuenta? <Link to={"/register"} className='underline'>Registrate</Link> </p>
+                            <a href="#" className='text-[#666666] text-base text-center sm2:text-right w-full'>Olvidaste tu contraseña</a>
                         </div>
-                        <div className="text-center my-6">
-                            <button className='cursor-pointer bg-[#505ABB] text-white text-lg px-2 w-2/5 py-3 rounded-4xl' type='submit'>Sign In</button>
+                        <div className="flex flex-row items-center justify-between my-8">
+                            <hr className="flex-1 border-.8 border-[rgba(102,102,102,45%)]" />
+                            <span className='text-2xl text-[rgba(102,102,102,45%)] mx-3'>O</span>
+                            <hr className="flex-1 border-.8 border-[rgba(102,102,102,45%)]" />
                         </div>
-                    </form>
-                    <div className="flex justify-between items-center">
-                        <p className="text-[#333333] text-base">¿No tienes una cuenta? <Link to={"/register"} className='underline'>Registrate</Link> </p>
-                        <a href="#" className='text-[#666666] text-base'>Olvidaste tu contraseña</a>
-                    </div>
-                    <div className="flex flex-row items-center justify-between my-8">
-                        <hr className="flex-1 border-.8 border-[rgba(102,102,102,45%)]" />
-                        <span className='text-2xl text-[rgba(102,102,102,45%)] mx-3'>O</span>
-                        <hr className="flex-1 border-.8 border-[rgba(102,102,102,45%)]" />
-                    </div>
 
-                    <div className="">
-                        <button className='flex flex-row justify-center cursor-pointer bg-white text-[#333333] text-lg rounded-4xl w-full border-1 py-3'>
-                            <img src="/images/logo-gmail.png" />
-                            <span className='ml-4 text-[#333333] text-lg'>Continuar con Google</span>
-                        </button>
+                        <div className="">
+                            <button className='flex flex-row justify-center cursor-pointer bg-white text-[#333333] text-lg rounded-4xl w-full border-1 py-3'>
+                                <img src="/images/logo-gmail.png" className="hidden sm3:block" />
+                                <span className='ml-4 text-[#333333] text-lg'>Continuar con Google</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div className="w-3/5 flex justify-center items-center">
-                    <img src="/images/grandfather-doctor.png" alt="Imagen de login, se encuentra anciano con doctores" />
+                    <div className="w-3/5 justify-center items-center hidden lg:flex">
+                        <img src="/images/grandfather-doctor.png" alt="Imagen de login, se encuentra anciano con doctores" />
+                    </div>
                 </div>
             </div>
         </div>

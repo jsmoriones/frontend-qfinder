@@ -15,7 +15,13 @@ export const verifyCount = async (data) =>{
     }
 }
 
-export const loginService = async (data) => await axios.post("/auth/login", data)
+export const loginService = async (data) => await axios.post(
+    "/auth/login",
+    data,
+    {
+        withCredentials: true
+    }
+)
 
 /*export const loginService = async (data) => {
     try {

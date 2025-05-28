@@ -1,59 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import useEmblaCarousel from 'embla-carousel-react'
+import React from "react";
 import Slider from "react-slick";
+import Cookies from "js-cookie";
 import CardPaciente from "../../components/CardPaciente";
 
 const Dashboard = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const avatarButtonRef = useRef(null);
-  const [emblaRef, emblaApi] = useEmblaCarousel()
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev()
-  }, [emblaApi])
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext()
-  }, [emblaApi])
-
-  const handleClickOutside = (event) => {
-    if (
-      isDropdownOpen &&
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target) &&
-      avatarButtonRef.current &&
-      !avatarButtonRef.current.contains(event.target)
-    ) {
-      setIsDropdownOpen(false);
-    }
-  };
-  
-  // Detectar si es dispositivo móvil
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 640); // 640px es el breakpoint 'sm' en Tailwind
-    };
-    
-    // Comprobar al inicio
-    checkIfMobile();
-    
-    // Comprobar al cambiar el tamaño de la ventana
-    window.addEventListener('resize', checkIfMobile);
-    
-    // Limpiar evento
-    return () => window.removeEventListener('resize', checkIfMobile);
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-  
 
   var settings = {
     dots: true,
@@ -109,6 +59,11 @@ const Dashboard = () => {
       }
     ]
   };
+  console.log(Cookies)
+  const token = Cookies.get("token")
+
+  console.log(token);
+  
 
   return (
     <>

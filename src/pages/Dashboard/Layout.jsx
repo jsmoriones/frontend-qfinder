@@ -60,27 +60,23 @@ const Layout = () => {
   const menuItems = [
     {
       name: "Inicio",
-      icon: (
-        <i className="fa-solid fa-house text-2xl text-[#374957]"></i>
-      ),
+      icon: <i className="fa-solid fa-house text-2xl text-[#374957]"></i>,
       badge: (
         <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
           Pro
         </span>
       ),
-      link: "dashboard"
+      link: "dashboard",
     },
     {
       name: "Paciente",
-      icon: (
-        <i className="fa-regular fa-user text-2xl text-[#374957]"></i>
-      ),
+      icon: <i className="fa-regular fa-user text-2xl text-[#374957]"></i>,
       badge: (
         <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
           3
         </span>
       ),
-      link: "registro-paciente"
+      link: "registro-paciente",
     },
     {
       name: "Recordatorio",
@@ -88,7 +84,7 @@ const Layout = () => {
         <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
       ),
       badge: null,
-      link: "recordatorio"
+      link: "recordatorio",
     },
     {
       name: "Comunidad",
@@ -96,7 +92,15 @@ const Layout = () => {
         <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
       ),
       badge: null,
-      link: "comunidad"
+      link: "comunidad",
+    },
+    {
+      name: "Pacientes",
+      icon: (
+        <i className="fa-solid fa-hospital-user text-2xl text-[#374957]"></i>
+      ),
+      badge: null,
+      link: "list_pacientes",
     },
     /*{
       name: "Products",

@@ -24,6 +24,7 @@
     "react-hook-form": "^7.56.1",
     "react-router-dom": "^7.5.2",
     "react-slick": "^0.30.3",
+    "react-spinners": "^0.17.0",
     "react-status-alert": "^1.4.1",
     "react-time-picker-field": "^1.2.2",
     "react-verification-input": "^4.2.2",

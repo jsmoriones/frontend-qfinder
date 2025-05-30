@@ -102,6 +102,14 @@ const Layout = () => {
       badge: null,
       link: "list_pacientes",
     },
+    {
+      name: "Usuario",
+      icon: (
+        <i className="fa-solid fa-users text-2xl text-[#374957]"></i>
+      ),
+      badge: null,
+      link: "usuario",
+    },
     /*{
       name: "Products",
       icon: (

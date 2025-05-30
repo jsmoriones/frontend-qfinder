@@ -123,7 +123,7 @@ const Recordatorios = () => {
   };
 
   return (
-    <div>
+    <div className='p-8'>
       <TitleDashboardSection
         text={"Recordatorios"}
       />

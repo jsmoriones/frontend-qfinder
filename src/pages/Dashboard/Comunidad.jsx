@@ -18,19 +18,19 @@ export default function Comunidad() {
 
       <div className="flex-1 flex">
         {/* Community List */}
-        <div className="w-1/3 bg-blue-100 p-4 overflow-y-auto">
+        <div className="w-1/3 bg-[rgba(109,138,253,0.25)] bg-opacity-20 p-4 overflow-y-auto  ">
           <TitleDashboardSection text="Comunidad" />
           <Input placeholder="Search" className="mb-4" />
 
           {mockCommunities.map((community, i) => (
             <div
               key={i}
-              className="flex items-center justify-between p-3 mb-3 bg-blue-200 rounded-lg cursor-pointer"
+              className="flex items-center mt-4 justify-between p-3 mb-3 bg-blue-200 rounded-lg cursor-pointer"
               onClick={() => setSelectedCommunity(community)}
             >
               <div className="flex items-center space-x-2">
                 
-                <div className="w-12 h-12 rounded-full overflow-hidden shadow">
+                <div className="w-12 h-12 rounded-full overflow-hidden shadow  ">
   <img
     src="public\images\comunidadimagen1.png"
     alt="Avatar comunidad"
@@ -38,12 +38,13 @@ export default function Comunidad() {
   />
 </div>
 
-                <div>
+                <div className=''>
+                
                   <p className="font-bold">{community.name}</p>
                   <p className="text-sm">{community.members}</p>
                 </div>
               </div>
-              <button className="text-blue-700 font-bold">Unirme</button>
+              <button className="text-blue-700 font-bold cursor-pointer">Unirme</button>
             </div>
           ))}
         </div>
@@ -71,7 +72,7 @@ export default function Comunidad() {
     alt="Avatar comunidad"
     className="w-full h-full object-cover rounded-full"
   /></div>
-                <button className="text-sm bg-white rounded px-2 py-1">Unirme</button>
+                <button className="text-sm bg-white rounded px-2 py-1 cursor-pointer">Unirme</button>
               </div>
             </div>
             <div className="p-4 overflow-y-auto h-full">
@@ -92,9 +93,9 @@ export default function Comunidad() {
           </div>
 
           {/* Info Panel */}
-          <div className="w-80 bg-indigo-100 p-4 border-l">
+          <div className="w-80 bg-indigo-100 p-4">
             <div className="flex justify-between items-center mb-4">
-              <button className="text-xl">✖</button>
+              <button className="text-xl cursor-pointer">✖</button>
               {/* Aquí puedes colocar tu imagen */}
               <div className="w-16 h-16 bg-white rounded-full border-b pb-4"><img
     src="public\images\comunidadimagen1.png"
@@ -117,9 +118,9 @@ export default function Comunidad() {
 </button>
 
             </div>
-
+<div className="mb-4 border-b pb-4">
             <p className="text-sm font-semibold mb-1">Descripción de la comunidad</p>
-            <p className="text-sm text-gray-600 mb-4">Se creó el 29/04/2025</p>
+            <p className="text-sm text-gray-600 mb-4">Se creó el 29/04/2025</p></div>
 
             <button className="flex items-center text-red-600 text-sm space-x-1">
               <img

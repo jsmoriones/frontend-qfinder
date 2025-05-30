@@ -9,27 +9,27 @@ const ListPacientes = () => {
       const data = [
         {
           id: 1,
-          nombre: "Juan Pérez",
+          nombre: "Juan",
+          Apellidos: "Perez",
           identificacion: "12345678",
-          correo: "juan@mail.com",
           edad: 65,
           diagnostico: "Hipertensión",
           estado: "Activo",
         },
         {
           id: 2,
-          nombre: "Ana Gómez",
+          nombre: "Ana",
+          Apellidos: "Gomez",
           identificacion: "87654321",
-          correo: "ana@mail.com",
           edad: 72,
           diagnostico: "Diabetes",
           estado: "Inactivo",
         },
         {
           id: 3,
-          nombre: "Luis Martínez",
+          nombre: "Luis",
+          Apellidos: "Martinez",
           identificacion: "45678901",
-          correo: "luis@mail.com",
           edad: 80,
           diagnostico: "Alzheimer",
           estado: "Activo",
@@ -55,10 +55,10 @@ const ListPacientes = () => {
                 Nombre
               </th>
               <th className="px-6 py-3 text-left text-sm font-medium">
-                Identificación
+                Apellidos
               </th>
               <th className="px-6 py-3 text-left text-sm font-medium">
-                Correo
+                Identificacion
               </th>
               <th className="px-6 py-3 text-center text-sm font-medium">
                 Edad
@@ -79,8 +79,8 @@ const ListPacientes = () => {
               <tr key={paciente.id} className="border-b hover:bg-gray-50">
                 <td className="px-6 py-4">{index + 1}</td>
                 <td className="px-6 py-4 font-medium">{paciente.nombre}</td>
+                <td className="px-6 py-4">{paciente.Apellidos}</td>
                 <td className="px-6 py-4">{paciente.identificacion}</td>
-                <td className="px-6 py-4">{paciente.correo}</td>
                 <td className="px-6 py-4 text-center">{paciente.edad}</td>
                 <td className="px-6 py-4">{paciente.diagnostico}</td>
                 <td className="px-6 py-4 text-center">

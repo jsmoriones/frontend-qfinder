@@ -10,6 +10,8 @@ import Layout from "../pages/Dashboard/Layout";
 import PerfilCuidador from "../pages/Dashboard/PerfilCuidador";
 import Recordatorios from "../pages/Dashboard/Recordatorios";
 import RegistroPaciente from "../pages/Dashboard/RegistroPaciente";
+import Comunidad from "../pages/Dashboard/Comunidad";
+import ListPacientes from "../pages/Dashboard/list_pacientes";
 
 const AppRoutes = () => {
   return (
@@ -24,6 +26,8 @@ const AppRoutes = () => {
               <Route path="/cuidador-perfil" element={<PerfilCuidador />} />
               <Route path="/recordatorio" element={<Recordatorios />} />
               <Route path="/registro-paciente" element={<RegistroPaciente />} />
+              <Route path="/comunidad" element={<Comunidad />} /> {/*Ruta cimunidad ALejandro*/}
+              <Route path="/list_pacientes" element={<ListPacientes/>} />
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />

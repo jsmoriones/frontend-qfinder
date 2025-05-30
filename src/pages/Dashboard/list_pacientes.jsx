@@ -51,25 +51,25 @@ const ListPacientes = () => {
           <thead>
             <tr className="bg-[#6D8AFD] text-white">
               <th className="px-6 py-3 text-left text-sm font-medium">#</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 Nombre
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 Apellidos
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 Identificacion
               </th>
               <th className="px-6 py-3 text-center text-sm font-medium">
                 Edad
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 Diagnóstico
               </th>
               <th className="px-6 py-3 text-center text-sm font-medium">
                 Estado
               </th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
+              <th className="px-6 py-3  text-center text-sm font-medium">
                 Acciones
               </th>
             </tr>
@@ -78,11 +78,18 @@ const ListPacientes = () => {
             {pacientes.map((paciente, index) => (
               <tr key={paciente.id} className="border-b hover:bg-gray-50">
                 <td className="px-6 py-4">{index + 1}</td>
-                <td className="px-6 py-4 font-medium">{paciente.nombre}</td>
-                <td className="px-6 py-4">{paciente.Apellidos}</td>
-                <td className="px-6 py-4">{paciente.identificacion}</td>
+                <td className="px-6 py-4 font-medium text-center">
+                  {paciente.nombre}
+                </td>
+                <td className="px-6 py-4 text-center">{paciente.Apellidos}</td>
+                <td className="px-6 py-4 text-center">
+                  {paciente.identificacion}
+                </td>
                 <td className="px-6 py-4 text-center">{paciente.edad}</td>
-                <td className="px-6 py-4">{paciente.diagnostico}</td>
+                <td className="px-6 py-4 text-center">
+                  {paciente.diagnostico}
+                </td>
+
                 <td className="px-6 py-4 text-center">
                   <span
                     className={`px-2 py-1 text-xs rounded-full font-medium ${

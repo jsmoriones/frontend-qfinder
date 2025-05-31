@@ -28,6 +28,8 @@
     "react-status-alert": "^1.4.1",
     "react-time-picker-field": "^1.2.2",
     "react-verification-input": "^4.2.2",
+    "sweetalert2": "^11.22.0",
+    "sweetalert2-react-content": "^5.1.0",
     "tailwindcss": "^4.1.4",
     "zod": "^3.24.3"
   },

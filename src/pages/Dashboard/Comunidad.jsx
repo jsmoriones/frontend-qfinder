@@ -18,9 +18,20 @@ export default function Comunidad() {
 
       <div className="flex-1 flex">
         {/* Community List */}
-        <div className="w-1/3 bg-[rgba(109,138,253,0.25)] bg-opacity-20 p-4 overflow-y-auto  ">
+        <div className="w-1/1 bg-[rgba(109,138,253,0.25)] bg-opacity-20 p-4 overflow-y-auto  ">
           <TitleDashboardSection text="Comunidad" />
-          <Input placeholder="Search" className="mb-4" />
+       <div className="flex items-center mb-4">
+  <div className="mr-4 w-full">
+    <Input placeholder="Search" className="px-3 py-2 w-full" />
+  </div>
+  <button className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded shadow">
+    Crear comunidad
+  </button>
+</div>
+
+
+
+
 
           {mockCommunities.map((community, i) => (
             <div
@@ -28,6 +39,7 @@ export default function Comunidad() {
               className="flex items-center mt-4 justify-between p-3 mb-3 bg-blue-200 rounded-lg cursor-pointer"
               onClick={() => setSelectedCommunity(community)}
             >
+              
               <div className="flex items-center space-x-2">
                 
                 <div className="w-12 h-12 rounded-full overflow-hidden shadow  ">
@@ -44,94 +56,29 @@ export default function Comunidad() {
                   <p className="text-sm">{community.members}</p>
                 </div>
               </div>
-              <button className="text-blue-700 font-bold cursor-pointer">Unirme</button>
+              <div className="flex justify-around mb-4 pb-4">
+              <button className="flex items-center  px-3 py-3 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer ">
+  <span>Editar</span>
+</button>
+<div className='flex items-center px-3 py-2 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer'>
+<button className="flex items-center text-red-600 text-sm space-x-1">
+  
+       <i class="fa-solid fa-trash "></i>
+       <a>Eliminar</a>
+            </button>
+            </div>
+
+            </div>
             </div>
           ))}
         </div>
 
-        {/* Chat & Info Section */}
-        <div className="flex-1 flex">
-          {/* Chat Area */}
-          <div className="flex-1 bg-gray-100 flex flex-col justify-between">
-            <div className="p-4 bg-blue-200 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {/* Aquí puedes colocar tu imagen */}
-                <div className="w-8 h-8 bg-white rounded-full">
-<img
-    src="public\images\comunidadimagen1.png"
-    alt="Avatar comunidad"
-    className="w-full h-full object-cover rounded-full"
-  />
-                </div>
-                <p className="font-bold">{selectedCommunity.name} 1</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                {/* ícono info */}
-                <div className="w-5 h-5 bg-white rounded-full"><img
-    src="public\images\comunidadimagen1.png"
-    alt="Avatar comunidad"
-    className="w-full h-full object-cover rounded-full"
-  /></div>
-                <button className="text-sm bg-white rounded px-2 py-1 cursor-pointer">Unirme</button>
-              </div>
-            </div>
-            <div className="p-4 overflow-y-auto h-full">
-              <div className="mb-2">
-                <p className="text-red-500 font-bold">Morgan</p>
-                <p className="bg-white p-2 rounded-lg shadow w-fit">Blalaskskksjsnajskasjkasjkskjas</p>
-                <p className="text-sm text-right text-gray-500">12:00 p.m.</p>
-              </div>
-              <div>
-                <p className="text-red-500 font-bold">Morgan</p>
-                <p className="bg-white p-2 rounded-lg shadow w-fit">Blalaskskksjsnajskasjkasjkskjas</p>
-                <p className="text-sm text-right text-gray-500">12:00 p.m.</p>
-              </div>
-            </div>
-            <div className="p-4 text-center text-sm text-gray-500">
-              Únete a esta comunidad para poder interactuar con los demás miembros
-            </div>
           </div>
 
           {/* Info Panel */}
-          <div className="w-80 bg-indigo-100 p-4">
-            <div className="flex justify-between items-center mb-4">
-              <button className="text-xl cursor-pointer">✖</button>
-              {/* Aquí puedes colocar tu imagen */}
-              <div className="w-16 h-16 bg-white rounded-full border-b pb-4"><img
-    src="public\images\comunidadimagen1.png"
-    alt="Avatar comunidad"
-    className="w-full h-full object-cover rounded-full"
-  /></div>
-            </div>
-            <p className="font-bold text-lg mb-1">{selectedCommunity.name} 1</p>
-            <p className="text-sm text-gray-600 mb-3">Comunidad 1,200,000 miembros</p>
-
-            <div className="flex justify-around mb-4 border-b pb-4">
-              <button className="flex items-center gap-1 px-4 py-3 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer ">
-  <span>+</span>
-  <span>Unirme</span>
-</button>
-
-<button className="flex items-center gap-1 px-4 py-3 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer">
-  <span>↗</span>
-  <span>Compartir</span>
-</button>
-
-            </div>
-<div className="mb-4 border-b pb-4">
-            <p className="text-sm font-semibold mb-1">Descripción de la comunidad</p>
-            <p className="text-sm text-gray-600 mb-4">Se creó el 29/04/2025</p></div>
-
-            <button className="flex items-center text-red-600 text-sm space-x-1">
-              <img
-    src="public\images\comunidadimagen2reportar.png"
-    alt="Avatar comunidad"
-    className="w-40 h-10 object-cover rounded-full cursor-pointer items-end "
-  />
-            </button>
-          </div>
+          
         </div>
-      </div>
-    </div>
+    
+    
   );
 }

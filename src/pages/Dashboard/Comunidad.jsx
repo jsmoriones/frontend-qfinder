@@ -18,9 +18,14 @@ export default function Comunidad() {
 
       <div className="flex-1 flex">
         {/* Community List */}
-        <div className="w-1/3 bg-[rgba(109,138,253,0.25)] bg-opacity-20 p-4 overflow-y-auto  ">
+        <div className="w-1/1 bg-[rgba(109,138,253,0.25)] bg-opacity-20 p-4 overflow-y-auto  ">
           <TitleDashboardSection text="Comunidad" />
           <Input placeholder="Search" className="mb-4" />
+          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2 rounded shadow">
+  Crear comunidad
+</button>
+
+
 
           {mockCommunities.map((community, i) => (
             <div
@@ -28,6 +33,7 @@ export default function Comunidad() {
               className="flex items-center mt-4 justify-between p-3 mb-3 bg-blue-200 rounded-lg cursor-pointer"
               onClick={() => setSelectedCommunity(community)}
             >
+              
               <div className="flex items-center space-x-2">
                 
                 <div className="w-12 h-12 rounded-full overflow-hidden shadow  ">
@@ -49,47 +55,6 @@ export default function Comunidad() {
           ))}
         </div>
 
-        {/* Chat & Info Section */}
-        <div className="flex-1 flex">
-          {/* Chat Area */}
-          <div className="flex-1 bg-gray-100 flex flex-col justify-between">
-            <div className="p-4 bg-blue-200 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {/* Aquí puedes colocar tu imagen */}
-                <div className="w-8 h-8 bg-white rounded-full">
-<img
-    src="public\images\comunidadimagen1.png"
-    alt="Avatar comunidad"
-    className="w-full h-full object-cover rounded-full"
-  />
-                </div>
-                <p className="font-bold">{selectedCommunity.name} 1</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                {/* ícono info */}
-                <div className="w-5 h-5 bg-white rounded-full"><img
-    src="public\images\comunidadimagen1.png"
-    alt="Avatar comunidad"
-    className="w-full h-full object-cover rounded-full"
-  /></div>
-                <button className="text-sm bg-white rounded px-2 py-1 cursor-pointer">Unirme</button>
-              </div>
-            </div>
-            <div className="p-4 overflow-y-auto h-full">
-              <div className="mb-2">
-                <p className="text-red-500 font-bold">Morgan</p>
-                <p className="bg-white p-2 rounded-lg shadow w-fit">Blalaskskksjsnajskasjkasjkskjas</p>
-                <p className="text-sm text-right text-gray-500">12:00 p.m.</p>
-              </div>
-              <div>
-                <p className="text-red-500 font-bold">Morgan</p>
-                <p className="bg-white p-2 rounded-lg shadow w-fit">Blalaskskksjsnajskasjkasjkskjas</p>
-                <p className="text-sm text-right text-gray-500">12:00 p.m.</p>
-              </div>
-            </div>
-            <div className="p-4 text-center text-sm text-gray-500">
-              Únete a esta comunidad para poder interactuar con los demás miembros
-            </div>
           </div>
 
           {/* Info Panel */}
@@ -109,7 +74,7 @@ export default function Comunidad() {
             <div className="flex justify-around mb-4 border-b pb-4">
               <button className="flex items-center gap-1 px-4 py-3 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer ">
   <span>+</span>
-  <span>Unirme</span>
+  <span>Editar</span>
 </button>
 
 <button className="flex items-center gap-1 px-4 py-3 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer">
@@ -131,7 +96,7 @@ export default function Comunidad() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    
+    
   );
 }

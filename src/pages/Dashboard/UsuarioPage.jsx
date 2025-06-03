@@ -5,18 +5,10 @@ import { useForm } from 'react-hook-form';
 import StatusAlert, { StatusAlertService } from 'react-status-alert'
 import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 
 import { getUsers, registerUser, editUser, removeUser } from '../../services/UserService';
 import { userSchema } from '../../schemas/users';
 import { Input, Label } from '../../components/ui';
-import { clear } from 'dom-helpers';
-
-const override = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "#6D8AFD",
-};
 
 const UsuarioPage = () => {
     const [pacientes, setPacientes] = useState(null);
@@ -43,11 +35,11 @@ const UsuarioPage = () => {
     }, [userEdit, reset]);
 
     useEffect(() => {
-    try {
-        fetchPacientes();
-    } catch (error) {
-        console.log(error);
-    }
+        try {
+            fetchPacientes();
+        } catch (error) {
+            console.log(error);
+        }
     }, []);
     
 

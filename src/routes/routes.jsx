@@ -11,8 +11,7 @@ import PerfilCuidador from "../pages/Dashboard/PerfilCuidador";
 import Recordatorios from "../pages/Dashboard/Recordatorios";
 import RegistroPaciente from "../pages/Dashboard/RegistroPaciente";
 import Comunidad from "../pages/Dashboard/Comunidad";
-import ListPacientes from "../pages/Dashboard/list_pacientes";
-import UsuarioPage from "../pages/Dashboard/UsuarioPage";
+import Medicamentos from "../pages/Dashboard/Medicamentos";
 
 const AppRoutes = () => {
   return (
@@ -27,9 +26,8 @@ const AppRoutes = () => {
               <Route path="/cuidador-perfil" element={<PerfilCuidador />} />
               <Route path="/recordatorio" element={<Recordatorios />} />
               <Route path="/registro-paciente" element={<RegistroPaciente />} />
-              <Route path="/comunidad" element={<Comunidad />} /> {/*Ruta cimunidad ALejandro*/}
-              <Route path="/list_pacientes" element={<ListPacientes/>} />
-              <Route path="/usuario" element={<UsuarioPage />} />
+              <Route path="/comunidad" element={<Comunidad/>} /> {/*Ruta cimunidad ALejandro*/ }
+              <Route path="/medicamentos" element={<Medicamentos/>}/>
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />

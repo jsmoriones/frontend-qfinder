@@ -110,6 +110,14 @@ const Layout = () => {
       badge: null,
       link: "usuario",
     },
+    {
+      name: "Medicamentos",
+      icon: (
+        <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
+      ),
+      badge: null,
+      link: "medicamentos"
+    },
     /*{
       name: "Products",
       icon: (

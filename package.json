@@ -22,6 +22,7 @@
     "react-big-calendar": "^1.18.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.56.1",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.5.2",
     "react-slick": "^0.30.3",
     "react-status-alert": "^1.4.1",

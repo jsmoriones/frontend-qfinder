@@ -11,10 +11,13 @@ import { Input, Label, TextArea } from '../../components/ui';
 import StatusAlert, { StatusAlertService } from 'react-status-alert';
 import Swal from 'sweetalert2';
 
+
 const Medicamentos = () => {
   const [loading, setLoading] = useState(true);
   const [medications, setMedications] = useState(null);
   const [medicationEdit, setMedicationEdit] = useState(null);
+
+  
 
   const { isOpen, open, close } = useModal();
 
@@ -113,6 +116,8 @@ const Medicamentos = () => {
       }
     })
   }
+
+  
 
   return (
     <>

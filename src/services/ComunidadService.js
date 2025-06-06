@@ -16,7 +16,8 @@ export const getCommunity = async () => {
     )
     return response
   } catch (error) {
-    console.log(error)
+    console.log
+    return error;
   }
 }
 

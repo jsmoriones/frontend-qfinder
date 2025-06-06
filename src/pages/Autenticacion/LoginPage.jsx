@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import StatusAlert, { StatusAlertService } from 'react-status-alert'
 import { jwtDecode } from 'jwt-decode';
+import Cookie from "js-cookie";
+
 import { Input, Label } from '../../components/ui';
 import { loginSchema } from '../../schemas/auth';
 import { loginService } from '../../services/AuthService';
@@ -26,6 +28,7 @@ const LoginPage = () => {
     
     const {signIn, isAuthenticated} = useAuth();
     const navigate = useNavigate()
+    
 
     const handleSendData = async (data) => {
         try {
@@ -39,11 +42,13 @@ const LoginPage = () => {
                 try {
                     const authToken = jwtDecode(response.data.token)
                     if(authToken){
-                        /*cookies.set("login_authorization", response.data.token, {
+                        Cookie.set("token", response.data.token, {
                             expires: new Date(authToken.exp * 1000)
                         })
-                        console.log( cookies.get("login_authorization") )*/
+                        console.log( Cookie.get("token") )
                         StatusAlertService.showSuccess("Tus datos son correctos, te redijiremos al Dashboard automaticamente");
+
+                        console.log("asdasdasdasdasdaaaaaaaaaaa: ", Cookie.get("token"))
 
                         setTimeout(() => {
                             navigate("/dashboard")

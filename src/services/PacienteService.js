@@ -19,18 +19,37 @@ export const listPatients = async () => {
 export const registerPatient = async (user) => {
   try {
     const token = Cookies.get('token');
+
+    //get ide user
+    const dataUser = localStorage.getItem("infoUser");
+    const decodeDataUser = JSON.parse(dataUser);
+
+    console.log("decodeDataUser: ", decodeDataUser);
     const response = await axios.post(
-      `/paciente/register`,
+      `/paciente/registrarPaciente2/${decodeDataUser.id}`,
       user,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsInJvbCI6IlVzdWFyaW8iLCJpYXQiOjE3NDgyNzkxOTEsImV4cCI6MTc0ODM2NTU5MX0.ka1lpLwj7YDD6akSIsePszr5hzZRPxd0IijwxCxpsJ4`
-        }
-      }
+      token
     )
     console.log(response)
+    return response
   } catch (error) {
     console.log(error)
+    return error
+  }
+}
+
+export const editPatient = async (user, id) => {
+  try {
+    const token = Cookies.get('token');
+    const response = await axios.put(
+      `/paciente/actualizarPaciente2/${id}`,
+      user,
+      token
+    )
+    console.log(response)
+    return response
+  } catch (error) {
+    console.log(error)
+    return error
   }
 }

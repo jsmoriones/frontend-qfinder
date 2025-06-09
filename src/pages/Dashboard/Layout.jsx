@@ -68,7 +68,7 @@ const Layout = () => {
       ),
       link: "dashboard",
     },
-    {
+    /*{
       name: "Paciente",
       icon: <i className="fa-regular fa-user text-2xl text-[#374957]"></i>,
       badge: (
@@ -85,11 +85,11 @@ const Layout = () => {
       ),
       badge: null,
       link: "recordatorio",
-    },
+    },*/
     {
-      name: "Comunidad",
+      name: "Comunidades",
       icon: (
-        <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
+        <i className="fa-solid fa-users text-xl text-[#374957]"></i>
       ),
       badge: null,
       link: "comunidad",
@@ -103,9 +103,9 @@ const Layout = () => {
       link: "list_pacientes",
     },
     {
-      name: "Usuario",
+      name: "Usuarios",
       icon: (
-        <i className="fa-solid fa-users text-2xl text-[#374957]"></i>
+        <i className="fa-solid fa-user-group text-xl text-[#374957]"></i>
       ),
       badge: null,
       link: "usuario",
@@ -113,7 +113,7 @@ const Layout = () => {
     {
       name: "Medicamentos",
       icon: (
-        <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
+        <i className="fa-solid fa-capsules text-2xl text-[#374957]"></i>
       ),
       badge: null,
       link: "medicamentos"

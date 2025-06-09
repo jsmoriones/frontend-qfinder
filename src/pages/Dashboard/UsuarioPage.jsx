@@ -141,7 +141,7 @@ const UsuarioPage = () => {
                         open()
                     }}>
                     <i className="fa-solid fa-user-plus mr-2 text-lg"></i>
-                    <span className='text-md'>Agregar Paciente</span>
+                    <span className='text-md'>Agregar Usuario</span>
                 </button>
             </div>
             <div className="overflow-x-auto">

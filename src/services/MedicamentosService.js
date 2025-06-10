@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 export const listMedications = async () => {
   try {
-    const token = Cookies.get("token");
+    const token = Cookies.get("login");
     const response = await axios.get(
       "/medicamentos/listar",
       token
@@ -19,7 +19,7 @@ export const listMedications = async () => {
 export const addMedication = async (data) => {
   try {
     console.log("Desde addMedication: ", data)
-    const token = Cookies.get("token");
+    const token = Cookies.get("login");
     const response = await axios.post(
       "/medicamentos/crear",
       data,
@@ -40,7 +40,7 @@ export const addMedication = async (data) => {
 
 export const editMedication = async (data, id) => {
   try {
-    const token = Cookies.get("token");
+    const token = Cookies.get("login");
     const response = await axios.put(
       `/medicamentos/actualizar/${id}`,
       data,
@@ -61,7 +61,7 @@ export const editMedication = async (data, id) => {
 
 export const removeMedication = async (id) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     const response = await axios.delete(
       `/medicamentos/eliminar/${id}`,
       {

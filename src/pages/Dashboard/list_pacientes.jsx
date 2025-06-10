@@ -8,11 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import StatusAlert, { StatusAlertService } from 'react-status-alert';
 
 import { PacienteSchema } from "../../schemas/patient";
-import { editPatient, listPatients, registerPatient } from "../../services/PacienteService";
+import { editPatient, listPatients, registerPatient, removePatient } from "../../services/PacienteService";
 import { Label, Input, TextArea } from "../../components/ui";
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../services/firebase/firebase';
+import Swal from "sweetalert2";
 
 moment.locale('es');
 
@@ -124,6 +125,33 @@ const ListPacientes = () => {
     reset(data);
   };
 
+  const handleRemovePatient = async id => {
+    console.log("Paciente a Eliminar: ", id);
+
+    Swal.fire({
+        title: "¿Estas seguro de realizar esta acción?",
+        text: "Si eliminas un paciente no podrás volver a recuperarlo",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, deseo borrarlo!",
+        cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const response = await removePatient(id);
+            if(response.status === 200){
+                fetchPacientes();
+                Swal.fire({
+                    title: "¡Eliminado!",
+                    text: "El paciente se elimino correctamente",
+                    icon: "success"
+                });
+            }
+        }
+    });
+  }
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -193,7 +221,9 @@ const ListPacientes = () => {
                       <button onClick={() => handleEditPatient(paciente)} className="text-blue-600 hover:text-blue-400 transition-all cursor-pointer">
                         <i className="fa-solid fa-pencil text-xl"></i>
                       </button>
-                      <button className="text-red-600 hover:text-red-400 transition-all cursor-pointer">
+                      <button
+                        onClick={() => handleRemovePatient(paciente.id_paciente)}
+                        className="text-red-600 hover:text-red-400 transition-all cursor-pointer">
                         <i className="fa-solid fa-trash text-xl"></i>
                       </button>
                       <button onClick={() => handleShowInfoUser(paciente)} className="text-green-600 hover:text-green-400 transition-all cursor-pointer">
@@ -278,10 +308,10 @@ const ListPacientes = () => {
         <form className='mt-6' onSubmit={handleSubmit(handleSendData)}>
           <div className="flex flex-col items-center max-w-[150px] mx-auto mb-6 relative">
             <img src={currentImageUrl || "/images/avatar.png"} alt="Imagen de perfil" className="rounded-full aspect-square w-full" />
-            <label htmlFor="imagen_paciente_file" className="absolute bottom-0 right-0 cursor-pointer">
+            {paciente && <label htmlFor="imagen_paciente_file" className="absolute bottom-0 right-0 cursor-pointer">
               <i className="fa-solid fa-camera text-xl text-white bg-gray-600 aspect-square rounded-full p-2 hover:scale-105 transition-all"></i>
               <input type="file" id="imagen_paciente_file" className="hidden" onChange={handleFileChange} accept="image/*" />
-            </label>
+            </label>}
           </div>
           <div className="flex flex-col mb-3">
         <Label htmlFor="name">Nombre de paciente:</Label>

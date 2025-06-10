@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 export const getCommunity = async () => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     console.log("getCommunity: ", token)
     const response = await axios.get(
       `/redes/listarRedes`,
@@ -23,7 +23,7 @@ export const getCommunity = async () => {
 
 export const createCommunity = async (data) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     console.log("createCommunity: ", token)
     const response = await axios.post(
       `/redes/crear`,
@@ -44,7 +44,7 @@ export const createCommunity = async (data) => {
 export const editCommunity = async (data, id) => {
   try {
     console.log("editCommunity: ", data, " ", id)
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     const response = await axios.put(
       `/redes/actualizarRed/${id}`,
       data,

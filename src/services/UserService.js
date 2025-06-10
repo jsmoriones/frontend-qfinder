@@ -1,12 +1,12 @@
 import axios from "./axios";
 import Cookies from 'js-cookie';
 
-export const getUsers = async () => {
+export const getUsers = async (page) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     console.log("getUsers: ", token)
     const response = await axios.get(
-      `/auth/listarUsuarios`,
+      `/auth/listarUsuarios?page=${page}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ export const getUsers = async () => {
 
 export const registerUser = async (data) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     console.log("getUsers: ", token)
     const response = await axios.post(
       `/auth/registrarUsuario`,
@@ -43,7 +43,7 @@ export const registerUser = async (data) => {
 export const editUser = async (data, id) => {
   try {
     console.log("editUser: ", data, " ", id)
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     console.log("getUsers: ", token)
     const response = await axios.put(
       `/auth/actualizarUsuario/${id}`,
@@ -63,7 +63,7 @@ export const editUser = async (data, id) => {
 
 export const removeUser = async (id) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     console.log("getUsers: ", token)
     const response = await axios.delete(
       `/auth/eliminarUsuario/${id}`,

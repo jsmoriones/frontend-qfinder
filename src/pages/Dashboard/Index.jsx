@@ -60,7 +60,7 @@ const Dashboard = () => {
     ]
   };
   console.log(Cookies)
-  const token = Cookies.get("token")
+  const token = Cookies.get("login")
 
   console.log(token);
   

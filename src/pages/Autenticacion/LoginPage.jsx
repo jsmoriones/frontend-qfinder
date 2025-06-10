@@ -42,13 +42,11 @@ const LoginPage = () => {
                 try {
                     const authToken = jwtDecode(response.data.token)
                     if(authToken){
-                        Cookie.set("token", response.data.token, {
-                            expires: new Date(authToken.exp * 1000)
-                        })
-                        console.log( Cookie.get("token") )
+                        Cookie.set("login", response.data.token)
+                        console.log( Cookie.get("login") )
                         StatusAlertService.showSuccess("Tus datos son correctos, te redijiremos al Dashboard automaticamente");
 
-                        console.log("asdasdasdasdasdaaaaaaaaaaa: ", Cookie.get("token"))
+                        console.log("Tokencito: ", Cookie.get("login"))
 
                         setTimeout(() => {
                             navigate("/dashboard")

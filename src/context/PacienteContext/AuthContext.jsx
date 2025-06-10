@@ -20,7 +20,7 @@ export const AuthProvider = ({children}) => {
   const [loading, setLoading] = useState(true); // Nuevo estado para la carga inicial
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("login");
     console.log("Token obtenido de la cookie:", token);
     console.log("Cookies (objeto):", Cookies);
 
@@ -85,7 +85,7 @@ export const AuthProvider = ({children}) => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    Cookies.remove("login");
     localStorage.removeItem("infoUser");
     setUser(null);
     setIsAuthenticated(false);

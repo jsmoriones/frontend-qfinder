@@ -108,7 +108,7 @@ const Layout = () => {
         <i className="fa-solid fa-user-group text-xl text-[#374957]"></i>
       ),
       badge: null,
-      link: "usuario",
+      link: "usuario?page=1",
     },
     {
       name: "Medicamentos",

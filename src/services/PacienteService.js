@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 export const listPatients = async () => {
   try {
-    const token = Cookies.get("token");
+    const token = Cookies.get("login");
     const response = await axios.get(
       "/paciente/todosPacientes",
       token
@@ -18,7 +18,7 @@ export const listPatients = async () => {
 
 export const registerPatient = async (user) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
 
     //get ide user
     const dataUser = localStorage.getItem("infoUser");
@@ -40,7 +40,7 @@ export const registerPatient = async (user) => {
 
 export const editPatient = async (user, id) => {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get('login');
     const response = await axios.put(
       `/paciente/actualizarPaciente2/${id}`,
       user,
@@ -51,5 +51,24 @@ export const editPatient = async (user, id) => {
   } catch (error) {
     console.log(error)
     return error
+  }
+}
+
+export const removePatient = async (id) => {
+  try {
+    const token = Cookies.get('login');
+    console.log("getUsers: ", token)
+    const response = await axios.delete(
+      `/paciente/eliminarPaciente2/${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    )
+    return response;
+  } catch (error) {
+    return error;
   }
 }

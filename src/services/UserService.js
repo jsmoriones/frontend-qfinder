@@ -7,12 +7,7 @@ export const getUsers = async (page) => {
     console.log("getUsers: ", token)
     const response = await axios.get(
       `/auth/listarUsuarios?page=${page}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      token
     )
     return response
   } catch (error) {
@@ -26,13 +21,8 @@ export const registerUser = async (data) => {
     console.log("getUsers: ", token)
     const response = await axios.post(
       `/auth/registrarUsuario`,
-      data,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      {...data, tipo_usuario: "Usuario"},
+      token
     )
     return response;
   } catch (error) {
@@ -48,12 +38,7 @@ export const editUser = async (data, id) => {
     const response = await axios.put(
       `/auth/actualizarUsuario/${id}`,
       data,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      token
     )
     return response;
   } catch (error) {
@@ -67,12 +52,7 @@ export const removeUser = async (id) => {
     console.log("getUsers: ", token)
     const response = await axios.delete(
       `/auth/eliminarUsuario/${id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      token
     )
     return response;
   } catch (error) {

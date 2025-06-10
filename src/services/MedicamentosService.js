@@ -5,7 +5,7 @@ export const listMedications = async () => {
   try {
     const token = Cookies.get("login");
     const response = await axios.get(
-      "/medicamentos/listar2",
+      "/medicamentos/listar2?page=1",
       token
     );
 

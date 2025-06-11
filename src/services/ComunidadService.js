@@ -7,12 +7,7 @@ export const getCommunity = async () => {
     console.log("getCommunity: ", token)
     const response = await axios.get(
       `/redes/listarRedes`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      token
     )
     return response
   } catch (error) {
@@ -28,12 +23,7 @@ export const createCommunity = async (data) => {
     const response = await axios.post(
       `/redes/crear`,
       data,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      token
     )
     return response;
   } catch (error) {
@@ -48,12 +38,7 @@ export const editCommunity = async (data, id) => {
     const response = await axios.put(
       `/redes/actualizarRed/${id}`,
       data,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+      token
     )
     return response;
   } catch (error) {

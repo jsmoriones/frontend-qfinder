@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import Cookies from 'js-cookie';
-import { loginService, registerRequest } from "../../services/AuthService"
+import { getUserInfo, loginService, registerRequest } from "../../services/AuthService"
 
 //creamos el context
 export const AuthContext = createContext();
@@ -74,8 +74,12 @@ export const AuthProvider = ({children}) => {
   const signIn = async (user) => {
     try {
       const response = await loginService(user);
+      const responseGetInfo = await getUserInfo();
+      console.log("responseGetInfo: ", responseGetInfo);
+      if(responseGetInfo.status === 200){
+        setInfoUser({ ...responseGetInfo.data, token: null });
+      }
       setIsAuthenticated(true);
-      setInfoUser({ ...response.data, token: null });
       return response;
     } catch (error) {
       if (error.status !== 200 && error.status !== 201) {

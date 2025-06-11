@@ -23,6 +23,21 @@ export const loginService = async (data) => await axios.post(
     }
 )
 
+export const getUserInfo = async () => {
+    try {
+        const response = await axios.get("/auth/perfilAdmin");
+
+        return response;
+    } catch (error) {
+        console.log("Error al obtener datos de usuario: ", error);
+    }
+}
+
+export const 
+
+
+
+
 /*export const loginService = async (data) => {
     try {
         const response = await axios.post("/auth/login", data);

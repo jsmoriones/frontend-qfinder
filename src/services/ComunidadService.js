@@ -36,7 +36,7 @@ export const editCommunity = async (data, id) => {
     console.log("editCommunity: ", data, " ", id)
     const token = Cookies.get('login');
     const response = await axios.put(
-      `/redes/actualizarRed/${id}`,
+      `/redes/actualizarRedW/${id}`,
       data,
       token
     )

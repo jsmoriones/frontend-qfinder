@@ -6,7 +6,7 @@ export const getCommunity = async () => {
     const token = Cookies.get('login');
     console.log("getCommunity: ", token)
     const response = await axios.get(
-      `/redes/listarRedes`,
+      `/redes/listarRedesW`,
       token
     )
     return response

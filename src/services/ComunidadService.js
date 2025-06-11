@@ -45,3 +45,14 @@ export const editCommunity = async (data, id) => {
     return error;
   }
 }
+
+export const deleteCommunity = async id => {
+  try {
+    const token = Cookies.get("login");
+    const response = await axios.delete(`/redes/eliminarRedW/${id}`, token);
+    return response;
+  } catch (error) {
+    console.log("Error al eliminar una comunidad: ", error);
+    return error;
+  }
+}

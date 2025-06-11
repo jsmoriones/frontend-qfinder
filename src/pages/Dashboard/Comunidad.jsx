@@ -9,13 +9,15 @@ import { storage } from '../../services/firebase/firebase';
 
 import { TitleDashboardSection } from "../../components/ui/TitleDashboardSection";
 import { ButtonLarge } from "../../components/ui/ButtonLarge";
-import { createCommunity, editCommunity, getCommunity } from "../../services/ComunidadService";
+import { createCommunity, deleteCommunity, editCommunity, getCommunity } from "../../services/ComunidadService";
 import { comunidadSchema } from "../../schemas/comunidad"; // Asegúrate de que esta ruta es correcta y el esquema
 import { Label, Input, TextArea } from "../../components/ui";
+import Swal from "sweetalert2";
 
 const Comunidad = () => {
   const [comunidades, setComunidades] = useState(null);
   const [communityEdit, setCommunityEdit] = useState(null);
+  const [getComunidad, setGetCommunity] = useState(null);
   const [loading, setLoading] = useState(true);
   
   // Estado para el archivo seleccionado por el usuario
@@ -28,6 +30,7 @@ const Comunidad = () => {
   // const [imageUploadError, setImageUploadError] = useState(null); // Los errores se mostrarán con StatusAlertService
 
   const { isOpen, open, close } = useModal();
+  const { isOpen: isOpenGetCom, open: openGetCom, close: closeGetCom } = useModal();
 
   const {
     register,
@@ -61,6 +64,12 @@ const Comunidad = () => {
   useEffect(() => {
     fetchCommunities();
   }, []);
+
+  useEffect(() => {
+    if(!communityEdit){
+      reset({})
+    }
+  }, [communityEdit])
 
   // Función principal de envío del formulario
   const handleSendData = async (data) => {
@@ -203,6 +212,44 @@ const Comunidad = () => {
     }
   };
 
+  const handleGetCommunity = com => {
+    openGetCom()
+    setGetCommunity(com);
+    console.log(com)
+  }
+
+  const handleCloseGetCom = () => {
+    setGetCommunity(null);
+    closeGetCom()
+  }
+
+  const handleRemoveCommunity = id => {
+    Swal.fire({
+      title: "¿Estás seguro de realizar esta acción?",
+      text: "Si eliminas una red no podrás volver a recuperarla",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, deseo borrarlo!",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await deleteCommunity(id);
+        if (response.status === 200) {
+            fetchCommunities()
+            Swal.fire({
+                title: "¡Eliminado!",
+                text: "El usuario se eliminó correctamente",
+                icon: "success"
+            });
+        } else {
+            StatusAlertService.showError("No se pudo eliminar el usuario.");
+        }
+      }
+    });
+  }
+
   return (
     <>
       <StatusAlert />
@@ -210,18 +257,18 @@ const Comunidad = () => {
         <div className="flex-1 flex">
           {/* Community List (tu código existente) */}
           <div className="w-1/1 bg-[rgba(109,138,253,0.25)] bg-opacity-20 p-4 overflow-y-auto">
+            <div className="flex items-center mb-4 justify-between">
             <TitleDashboardSection text="Comunidad" />
-            <div className="flex items-center mb-4">
-              <div className="mr-4 w-full">
+              {/* <div className="mr-4 w-full">
                 <Input placeholder="Search" className="px-3 py-2 w-full" />
-              </div>
+              </div> */}
               <button
                 className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded shadow"
                 onClick={() => {
-                  setCommunityEdit(null)
                   reset({})
                   setCurrentImageUrl(null); // Limpiar URL de imagen al crear nueva
                   setFileToUpload(null);
+                  setCommunityEdit(null)
                   // setImageUploadError(null);
                   open()
                 }}>
@@ -243,9 +290,11 @@ const Comunidad = () => {
                 comunidades && comunidades.map((community, i) => (
                   <div
                     key={i}
-                    className="flex items-center mt-4 justify-between p-3 mb-3 bg-blue-200 rounded-lg cursor-pointer"
+                    className="flex items-center mt-4 justify-between px-3 mb-3 bg-blue-200 rounded-lg"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div
+                      className="flex items-center space-x-2 cursor-pointer py-3 pr-24"
+                      onClick={() => handleGetCommunity(community)}>
                       <div className="w-12 h-12 rounded-full overflow-hidden shadow">
                         <img
                           src={community.imagen_red || "/images/comunidadimagen1.png"} // Usar URL de Firebase o placeholder
@@ -255,16 +304,18 @@ const Comunidad = () => {
                       </div>
                       <div className="">
                         <p className="font-bold">{community.nombre_red}</p>
-                        <p className="text-sm">{community.descripcion_red}</p>
+                        <p className="text-sm">{community.descripcion_red.substr(0,50)}...</p>
                       </div>
                     </div>
-                    <div className="flex justify-around mb-4 pb-4">
+                    <div className="flex justify-around py-3 space-x-3">
                       <button
                         className="flex items-center px-3 py-3 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleEditCommunity(community)}>
                         <span>Editar</span>
                       </button>
-                      <div className="flex items-center px-3 py-2 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer">
+                      <div
+                        className="flex items-center px-3 py-2 border border-gray-400 rounded-lg bg-white text-lg font-medium text-black hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleRemoveCommunity(community.id_red)}>
                         <button className="flex items-center text-red-600 text-sm space-x-1">
                           <i className="fa-solid fa-trash"></i>
                           <a>Eliminar</a>
@@ -280,6 +331,19 @@ const Comunidad = () => {
 
         {/* Info Panel - Modal para el formulario */}
       </div>
+      {getComunidad && <AnimatedModal isOpen={isOpenGetCom} close={closeGetCom} style={{maxWidth: "700px", width: "100%", marginTop: 20, marginBottom: 20, overflowY: "scroll"}} onClose={handleCloseGetCom}>
+        <div className="flex flex-col items-center">
+          <div className="flex justify-center">
+            <img src={getComunidad.imagen_red} alt="Imagen de Red" className="aspect-square rounded-full object-cover w-1/3" />
+          </div>
+          <div className="mt-2">
+            <h3 className="text-blue-500 font-semibold text-2xl">{getComunidad.nombre_red}</h3>
+          </div>
+          <div className="flex justify-start w-full mt-6">
+            <p className="text-lg text-gray-900 text-justify">{getComunidad.descripcion_red}</p>
+          </div>
+        </div>
+      </AnimatedModal>}
       <AnimatedModal isOpen={isOpen} close={close} style={{maxWidth: "700px", width: "100%", marginTop: 20, marginBottom: 20, overflowY: "scroll"}} onClose={handleCloseAlert}>
         <h1 className="text-lg md:text-2xl text-[#111111] font-semibold text-center">{communityEdit !== null ? "Editar Comunidad" : "Agregar Comunidad"}</h1>
         <form className='mt-10 lg:mt-14' onSubmit={handleSubmit(handleSendData)}>
@@ -308,7 +372,7 @@ const Comunidad = () => {
           </div>
 
           {/* CAMPO DE IMAGEN REVISADO PARA SUBIDA EN SUBMIT */}
-          <div className="flex flex-col mb-3">
+          {communityEdit && <div className="flex flex-col mb-3">
             <Label htmlFor="imagen_red_file">Imagen de la Red:</Label>
             <input
               type="file"
@@ -342,7 +406,7 @@ const Comunidad = () => {
             {errors.imagen_red?.message && (
               <p className="text-red-500">{errors.imagen_red?.message}</p>
             )}
-          </div>
+          </div>}
 
           <div className="flex w-full justify-end space-x-2">
             <button

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../context/PacienteContext/AuthContext';
+import { actualizarPerfilAdmin } from '../../services/UserService';
 
 const schema = z.object({
   nombre_usuario: z.string().min(1, 'Nombre requerido'),
@@ -11,7 +12,7 @@ const schema = z.object({
   direccion_usuario: z.string().min(5, 'Dirección requerida'),
   telefono_usuario: z.string().min(7, 'Teléfono inválido'),
   correo_usuario: z.string().email('Correo inválido'),
-  imagen_usuario: z.any().optional(),
+  imagen_usuario: z.any().optional()
 });
 
 const PerfilAdministrador = () => {
@@ -19,6 +20,7 @@ const PerfilAdministrador = () => {
 
   const {infoUser} = useAuth();
 
+  
   const {
     register,
     handleSubmit,
@@ -28,20 +30,28 @@ const PerfilAdministrador = () => {
     formState: { errors }
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: {
+    /*defaultValues: {
       nombre_usuario: infoUser.nombre_usuario,
       apellido_usuario: infoUser.apellido_usuario,
       identificacion_usuario: infoUser.identificacion_usuario,
       direccion_usuario: infoUser.direccion_usuario,
       telefono_usuario: infoUser.telefono_usuario,
       imagen_usuario: null
-    }
+    }*/
   });
+  
+  useEffect(() => {
+    reset({...infoUser, imagen_usuario: "https://www.valoraanalitik.com/wp-content/uploads/2025/06/gustavo-petro-5-1024x597.jpg"})
+  }, [])
 
   const imagenVista = watch('imagen_usuario');
 
-  const onSubmit = (data) => {
-    console.log('Datos guardados:', data);
+  const onSubmit = async (data) => {
+    const response = await actualizarPerfilAdmin(data, infoUser.id_usuario);
+    if(response.status == 200){
+      localStorage.setItem("infoUser", response.data)
+    }
+    console.log("Esta es la respuesta al editar el usuario: ", response)
     setEditMode(false);
   };
 
@@ -60,8 +70,8 @@ const PerfilAdministrador = () => {
           <div className="relative w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md">
             <img
               src={
-                imagenVista instanceof File
-                  ? URL.createObjectURL(imagenVista)
+                imagenVista
+                  ? imagenVista
                   : "/images/avatar.png"
               }
               alt="Avatar"
@@ -96,6 +106,7 @@ const PerfilAdministrador = () => {
                 { label: 'Identificación', name: 'identificacion_usuario' },
                 { label: 'Teléfono', name: 'telefono_usuario' },
                 { label: 'Dirección', name: 'direccion_usuario' },
+                { label: 'Correo_usuario', name: "correo_usuario" }
               ].map(({ label, name }) => (
                 <div key={name}>
                   <label className="block font-medium text-azulPastel6">{label}</label>
@@ -111,13 +122,13 @@ const PerfilAdministrador = () => {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg border-2 border-black"
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg border-2 border-black cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-500 text-white px-4 py-2 rounded-lg border-2 border-black"
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg border-2 border-black cursor-pointer"
                 >
                   Guardar
                 </button>

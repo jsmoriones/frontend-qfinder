@@ -15,13 +15,6 @@ export const verifyCount = async (data) =>{
     }
 }
 
-export const loginService = async (data) => await axios.post(
-    "/auth/login",
-    data,
-    {
-        withCredentials: true
-    }
-)
 
 export const getUserInfo = async () => {
     try {
@@ -33,12 +26,8 @@ export const getUserInfo = async () => {
     }
 }
 
-export const 
 
-
-
-
-/*export const loginService = async (data) => {
+export const loginService = async (data) => {
     try {
         const response = await axios.post("/auth/login", data);
         console.log("Response Login: ", response);
@@ -49,4 +38,4 @@ export const
             throw new Error(error.response.data.error)
         }
     }
-}*/
+}

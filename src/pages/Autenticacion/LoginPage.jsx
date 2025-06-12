@@ -37,7 +37,6 @@ const LoginPage = () => {
                 contrasena_usuario: data.password
             }
             const response = await signIn(buildData);
-            console.log(response)
             if(response.status === 200){
                 try {
                     const authToken = jwtDecode(response.data.token)
@@ -53,8 +52,12 @@ const LoginPage = () => {
                         }, 4000)
                     }
                 } catch (error) {
-                    console.log(error)
+                    console.log(error.message)
                 }
+            }
+
+            if(response.status === 400){
+                StatusAlertService.showWarning(response.message);
             }
         } catch (error) {
             console.log(error)

@@ -59,3 +59,19 @@ export const removeUser = async (id) => {
     return error;
   }
 }
+
+export const actualizarPerfilAdmin = async (data, id) => {
+  try {
+    console.log("actualizarPerfilAdmin: ", data, " ", id)
+    const token = Cookies.get('login');
+    console.log("actualizarPerfilAdmin: ", token)
+    const response = await axios.put(
+      `/auth/actualizarPerfilAdmin`,
+      data,
+      token
+    )
+    return response;
+  } catch (error) {
+    return error;
+  }
+}

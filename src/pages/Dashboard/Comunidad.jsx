@@ -19,6 +19,7 @@ const Comunidad = () => {
   const [communityEdit, setCommunityEdit] = useState(null);
   const [getComunidad, setGetCommunity] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [cleanRedes, setCleanRedes] = useState(false);
   
   // Estado para el archivo seleccionado por el usuario
   const [fileToUpload, setFileToUpload] = useState(null); 
@@ -51,10 +52,15 @@ const Comunidad = () => {
   const fetchCommunities = async () => {
     try {
       const response = await getCommunity();
+      
       if(response?.status == 200){
         setLoading(false)
         setComunidades(response.data.data)
         console.log(response);
+      }
+
+      if(response.status == 404){
+        setCleanRedes(true)
       }
     } catch (error) {
       console.log("Hubo un error en la consulta a las comunidades: ", error);
@@ -277,6 +283,8 @@ const Comunidad = () => {
             </div>
 
             {
+              cleanRedes ?
+              <p className="text-center mt-8 text-2xl italic">No hay redes, empieza por crear una nueva red.</p> :
               loading ? (
                 <div className="flex justify-center items-center">
                   <PuffLoader

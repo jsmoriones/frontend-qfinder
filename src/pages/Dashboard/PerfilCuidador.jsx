@@ -48,9 +48,8 @@ const PerfilAdministrador = () => {
 
   const onSubmit = async (data) => {
     const response = await actualizarPerfilAdmin(data, infoUser.id_usuario);
-    console.log("kjiasbfkjasbfdlhkjsabdkjlbsdfkjlgbhsdehifk: ", response);
     if(response.status == 200){
-      setInfoUser(response.data)
+      setInfoUser(response.data.usuario)
       //localStorage.setItem("infoUser", response.data)
     }
     console.log("Esta es la respuesta al editar el usuario: ", response)

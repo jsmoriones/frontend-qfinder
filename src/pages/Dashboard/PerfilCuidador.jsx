@@ -18,7 +18,7 @@ const schema = z.object({
 const PerfilAdministrador = () => {
   const [editMode, setEditMode] = useState(false);
 
-  const {infoUser} = useAuth();
+  const {infoUser, setInfoUser} = useAuth();
 
   
   const {
@@ -48,8 +48,10 @@ const PerfilAdministrador = () => {
 
   const onSubmit = async (data) => {
     const response = await actualizarPerfilAdmin(data, infoUser.id_usuario);
+    console.log("kjiasbfkjasbfdlhkjsabdkjlbsdfkjlgbhsdehifk: ", response);
     if(response.status == 200){
-      localStorage.setItem("infoUser", response.data)
+      setInfoUser(response.data)
+      //localStorage.setItem("infoUser", response.data)
     }
     console.log("Esta es la respuesta al editar el usuario: ", response)
     setEditMode(false);

@@ -220,6 +220,7 @@ export const AuthProvider = ({children}) => {
         initializeCodeExpiry,
         user,
         infoUser,
+        setInfoUser,
         isAuthenticated,
         loading, // Exponemos el estado de carga
       }}

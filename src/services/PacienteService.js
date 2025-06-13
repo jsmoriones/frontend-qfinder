@@ -16,6 +16,21 @@ export const listPatients = async () => {
   }
 }
 
+export const listAllUsers = async () => {
+  try {
+    const token = Cookies.get("login");
+    const response = await axios.get(
+      "/auth/listar",
+      token
+    );
+
+    return response;
+  } catch (error) {
+    console.log("Error al listar los pacientes: ", error);
+    return error;
+  }
+}
+
 export const registerPatient = async (user) => {
   try {
     const token = Cookies.get('login');
@@ -26,7 +41,7 @@ export const registerPatient = async (user) => {
 
     console.log("decodeDataUser: ", decodeDataUser);
     const response = await axios.post(
-      `/paciente/registrarPaciente2/${decodeDataUser.id}`,
+      `/paciente/registrarPaciente2`,
       user,
       token
     )

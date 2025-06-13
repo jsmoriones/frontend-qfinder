@@ -10,19 +10,21 @@ import Swal from 'sweetalert2';
 import { getUsers, registerUser, editUser, removeUser } from '../../services/UserService';
 import { userSchema } from '../../schemas/users';
 import { Input, Label } from '../../components/ui';
+import moment from 'moment';
 
 const UsuarioPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const navigate = useNavigate(); // Hook para la navegación programática
+    const navigate = useNavigate();
 
     const [pacientes, setPacientes] = useState(null);
     const [loading, setLoading] = useState(true);
     const [userEdit, setUserEdit] = useState(null);
-    // Elimina currentPage de useState, ya que se manejará con searchParams
-    // const [currentPage, setCurrentPage] = useState(1);
+    const [userView, setUserView] = useState(null); // NUEVO: usuario para ver info
+
     const [pagination, setPagination] = useState(null);
 
     const { isOpen, open, close } = useModal();
+    const { isOpen: isOpenView, open: openView, close: closeView } = useModal(); // NUEVO: modal ver info
 
     const {
         register,
@@ -33,72 +35,58 @@ const UsuarioPage = () => {
         resolver: zodResolver(userSchema)
     });
 
-    // Sincronizar el formulario con los datos de edición
     useEffect(() => {
-        if (userEdit) {
-            reset(userEdit);
-        } else {
-            reset({});
-        }
+        if (userEdit) reset(userEdit);
+        else reset({});
     }, [userEdit, reset]);
 
-    // Obtener el número de página de la URL
     const currentPageFromUrl = parseInt(searchParams.get('page') || '1', 10);
 
-    // Usa useCallback para memoizar fetchPacientes y evitar recreaciones innecesarias
     const fetchPacientes = useCallback(async (pageNumber) => {
-        setLoading(true); // Mostrar loader al iniciar la carga de pacientes
+        setLoading(true);
         try {
-            const response = await getUsers(pageNumber); // Envía el número de página
-            console.log(response.data);
+            const response = await getUsers(pageNumber);
             if (response?.status === 200) {
                 setPacientes(response.data.data);
                 setPagination(response.data.meta.pagination);
             } else {
-                // Manejar errores si la API no devuelve 200
-                console.error("Error al cargar pacientes:", response);
-                setPacientes([]); // Vaciar pacientes en caso de error
+                setPacientes([]);
                 setPagination(null);
                 StatusAlertService.showError("No se pudieron cargar los usuarios.");
             }
         } catch (error) {
-            console.error("Error en fetchPacientes:", error);
-            setPacientes([]); // Vaciar pacientes en caso de error
+            setPacientes([]);
             setPagination(null);
             StatusAlertService.showError("Hubo un problema de conexión al cargar usuarios.");
         } finally {
-            setLoading(false); // Ocultar loader al finalizar
+            setLoading(false);
         }
-    }, []); // Dependencias vacías porque no depende de props o estados internos que cambien a menudo
+    }, []);
 
-    // Cargar pacientes cuando el componente se monta o la página de la URL cambia
     useEffect(() => {
         fetchPacientes(currentPageFromUrl);
-    }, [currentPageFromUrl, fetchPacientes]); // Dependencia de currentPageFromUrl y fetchPacientes
+    }, [currentPageFromUrl, fetchPacientes]);
 
     const handleSendData = async (data) => {
         try {
             let response;
             if (userEdit) {
                 response = await editUser(data, userEdit.id_usuario);
-                console.log("response de cuando edito el usuario: ", response);
-
-                if (response.status === 500) {
-                    close();
-                    StatusAlertService.showError("Hubo un error en el servidor.");
-                } else if (response.status === 200) {
+                if (response.status === 200) {
                     close();
                     StatusAlertService.showSuccess("Usuario actualizado correctamente");
-                    fetchPacientes(currentPageFromUrl); // Recargar la página actual
+                    fetchPacientes(currentPageFromUrl);
                     setUserEdit(null);
+                } else {
+                    close();
+                    StatusAlertService.showError("Hubo un error en el servidor.");
                 }
             } else {
-              alert("kiosndklasnfklsndfnsdkl")
                 response = await registerUser(data);
                 if (response.status === 200) {
                     reset({});
                     close();
-                    fetchPacientes(currentPageFromUrl); // Recargar la página actual
+                    fetchPacientes(currentPageFromUrl);
                     StatusAlertService.showSuccess("Se registró correctamente el usuario");
                 }
             }
@@ -106,23 +94,18 @@ const UsuarioPage = () => {
                 close();
                 StatusAlertService.showWarning("Hubo un error, revisa tu información");
             }
-
         } catch (error) {
             close();
-            console.error("Error al registrar o editar un usuario: ", error);
             StatusAlertService.showError("Hay un error desde el servidor.");
         }
     };
 
     const handleEditUser = data => {
-        console.log("Usuario a editar: ", data);
         setUserEdit(data);
         open();
     };
 
     const handleRemoveUser = (id) => {
-        console.log("Usuario a Eliminar: ", id);
-
         Swal.fire({
             title: "¿Estás seguro de realizar esta acción?",
             text: "Si eliminas un usuario no podrás volver a recuperarlo",
@@ -136,12 +119,8 @@ const UsuarioPage = () => {
             if (result.isConfirmed) {
                 const response = await removeUser(id);
                 if (response.status === 200) {
-                    fetchPacientes(currentPageFromUrl); // Recargar la página actual
-                    Swal.fire({
-                        title: "¡Eliminado!",
-                        text: "El usuario se eliminó correctamente",
-                        icon: "success"
-                    });
+                    fetchPacientes(currentPageFromUrl);
+                    Swal.fire("¡Eliminado!", "El usuario se eliminó correctamente", "success");
                 } else {
                     StatusAlertService.showError("No se pudo eliminar el usuario.");
                 }
@@ -149,137 +128,137 @@ const UsuarioPage = () => {
         });
     };
 
-    // Funciones para manejar la navegación de paginación
+    const handleShowInfoUser = (usuario) => {
+        setUserView(usuario);
+        openView();
+    };
+
     const goToPage = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= pagination.totalPages) {
             setSearchParams({ page: pageNumber.toString() });
-            // navigate(`?page=${pageNumber}`); // También puedes usar navigate directamente si prefieres
         }
     };
 
-    const headerTableUser = ["nombre", "apellido", "identificacion", "direccion", "telefono", "correo", "estado", ""];
+    const headerTableUser = ["nombre", "apellido", "identificacion", "correo", "estado", "tipo", ""];
 
     return (
         <>
             <StatusAlert />
             <div className="p-8">
                 <div className="mb-6 flex justify-between">
-                    <h1 className="text-2xl font-semibold text-[#374957]">
-                        Lista de Usuarios
-                    </h1>
-                    <button
-                        className='cursor-pointer bg-verdebtn py-1 px-2 rounded-lg text-white hover:bg-verde1 transition-all'
-                        onClick={() => {
-                            reset({});
-                            setUserEdit(null);
-                            open();
-                        }}>
-                        <i className="fa-solid fa-user-plus mr-2 text-lg"></i>
-                        <span className='text-md'>Agregar Usuario</span>
+                    <h1 className="text-2xl font-semibold text-[#374957]">Lista de Usuarios</h1>
+                    <button className='bg-verdebtn py-1 px-2 rounded-lg text-white hover:bg-verde1' onClick={() => { reset({}); setUserEdit(null); open(); }}>
+                        <i className="fa-solid fa-user-plus mr-2"></i>Agregar Usuario
                     </button>
                 </div>
                 <div className="overflow-x-auto">
                     {loading ? (
                         <div className="flex justify-center items-center h-48">
-                            <PuffLoader
-                                size={120}
-                                color={"#6D8AFD"}
-                                loading={loading}
-                                speedMultiplier={5}
-                            />
+                            <PuffLoader size={120} color="#6D8AFD" loading={loading} speedMultiplier={5} />
                         </div>
                     ) : pacientes && pacientes.length > 0 ? (
                         <table className="min-w-full bg-white rounded-lg shadow">
                             <thead>
                                 <tr className="bg-[#6D8AFD] text-white">
-                                    <th className="px-6 py-3 text-left text-sm font-medium">#</th>
-                                    {
-                                        headerTableUser.map((item, key) => (
-                                            <th className="px-6 py-3 text-left text-sm font-medium" key={key}>
-                                                {item}
-                                            </th>
-                                        ))
-                                    }
+                                    <th className="px-6 py-3">#</th>
+                                    {headerTableUser.map((item, key) => (
+                                        <th key={key} className="px-6 py-3">{item}</th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody>
-                                {
-                                    pacientes.map((paciente, index) => (
-                                        <tr key={index} className="border-b hover:bg-gray-50">
-                                            <td className="px-6 py-4">{(currentPageFromUrl - 1) * pagination.itemsPerPage + index + 1}</td>
-                                            <td className="px-6 py-4">{paciente.nombre_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.apellido_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.identificacion_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.direccion_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.telefono_usuario?.substring(0, 10)}</td>
-                                            <td className="px-6 py-4">{paciente.correo_usuario?.substring(0, 15)}</td>
-                                            <td className="px-6 py-4">
-                                                <span
-                                                    className={`px-2 py-1 text-xs rounded-full ${
-                                                        paciente.estado_usuario === "Activo"
-                                                            ? "bg-green-100 text-green-800"
-                                                            : "bg-red-100 text-red-800"
-                                                    }`}
-                                                >
-                                                    {paciente.estado_usuario}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 space-x-2">
-                                                <button
-                                                    className="text-blue-600 hover:text-blue-400 transition-all cursor-pointer"
-                                                    onClick={() => handleEditUser(paciente)}>
-                                                    <i className="fa-solid fa-pencil text-xl"></i>
-                                                </button>
-                                                <button
-                                                    className="text-red-600 hover:text-red-400 transition-all cursor-pointer"
-                                                    onClick={() => handleRemoveUser(paciente.id_usuario)}>
-                                                    <i className="fa-solid fa-trash text-xl"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
+                                {pacientes.map((paciente, index) => (
+                                    <tr key={index} className="border-b hover:bg-gray-50">
+                                        <td className="px-6 py-4">{(currentPageFromUrl - 1) * pagination.itemsPerPage + index + 1}</td>
+                                        <td className="px-6 py-4">{paciente.nombre_usuario}</td>
+                                        <td className="px-6 py-4">{paciente.apellido_usuario}</td>
+                                        <td className="px-6 py-4">{paciente.identificacion_usuario}</td>
+                                        <td className="px-6 py-4">{paciente.correo_usuario?.substring(0, 15)}</td>
+                                        <td className="px-6 py-4">
+                                            {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
+                                                {paciente?.suscripcion.estado}
+                                            </span> : "Sin suscripcion"}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
+                                                {paciente?.suscripcion.tipo}
+                                            </span> : "Sin suscripcion"}
+                                        </td>
+                                        <td className="px-6 py-4 space-x-2">
+                                            <button className="text-blue-600 cursor-pointer" onClick={() => handleEditUser(paciente)}><i className="fa-solid fa-pencil text-xl"></i></button>
+                                            <button className="text-red-600 cursor-pointer" onClick={() => handleRemoveUser(paciente.id_usuario)}><i className="fa-solid fa-trash text-xl"></i></button>
+                                            <button className="text-green-600 cursor-pointer" onClick={() => handleShowInfoUser(paciente)}><i className="fa-solid fa-eye text-xl"></i></button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     ) : (
-                        <div className="flex justify-center items-center h-48 text-gray-500">
-                            No hay usuarios para mostrar.
-                        </div>
+                        <div className="flex justify-center items-center h-48 text-gray-500">No hay usuarios para mostrar.</div>
                     )}
 
-                    {/* Componente de Paginación */}
                     {pagination && pagination.totalPages > 0 && (
                         <div className="flex flex-col items-center mt-6">
                             <span className="text-md text-gray-700">
-                                Mostrando <span className="font-semibold text-gray-600">
-                                    {(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}
-                                </span> a <span className="font-semibold text-gray-600">
-                                    {Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}
-                                </span> de <span className="font-semibold text-gray-700">
-                                    {pagination.totalItems}
-                                </span> Usuarios
+                                Mostrando <span className="font-semibold">{(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}</span> a <span className="font-semibold">{Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}</span> de <span className="font-semibold">{pagination.totalItems}</span> Usuarios
                             </span>
-
-                            <div className="inline-flex mt-2 xs:mt-0">
-                                <button
-                                    className="flex items-center justify-center px-4 h-8 text-sm font-medium text-white bg-gray-800 rounded-l-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={() => goToPage(currentPageFromUrl - 1)}
-                                    disabled={currentPageFromUrl === 1}
-                                >
-                                    Anterior
-                                </button>
-                                <button
-                                    className="flex items-center justify-center px-4 h-8 text-sm font-medium text-white bg-gray-800 rounded-r-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={() => goToPage(currentPageFromUrl + 1)}
-                                    disabled={currentPageFromUrl === pagination.totalPages}
-                                >
-                                    Siguiente
-                                </button>
+                            <div className="inline-flex mt-2">
+                                <button onClick={() => goToPage(currentPageFromUrl - 1)} disabled={currentPageFromUrl === 1} className="px-4 h-8 bg-gray-800 text-white rounded-l-md">Anterior</button>
+                                <button onClick={() => goToPage(currentPageFromUrl + 1)} disabled={currentPageFromUrl === pagination.totalPages} className="px-4 h-8 bg-gray-800 text-white rounded-r-md">Siguiente</button>
                             </div>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* MODAL PARA VER INFORMACIÓN DEL USUARIO */}
+            <AnimatedModal isOpen={isOpenView} close={closeView} style={{ maxWidth: "500px", width: "100%", marginTop: 20, marginBottom: 20 }}>
+                {userView && (
+                    <div className="flex flex-col space-y-2 mt-3">
+                        {userView.nombre_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Nombre</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.nombre_usuario}</p>
+                        </div>}
+                        {userView.apellido_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Apellido</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.apellido_usuario}</p>
+                        </div>}
+                        {userView.identificacion_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Identificación</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.identificacion_usuario}</p>
+                        </div>}
+                        {userView.direccion_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Direccion</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.direccion_usuario}</p>
+                        </div>}
+                        {userView.telefono_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Telefono</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.telefono_usuario}</p>
+                        </div>}
+                        {userView.correo_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Correo</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.correo_usuario}</p>
+                        </div>}
+                        {userView.estado_usuario && <div className="flex justify-between">
+                            <p className="text-blue-500 font-semibold text-lg w-1/3">Estado</p>
+                            <p className="text-gray-800 text-right w-2/3 flex flex-col justify-center">{userView.estado_usuario}</p>
+                        </div>}
+                        {userView.suscripcion ? (
+                            <div className="bg-gray-100 p-3 rounded-lg w-full space-y-1">
+                                <p className="font-semibold text-gray-600">Suscripción:</p>
+                                <p><strong>Tipo:</strong> {userView.suscripcion.tipo}</p>
+                                <p><strong>Estado:</strong> {userView.suscripcion.estado}</p>
+                                <p><strong>Fecha Inicio:</strong> {moment(userView.suscripcion.fecha_inicio).format('LL')}</p>
+                                <p><strong>Pacientes Permitidos:</strong> {userView.suscripcion.limite_pacientes}</p>
+                                <p><strong>Cuidadores Permitidos:</strong> {userView.suscripcion.limite_cuidadores}</p>
+                            </div>
+                        ) : (
+                            <p className="text-gray-400">Este usuario no tiene suscripción activa.</p>
+                        )}
+                    </div>
+                )}
+            </AnimatedModal>
+
             <AnimatedModal isOpen={isOpen} close={close} style={{ maxWidth: "700px", width: "100%", marginTop: 20, marginBottom: 20, overflowY: "scroll" }}>
                 <h1 className="text-lg md:text-2xl text-[#111111] font-semibold text-center">{userEdit == null ? "Registrar usuario" : "Editar Usuario"}</h1>
                 <form className='mt-10 lg:mt-14' onSubmit={handleSubmit(handleSendData)}>

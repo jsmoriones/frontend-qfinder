@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../context/PacienteContext/AuthContext';
 import { actualizarPerfilAdmin } from '../../services/UserService';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../services/firebase/firebase';
+import StatusAlert, { StatusAlertService } from 'react-status-alert';
 
 const schema = z.object({
   nombre_usuario: z.string().min(1, 'Nombre requerido'),
@@ -12,69 +15,106 @@ const schema = z.object({
   direccion_usuario: z.string().min(5, 'Dirección requerida'),
   telefono_usuario: z.string().min(7, 'Teléfono inválido'),
   correo_usuario: z.string().email('Correo inválido'),
-  imagen_usuario: z.any().optional()
+  imagen_usuario: z.string().optional()
 });
 
 const PerfilAdministrador = () => {
   const [editMode, setEditMode] = useState(false);
+  const [fileToUpload, setFileToUpload] = useState(null);
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
 
-  const {infoUser, setInfoUser} = useAuth();
+  const { infoUser, setInfoUser } = useAuth();
 
-  
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
     reset,
-    formState: { errors }
+    watch,
+    formState: { errors, isSubmitting }
   } = useForm({
-    resolver: zodResolver(schema),
-    /*defaultValues: {
-      nombre_usuario: infoUser.nombre_usuario,
-      apellido_usuario: infoUser.apellido_usuario,
-      identificacion_usuario: infoUser.identificacion_usuario,
-      direccion_usuario: infoUser.direccion_usuario,
-      telefono_usuario: infoUser.telefono_usuario,
-      imagen_usuario: null
-    }*/
+    resolver: zodResolver(schema)
   });
-  
-  useEffect(() => {
-    reset({...infoUser, imagen_usuario: "https://www.valoraanalitik.com/wp-content/uploads/2025/06/gustavo-petro-5-1024x597.jpg"})
-  }, [])
 
-  const imagenVista = watch('imagen_usuario');
+  useEffect(() => {
+    if (infoUser) {
+      reset({ ...infoUser, imagen_usuario: infoUser.imagen_usuario || '' });
+      setCurrentImageUrl(infoUser.imagen_usuario || null);
+    }
+  }, [infoUser]);
 
   const onSubmit = async (data) => {
-    const response = await actualizarPerfilAdmin(data, infoUser.id_usuario);
-    if(response.status == 200){
-      setInfoUser(response.data.usuario)
-      //localStorage.setItem("infoUser", response.data)
+    try {
+      let finalImageUrl = data.imagen_usuario;
+
+      if (fileToUpload) {
+        StatusAlertService.showAlert({
+          type: 'info',
+          message: 'Subiendo imagen a Firebase...',
+          showProgress: true,
+          timeout: 0
+        });
+
+        try {
+          const storageRef = ref(storage, `perfilAdmin/${fileToUpload.name}`);
+          const snapshot = await uploadBytes(storageRef, fileToUpload);
+          const url = await getDownloadURL(snapshot.ref);
+          finalImageUrl = url;
+          StatusAlertService.showSuccess('Imagen subida con éxito a Firebase.');
+        } catch (uploadError) {
+          console.error('Error subiendo imagen:', uploadError);
+          StatusAlertService.showError('Error al subir la imagen a Firebase.');
+          return;
+        }
+      }
+
+      const dataToSend = { ...data, imagen_usuario: finalImageUrl };
+      const response = await actualizarPerfilAdmin(dataToSend, infoUser.id_usuario);
+
+      if (response.status === 200) {
+        setInfoUser(response.data.usuario);
+        StatusAlertService.showSuccess('Perfil actualizado correctamente.');
+        setEditMode(false);
+        setFileToUpload(null);
+        setCurrentImageUrl(response.data.usuario.imagen_usuario || null);
+      } else {
+        StatusAlertService.showWarning('No se pudo actualizar el perfil.');
+      }
+    } catch (error) {
+      console.error('Error al actualizar perfil:', error);
+      StatusAlertService.showError('Hubo un error al guardar el perfil.');
     }
-    console.log("Esta es la respuesta al editar el usuario: ", response)
-    setEditMode(false);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileToUpload(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setCurrentImageUrl(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleCancel = () => {
-    reset();
+    reset({ ...infoUser });
     setEditMode(false);
+    setFileToUpload(null);
+    setCurrentImageUrl(infoUser.imagen_usuario || null);
   };
 
   return (
     <div className="p-6">
+      <StatusAlert />
       <h2 className="text-3xl font-bold mb-6">Perfil del Administrador</h2>
 
       <div className="bg-white shadow-md rounded-2xl overflow-hidden flex flex-col md:flex-row">
-        {/* Lado izquierdo */}
         <div className="bg-azulClaro2 p-6 w-full md:w-1/3 text-center">
           <div className="relative w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md">
             <img
-              src={
-                imagenVista
-                  ? imagenVista
-                  : "/images/avatar.png"
-              }
+              src={currentImageUrl || "/images/avatar.png"}
               alt="Avatar"
               className="w-full h-full object-cover"
             />
@@ -85,7 +125,7 @@ const PerfilAdministrador = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  {...register('imagen_usuario')}
+                  onChange={handleFileChange}
                 />
               </label>
             )}
@@ -97,7 +137,6 @@ const PerfilAdministrador = () => {
           )}
         </div>
 
-        {/* Lado derecho */}
         <div className="bg-azulPastel1 p-6 w-full md:w-2/3">
           {editMode ? (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -107,7 +146,7 @@ const PerfilAdministrador = () => {
                 { label: 'Identificación', name: 'identificacion_usuario' },
                 { label: 'Teléfono', name: 'telefono_usuario' },
                 { label: 'Dirección', name: 'direccion_usuario' },
-                { label: 'Correo_usuario', name: "correo_usuario" }
+                { label: 'Correo', name: 'correo_usuario' }
               ].map(({ label, name }) => (
                 <div key={name}>
                   <label className="block font-medium text-azulPastel6">{label}</label>
@@ -119,6 +158,8 @@ const PerfilAdministrador = () => {
                 </div>
               ))}
 
+              <input type="hidden" {...register("imagen_usuario")} />
+
               <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
@@ -129,9 +170,10 @@ const PerfilAdministrador = () => {
                 </button>
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="bg-green-500 text-white px-4 py-2 rounded-lg border-2 border-black cursor-pointer"
                 >
-                  Guardar
+                  {isSubmitting ? 'Guardando...' : 'Guardar'}
                 </button>
               </div>
             </form>

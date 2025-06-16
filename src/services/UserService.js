@@ -75,3 +75,18 @@ export const actualizarPerfilAdmin = async (data, id) => {
     return error;
   }
 }
+
+export const buscarUsuario = async (data) => {
+  try {
+    const token = Cookies.get('login');
+    console.log("buscarUsuario: ", token)
+    const response = await axios.get(
+      `/auth/buscarUsuario`,
+      data,
+      token
+    )
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}

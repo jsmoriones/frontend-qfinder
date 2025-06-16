@@ -14,6 +14,8 @@ import Comunidad from "../pages/Dashboard/Comunidad";
 import ListPacientes from "../pages/Dashboard/list_pacientes";
 import UsuarioPage from "../pages/Dashboard/UsuarioPage";
 import Medicamentos from "../pages/Dashboard/Medicamentos";
+import ProtectedRouteAdmin from "../ProtectedRouteAdmin";
+import SuperAdmin from "../pages/SuperAdmin/SuperAdmin";
 
 const AppRoutes = () => {
   return (
@@ -38,6 +40,10 @@ const AppRoutes = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify" element={<ConfirmationCodePage />} />
+
+          {/** Escenario del Super Admin */}
+          <Route path="/superAdmin" element={<ProtectedRouteAdmin />} />
+          <Route path="/superAdmin/dash" element={<SuperAdmin />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

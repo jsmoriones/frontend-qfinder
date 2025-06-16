@@ -10,3 +10,8 @@ export const userSchema = z
     correo_usuario: z.string().email({ message: "El correo electrónico debe tener un formato válido" }),
     contrasena_usuario: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
   })
+
+export const searchUser = z
+  .object({
+    nombre_usuario: z.string().min(3, { message: "Debes ingresar el nombre de un usuario" })
+  })

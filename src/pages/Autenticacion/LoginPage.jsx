@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import StatusAlert, { StatusAlertService } from 'react-status-alert'
@@ -16,7 +16,6 @@ import "./style.css";
 
 const LoginPage = () => {
     const [viewPassword, setViewPassword] = useState(false);
-
     
     const {
         register,
@@ -27,43 +26,60 @@ const LoginPage = () => {
     })
     
     const {signIn, isAuthenticated} = useAuth();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    /*useEffect(() => {
+        if(isAuthenticated){
+            console.log("isAuthenticated: ", isAuthenticated)
+            navigate("/dashboard")
+        }
+    }, [isAuthenticated])*/
     
 
     const handleSendData = async (data) => {
-        try {
-            const buildData = {
-                correo_usuario: data.email,
-                contrasena_usuario: data.password
-            }
-            const response = await signIn(buildData);
-            if(response.status === 200){
-                try {
-                    const authToken = jwtDecode(response.data.token)
-                    if(authToken){
-                        Cookie.set("login", response.data.token)
-                        console.log( Cookie.get("login") )
-                        StatusAlertService.showSuccess("Tus datos son correctos, te redijiremos al Dashboard automaticamente");
+    try {
+        const buildData = {
+            correo_usuario: data.email,
+            contrasena_usuario: data.password
+        }
+        const response = await signIn(buildData); // <-- Ahora 'response' puede tener un status 400 del contexto
 
-                        console.log("Tokencito: ", Cookie.get("login"))
+        if(response.status === 200){
+            // Esta parte solo se ejecutará si el rol es "Administrador"
+            try {
+                const authToken = jwtDecode(response.data.token) // Asumo que el token viene en response.data.token
+                if(authToken){
+                    Cookie.set("login", response.data.token)
+                    console.log( Cookie.get("login") )
+                    StatusAlertService.showSuccess("Tus datos son correctos, te redijiremos al Dashboard automaticamente");
+                    console.log("Tokencito: ", Cookie.get("login"))
+                    // isAuthenticated ya debería ser true en este punto por el AuthContext
 
-                        setTimeout(() => {
-                            navigate("/dashboard")
-                        }, 4000)
-                    }
-                } catch (error) {
-                    console.log(error.message)
+                    setTimeout(() => {
+                        navigate("/dashboard")
+                    }, 3000);
                 }
+            } catch (error) {
+                console.log(error.message)
             }
-
-            if(response.status === 400){
-                StatusAlertService.showWarning(response.message);
-            }
-        } catch (error) {
-            console.log(error)
-            StatusAlertService.showError(error.message);
+        } else if (response.status === 400) { // <-- Maneja la respuesta del contexto aquí
+            StatusAlertService.showWarning(response.message);
+        } else {
+            // Manejar otros posibles errores o status si los hubiera
+            StatusAlertService.showError("Ocurrió un error inesperado al iniciar sesión.");
+        }
+    } catch (error) {
+        console.log(error);
+        // Si el error viene de loginService o getUserInfo directamente, no tiene status
+        // Puedes verificar si error.response existe para obtener un mensaje más específico
+        if (error.response && error.response.data && error.response.data.message) {
+            StatusAlertService.showError(error.response.data.message);
+        } else {
+            StatusAlertService.showError(error.message || "Error de conexión o servidor.");
         }
     }
+}
+
   return (
     <>
         <StatusAlert />

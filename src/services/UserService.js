@@ -79,8 +79,9 @@ export const actualizarPerfilAdmin = async (data, id) => {
 export const buscarUsuario = async (data) => {
   try {
     const token = Cookies.get('login');
-    console.log("buscarUsuario: ", token)
-    const response = await axios.get(
+    //console.log("buscarUsuario: ", token)
+    console.log("buscarUsuario: ",data)
+    const response = await axios.post(
       `/auth/buscarUsuario`,
       data,
       token

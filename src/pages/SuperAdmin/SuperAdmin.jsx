@@ -9,7 +9,7 @@ import { ChevronDown, LogOut, User } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 import { getUsers, registerUser, editUser, removeUser, buscarUsuario } from '../../services/UserService';
-import { userSchema, searchUser } from '../../schemas/users';
+import { userSchema, searchUser, userSchemaAct } from '../../schemas/users';
 import { Input, Label } from '../../components/ui';
 import moment from 'moment';
 
@@ -20,7 +20,8 @@ const SuperAdmin = () => {
     const [pacientes, setPacientes] = useState(null);
     const [loading, setLoading] = useState(true);
     const [userEdit, setUserEdit] = useState(null);
-    const [userView, setUserView] = useState(null); // NUEVO: usuario para ver info
+    const [userView, setUserView] = useState(null);
+    const [searchData, setSearchData] = useState(false);
     
     
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -40,7 +41,7 @@ const SuperAdmin = () => {
         formState: { errors },
         reset
     } = useForm({
-        resolver: zodResolver(userSchema)
+        resolver: zodResolver(userEdit ? userSchemaAct : userSchema)
     });
 
     const {
@@ -53,7 +54,7 @@ const SuperAdmin = () => {
     })
 
     useEffect(() => {
-        if (userEdit) reset(userEdit);
+        if (userEdit) reset({...userEdit, estado_suscripcion: userEdit.suscripcion?.estado || "", tipo_suscripcion: userEdit.suscripcion?.tipo || ""});
         else reset({});
     }, [userEdit, reset]);
 
@@ -79,6 +80,7 @@ const SuperAdmin = () => {
         try {
             const response = await getUsers(pageNumber);
             if (response?.status === 200) {
+                searchData(false)
                 setPacientes(response.data.data);
                 setPagination(response.data.meta.pagination);
             } else {
@@ -100,10 +102,11 @@ const SuperAdmin = () => {
     }, [currentPageFromUrl, fetchPacientes]);
 
     const handleSendData = async (data) => {
+        alert("lkjsnsdnflk")
         try {
             let response;
             if (userEdit) {
-                response = await editUser(data, userEdit.id_usuario);
+                response = await editUser({...data, imagen_usuario: "https://upload.wikimedia.org/wikipedia/commons/0/0b/2023-11-16_Gala_de_los_Latin_Grammy%2C_03_%28cropped%2901.jpg"}, userEdit.id_usuario);
                 if (response.status === 200) {
                     close();
                     StatusAlertService.showSuccess("Usuario actualizado correctamente");
@@ -133,6 +136,7 @@ const SuperAdmin = () => {
     };
 
     const handleEditUser = data => {
+        console.log("handleEditUser: ", data)
         setUserEdit(data);
         open();
     };
@@ -166,12 +170,22 @@ const SuperAdmin = () => {
     };
 
     const hanldeSearchUser = async (data) => {
-      try {
-        const response = await buscarUsuario(data)
-        console.log(response)
-      } catch (error) {
-        console.log("Hubo un error al buscar el usuario: ", error);
-      }
+        setLoading(true)
+        try {
+            const response = await buscarUsuario(data)
+            if(response.status === 200 && response.data.length > 0){
+                setSearchData(true);
+                setPacientes(response.data);
+            }else{
+                StatusAlertService.showInfo(`No existen registros con valor "${data.nombre_usuario}"`);
+                fetchPacientes();
+                setSearchData(false);
+            }
+        } catch (error) {
+            console.log("Hubo un error al buscar el usuario: ", error);
+        }finally{
+            setLoading(false)
+        }
     }
 
     const goToPage = (pageNumber) => {
@@ -231,49 +245,55 @@ const SuperAdmin = () => {
                             <PuffLoader size={120} color="#6D8AFD" loading={loading} speedMultiplier={5} />
                         </div>
                     ) : pacientes && pacientes.length > 0 ? (
-                        <table className="min-w-full bg-white rounded-lg shadow">
-                            <thead>
-                                <tr className="bg-[#6D8AFD] text-white">
-                                    <th className="px-6 py-3">#</th>
-                                    {headerTableUser.map((item, key) => (
-                                        <th key={key} className="px-6 py-3">{item}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {pacientes.map((paciente, index) => (
-                                    <tr key={index} className="border-b hover:bg-gray-50">
-                                        <td className="px-6 py-4">{(currentPageFromUrl - 1) * pagination.itemsPerPage + index + 1}</td>
-                                        <td className="px-6 py-4">{paciente.nombre_usuario}</td>
-                                        <td className="px-6 py-4">{paciente.apellido_usuario}</td>
-                                        <td className="px-6 py-4">{paciente.identificacion_usuario}</td>
-                                        <td className="px-6 py-4">{paciente.correo_usuario?.substring(0, 15)}</td>
-                                        <td className="px-6 py-4">
-                                            {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
-                                                {paciente?.suscripcion.estado}
-                                            </span> : "Sin suscripcion"}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
-                                                {paciente?.suscripcion.tipo}
-                                            </span> : "Sin suscripcion"}
-                                        </td>
-                                        <td className="px-6 py-4 space-x-2">
-                                            <button className="text-blue-600 cursor-pointer" onClick={() => handleEditUser(paciente)}><i className="fa-solid fa-pencil text-xl"></i></button>
-                                            <button className="text-red-600 cursor-pointer" onClick={() => handleRemoveUser(paciente.id_usuario)}><i className="fa-solid fa-trash text-xl"></i></button>
-                                            <button className="text-green-600 cursor-pointer" onClick={() => handleShowInfoUser(paciente)}><i className="fa-solid fa-eye text-xl"></i></button>
-                                        </td>
+                            <table className="min-w-full bg-white rounded-lg shadow">
+                                <thead>
+                                    <tr className="bg-[#6D8AFD] text-white">
+                                        <th className="px-6 py-3">#</th>
+                                        {headerTableUser.map((item, key) => (
+                                            <th key={key} className="px-6 py-3">{item}</th>
+                                        ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {pacientes.map((paciente, index) => (
+                                        <tr key={index} className="border-b hover:bg-gray-50">
+                                            <td className="px-6 py-4">{paciente.id_usuario}</td>
+                                            <td className="px-6 py-4">{paciente.nombre_usuario}</td>
+                                            <td className="px-6 py-4">{paciente.apellido_usuario}</td>
+                                            <td className="px-6 py-4">{paciente.identificacion_usuario}</td>
+                                            <td className="px-6 py-4">{paciente.correo_usuario?.substring(0, 15)}</td>
+                                            <td className="px-6 py-4">
+                                                {paciente.suscripcion ? <span className={`
+                                                    px-2 py-1 text-lg rounded-full text-center w-full block
+                                                    ${paciente?.suscripcion.estado === "active" ? "bg-[#2ECC71]" : ""}
+                                                    ${paciente?.suscripcion.estado === "pending" ? "bg-[#F1C40F]" : ""}
+                                                    ${paciente?.suscripcion.estado === "paused" ? "bg-[#3498DB]" : ""}
+                                                    ${paciente?.suscripcion.estado === "cancelled" ? "bg-[#E74C3C]" : ""}
+                                                `}>
+                                                    {paciente?.suscripcion.estado}
+                                                </span> : <span className='px-2 py-1 text-lg rounded-full block text-center line-through'>Sin suscripcion</span>}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
+                                                    {paciente?.suscripcion.tipo}
+                                                </span> : "Sin suscripcion"}
+                                            </td>
+                                            <td className="px-6 py-4 space-x-2">
+                                                <button className="text-blue-600 cursor-pointer" onClick={() => handleEditUser(paciente)}><i className="fa-solid fa-pencil text-xl"></i></button>
+                                                <button className="text-red-600 cursor-pointer" onClick={() => handleRemoveUser(paciente.id_usuario)}><i className="fa-solid fa-trash text-xl"></i></button>
+                                                <button className="text-green-600 cursor-pointer" onClick={() => handleShowInfoUser(paciente)}><i className="fa-solid fa-eye text-xl"></i></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                     ) : (
                         <div className="flex justify-center items-center h-48 text-gray-500">No hay usuarios para mostrar.</div>
                     )}
 
-<div className="flex justify-between w-full items-center flex-wrap gap-4">
-  {pagination && pagination.totalPages > 0 && (
-    <div className="flex flex-col items-center mt-6">
+<div className="flex justify-between w-full items-center flex-wrap gap-4 mt-6">
+  {!searchData ? pagination && pagination.totalPages > 0 && (
+    <div className="flex flex-col items-center">
       <span className="text-md text-gray-700">
         Mostrando <span className="font-semibold">{(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}</span> a <span className="font-semibold">{Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}</span> de <span className="font-semibold">{pagination.totalItems}</span> Usuarios
       </span>
@@ -302,7 +322,9 @@ const SuperAdmin = () => {
         </button>
       </div>
     </div>
-  )}
+  ) : <button class="bg-[#505ABB] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md inline-flex items-center shadow-md transition duration-300 ease-in-out" onClick={fetchPacientes}>
+    <i class="fas fa-users mr-2"></i> Lista de Usuarios/Registros
+    </button>}
 
   <form className="w-full max-w-md" onSubmit={handleSubmitSearch(hanldeSearchUser)}>
     <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
@@ -499,6 +521,45 @@ const SuperAdmin = () => {
                             <p className="text-red-500">{errors.correo_usuario?.message}</p>
                         )}
                     </div>
+                    {userEdit && <><div className="flex flex-col mb-3">
+                        <Label htmlFor="estado_suscripcion">Estado de suscripción:</Label>
+                        <select
+                            name="estado_suscripcion"
+                            id="estado_suscripcion"
+                            {...register(
+                                "estado_suscripcion",
+                                { required: true }
+                            )}
+                        >
+                            <option value="">--- Seleccionar ---</option>
+                            <option value="active">Activa</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="paused">En pausa</option>
+                            <option value="cancelled">Cancelado</option>
+                        </select>
+                        {errors.estado_suscripcion?.message && (
+                            <p className="text-red-500">{errors.estado_suscripcion?.message}</p>
+                        )}
+                    </div>
+                    <div className="flex flex-col mb-3">
+                        <Label htmlFor="tipo_suscripcion">Tipo de suscripción:</Label>
+                        <select
+                            name="tipo_suscripcion"
+                            id="tipo_suscripcion"
+                            {...register(
+                                "tipo_suscripcion",
+                                { required: true }
+                            )}
+                        >
+                            <option value="">--- Seleccionar ---</option>
+                            <option value="free">Free</option>
+                            <option value="plus">Plus</option>
+                            <option value="pro">Pro</option>
+                        </select>
+                        {errors.tipo_suscripcion?.message && (
+                            <p className="text-red-500">{errors.tipo_suscripcion?.message}</p>
+                        )}
+                    </div></>}
                     {/* Solo muestra el campo de contraseña si no estamos editando un usuario */}
                     {!userEdit && (
                         <div className="flex flex-col mb-3">

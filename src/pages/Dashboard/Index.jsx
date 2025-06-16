@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import Cookies from "js-cookie";
 import CardPaciente from "../../components/CardPaciente";
+import { useAuth } from "../../context/PacienteContext/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+
+  const {isAuthenticated} = useAuth();
+  const navigate = useNavigate();
+
+  /*useEffect(() => {
+    if(isAuthenticated){
+      navigate("/dashboard")
+    }else{
+      navigate("/login")
+    }
+  }, [isAuthenticated])*/
 
   var settings = {
     dots: true,
@@ -59,10 +72,8 @@ const Dashboard = () => {
       }
     ]
   };
-  console.log(Cookies)
-  const token = Cookies.get("login")
-
-  console.log(token);
+  
+  
   
 
   return (

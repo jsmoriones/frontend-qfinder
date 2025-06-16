@@ -11,6 +11,19 @@ export const userSchema = z
     contrasena_usuario: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
   })
 
+export const userSchemaAct = z
+  .object({
+    nombre_usuario: z.string().min(3, { message: "El nombre del usuario debe tener por lo menos 3 caracteres." }),
+    apellido_usuario: z.string().min(3, { message: "El apellido del usuario debe tener por lo menos 3 caracteres." }),
+    direccion_usuario: z.string().min(5, { message: "La direccion del usuario debe tener por lo menos 5 caracteres." }),
+    telefono_usuario: z.string().min(10, { message: "El telefono debe tener por lo menos 10 caracteres." }),
+    identificacion_usuario: z.string().min(8, { message: "La identificacion debe tener por lo menos 8 caracteres." }),
+    correo_usuario: z.string().email({ message: "El correo electrónico debe tener un formato válido" }),
+    imagen_usuario: z.string().optional(),
+    tipo_suscripcion: z.enum(['free', 'plus', 'pro']).optional(),
+    estado_suscripcion: z.enum(['active', 'pending', 'paused', 'cancelled']).optional(),
+  })
+
 export const searchUser = z
   .object({
     nombre_usuario: z.string().min(3, { message: "Debes ingresar el nombre de un usuario" })

@@ -20,90 +20,82 @@ export const AuthProvider = ({children}) => {
   const [loading, setLoading] = useState(true); // Estado para la carga inicial
 
   useEffect(() => {
-    const token = Cookies.get("login");
-    console.log("Token obtenido de la cookie:", token);
+    async function checkLogin() { // <-- Crea una función asíncrona interna
+        const token = Cookies.get("login");
+        console.log("Token obtenido de la cookie:", token);
 
-    // Verificar si hay datos del usuario en localStorage
-    const storedUser = localStorage.getItem("user");
-    const storedInfoUser = localStorage.getItem("infoUser");
-    const codeExpiryTime = localStorage.getItem("code_expiry_time");
-    
-    console.log("Datos en localStorage:", {
-      storedUser,
-      storedInfoUser,
-      codeExpiryTime
-    });
+        const storedUser = localStorage.getItem("user");
+        const storedInfoUser = localStorage.getItem("infoUser");
+        const codeExpiryTime = localStorage.getItem("code_expiry_time");
+        
+        console.log("Datos en localStorage:", {
+            storedUser,
+            storedInfoUser,
+            codeExpiryTime
+        });
 
-    // Si hay token o usuario almacenado
-    if (token || storedUser) {
-      setIsAuthenticated(true);
-      
-      // Priorizar el usuario almacenado si existe
-      if (storedUser) {
-        try {
-          // Intentar parsear como JSON, si falla, usar como string
-          let userData;
-          try {
-            userData = JSON.parse(storedUser);
-          } catch {
-            userData = storedUser;
-          }
-          setUser(userData);
-          console.log("Usuario recuperado de localStorage:", userData);
-        } catch (error) {
-          console.error("Error al procesar user de localStorage:", error);
-          localStorage.removeItem("user");
-          setUser(token || null);
+        // Lógica para verificar y establecer el estado de autenticación
+        if (token) {
+            // Aquí podrías incluso hacer una llamada al backend para validar el token si es necesario
+            // Por ahora, asumimos que si hay token, está autenticado.
+            setIsAuthenticated(true);
+            setUser(token); // O decodifica el token si lo necesitas
+        } else if (storedUser) { // Si no hay token, pero hay usuario en localStorage (quizás un flujo sin cookies de token JWT directo)
+            try {
+                let userData;
+                try {
+                    userData = JSON.parse(storedUser);
+                } catch {
+                    userData = storedUser;
+                }
+                setUser(userData);
+                setIsAuthenticated(true); // Se autentica si hay usuario guardado
+                console.log("Usuario recuperado de localStorage:", userData);
+            } catch (error) {
+                console.error("Error al procesar user de localStorage:", error);
+                localStorage.removeItem("user");
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+        } else {
+            setIsAuthenticated(false);
+            setUser(null);
         }
-      } else if (token) {
-        setUser(token);
-      }
-    } else {
-      setIsAuthenticated(false);
-      setUser(null);
+
+        if (storedInfoUser) {
+            try {
+                setInfoUser(JSON.parse(storedInfoUser));
+            } catch (error) {
+                console.error("Error al parsear infoUser de localStorage:", error);
+                localStorage.removeItem("infoUser");
+            }
+        }
+        
+        // ¡IMPORTANTE! setLoading(false) se llama solo DESPUÉS de todas las verificaciones
+        setLoading(false); 
     }
 
-    // Cargar información del usuario desde localStorage
-    if (storedInfoUser) {
-      try {
-        setInfoUser(JSON.parse(storedInfoUser));
-      } catch (error) {
-        console.error("Error al parsear infoUser de localStorage:", error);
-        localStorage.removeItem("infoUser");
-      }
-    }
-    
-    // MEJORA: Dar un pequeño delay para asegurar que todos los estados se actualicen
-    setTimeout(() => {
-      setLoading(false); // La carga inicial ha terminado
-    }, 100);
+    checkLogin(); // Llama a la función asíncrona
   }, []);
 
   useEffect(() => {
-    if (user) {
-      console.log("Usuario actualizado:", user);
-      // Almacenar el usuario como string si es un objeto, o directamente si es string
-      const userToStore = typeof user === 'object' ? JSON.stringify(user) : user;
-      localStorage.setItem("user", userToStore);
-      setIsAuthenticated(true);
-    } else {
-      // MEJORA: Solo limpiar localStorage si realmente no hay usuario después del loading inicial
-      if (!loading) {
-        localStorage.removeItem("user");
-        setIsAuthenticated(false);
-      }
-    }
+        if (user) {
+            console.log("Usuario actualizado:", user);
+            const userToStore = typeof user === 'object' ? JSON.stringify(user) : user;
+            localStorage.setItem("user", userToStore);
+            // No setIsAuthenticated(true) aquí, ya se hace en signIn o en la carga inicial
+        } else if (!loading) { // Solo limpiar si no estamos en la carga inicial
+            localStorage.removeItem("user");
+            // No setIsAuthenticated(false) aquí, ya se hace en logout o al fallar signIn
+        }
 
-    if (infoUser) {
-      const encodeInfoUser = JSON.stringify(infoUser);
-      localStorage.setItem("infoUser", encodeInfoUser);
-    } else {
-      // MEJORA: Solo limpiar si no está en loading
-      if (!loading) {
-        localStorage.removeItem("infoUser");
-      }
-    }
-  }, [user, infoUser, loading]);
+        if (infoUser) {
+            const encodeInfoUser = JSON.stringify(infoUser);
+            localStorage.setItem("infoUser", encodeInfoUser);
+        } else if (!loading) { // Solo limpiar si no estamos en la carga inicial
+            localStorage.removeItem("infoUser");
+        }
+    }, [user, infoUser, loading]); 
 
   const signup = async (user) => {
     try {
@@ -124,28 +116,42 @@ export const AuthProvider = ({children}) => {
     }
   };
 
-  const signIn = async (user) => {
+  const signIn = async (userCredentials) => { // Cambiado 'user' a 'userCredentials' para claridad
     try {
-      const response = await loginService(user);
-      if(response.status === 200 && response.data.rol !== "Usuario"){
-        const responseGetInfo = await getUserInfo();
-        if(responseGetInfo.status === 200){
-          setInfoUser({ ...responseGetInfo.data, token: null });
+        const response = await loginService(userCredentials);
+
+        if (response.status === 200) {
+                // Guarda el token en la cookie aquí si tu loginService no lo hace
+                Cookies.set("login", response.data.token); // Suponiendo que el token está en response.data.token
+                
+                setIsAuthenticated(true); // <-- Setear a true si el login fue exitoso
+
+                // Lógica específica para administradores
+                if (response.data.rol === "Administrador") {
+                    const responseGetInfo = await getUserInfo();
+                    if (responseGetInfo.status === 200) {
+                        setInfoUser({ ...responseGetInfo.data, token: null });
+                    }
+                }
+        } else {
+            // Si el status no es 200, significa que hubo un error de login (ej. credenciales inválidas)
+            setIsAuthenticated(false); // Asegurarse de que no esté autenticado
+            return response; // Retornar la respuesta original con el error (ej. status 401)
         }
-        setIsAuthenticated(true);
+
         return response;
-      }else{
-        return {
-          status: 400,
-          message: "No tiene accecso al Panel de control, debes contactar con el Administrador."
-        }
-      }
     } catch (error) {
-      if (error.status !== 200 && error.status !== 201) {
-        return error;
-      }
+        // Manejar errores de red o servidor, o errores lanzados por loginService/getUserInfo
+        console.error("Error en signIn (AuthContext):", error);
+        setIsAuthenticated(false); // Asegurarse de que no esté autenticado si hay un error
+        // Si el error tiene una respuesta (ej. de Axios) y status, retornarlo.
+        if (error.response) {
+            return error.response;
+        }
+        // Si no, lanzar el error para que LoginPage lo maneje como un error inesperado
+        throw error;
     }
-  };
+};
 
   const logout = () => {
     Cookies.remove("login");

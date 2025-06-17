@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { PuffLoader } from "react-spinners";
 import AnimatedModal, { useModal } from '@jdthornton/animated-modal';
 import { useForm } from 'react-hook-form';
 import StatusAlert, { StatusAlertService } from 'react-status-alert';
 import { useSearchParams, useNavigate } from 'react-router-dom'; // Importamos useNavigate
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ChevronDown, LogOut, User } from 'lucide-react';
 import Swal from 'sweetalert2';
 
-import { getUsers, registerUser, editUser, removeUser } from '../../services/UserService';
-import { userSchema } from '../../schemas/users';
+import { getUsers, registerUser, editUser, removeUser, buscarUsuario, listarAdmin } from '../../services/UserService';
+import { userSchema, searchUser, userSchemaAct } from '../../schemas/users';
 import { Input, Label } from '../../components/ui';
 import moment from 'moment';
 
@@ -19,12 +20,20 @@ const UsuarioPage = () => {
     const [pacientes, setPacientes] = useState(null);
     const [loading, setLoading] = useState(true);
     const [userEdit, setUserEdit] = useState(null);
-    const [userView, setUserView] = useState(null); // NUEVO: usuario para ver info
+    const [userView, setUserView] = useState(null);
+    const [searchData, setSearchData] = useState(false);
+    
+    
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     const [pagination, setPagination] = useState(null);
 
     const { isOpen, open, close } = useModal();
     const { isOpen: isOpenView, open: openView, close: closeView } = useModal(); // NUEVO: modal ver info
+    const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
+  
 
     const {
         register,
@@ -32,21 +41,46 @@ const UsuarioPage = () => {
         formState: { errors },
         reset
     } = useForm({
-        resolver: zodResolver(userSchema)
+        resolver: zodResolver(userEdit ? userSchemaAct : userSchema)
     });
 
+    const {
+      register: registerSeach,
+      handleSubmit: handleSubmitSearch,
+      formState: { errors: errorSearch },
+      reset: resetSeach
+    } = useForm({
+      resolver: zodResolver(searchUser)
+    })
+
     useEffect(() => {
-        if (userEdit) reset(userEdit);
+        if (userEdit) reset({...userEdit, estado_suscripcion: userEdit.suscripcion?.estado || "", tipo_suscripcion: userEdit.suscripcion?.tipo || ""});
         else reset({});
     }, [userEdit, reset]);
 
     const currentPageFromUrl = parseInt(searchParams.get('page') || '1', 10);
+
+    const handleLogout = () => {
+      // Aquí puedes limpiar almacenamiento local o tokens
+      navigate('/login');
+    };
+  
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsDropdownOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     const fetchPacientes = useCallback(async (pageNumber) => {
         setLoading(true);
         try {
             const response = await getUsers(pageNumber);
             if (response?.status === 200) {
+                setSearchData(false)
                 setPacientes(response.data.data);
                 setPagination(response.data.meta.pagination);
             } else {
@@ -55,6 +89,7 @@ const UsuarioPage = () => {
                 StatusAlertService.showError("No se pudieron cargar los usuarios.");
             }
         } catch (error) {
+            console.log(error)
             setPacientes([]);
             setPagination(null);
             StatusAlertService.showError("Hubo un problema de conexión al cargar usuarios.");
@@ -71,7 +106,7 @@ const UsuarioPage = () => {
         try {
             let response;
             if (userEdit) {
-                response = await editUser(data, userEdit.id_usuario);
+                response = await editUser({...data, imagen_usuario: "https://upload.wikimedia.org/wikipedia/commons/0/0b/2023-11-16_Gala_de_los_Latin_Grammy%2C_03_%28cropped%2901.jpg"}, userEdit.id_usuario);
                 if (response.status === 200) {
                     close();
                     StatusAlertService.showSuccess("Usuario actualizado correctamente");
@@ -82,7 +117,7 @@ const UsuarioPage = () => {
                     StatusAlertService.showError("Hubo un error en el servidor.");
                 }
             } else {
-                response = await registerUser(data);
+                response = await registerUser({...data, tipo_usuario: "Usuario"});
                 if (response.status === 200) {
                     reset({});
                     close();
@@ -101,6 +136,7 @@ const UsuarioPage = () => {
     };
 
     const handleEditUser = data => {
+        console.log("handleEditUser: ", data)
         setUserEdit(data);
         open();
     };
@@ -133,6 +169,25 @@ const UsuarioPage = () => {
         openView();
     };
 
+    const hanldeSearchUser = async (data) => {
+        setLoading(true)
+        try {
+            const response = await buscarUsuario(data)
+            if(response.status === 200 && response.data.length > 0){
+                setSearchData(true);
+                setPacientes(response.data);
+            }else{
+                StatusAlertService.showInfo(`No existen registros con valor "${data.nombre_usuario}"`);
+                fetchPacientes();
+            }
+        } catch (error) {
+            console.log("Hubo un error al buscar el usuario: ", error);
+        }finally{
+            setSearchData(false);
+            setLoading(false)
+        }
+    }
+
     const goToPage = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= pagination.totalPages) {
             setSearchParams({ page: pageNumber.toString() });
@@ -140,6 +195,7 @@ const UsuarioPage = () => {
     };
 
     const headerTableUser = ["nombre", "apellido", "identificacion", "correo", "estado", "tipo", ""];
+    //const headerTableUser = ["nombre", "apellido", "identificacion", "correo", "direccion", "telefono", ""];
 
     return (
         <>
@@ -147,7 +203,7 @@ const UsuarioPage = () => {
             <div className="p-8">
                 <div className="mb-6 flex justify-between">
                     <h1 className="text-2xl font-semibold text-[#374957]">Lista de Usuarios</h1>
-                    <button className='bg-verdebtn py-1 px-2 rounded-lg text-white hover:bg-verde1' onClick={() => { reset({}); setUserEdit(null); open(); }}>
+                    <button className='bg-verdebtn py-1 px-2 rounded-lg text-white hover:bg-verde1 cursor-pointer' onClick={() => { reset({}); setUserEdit(null); open(); }}>
                         <i className="fa-solid fa-user-plus mr-2"></i>Agregar Usuario
                     </button>
                 </div>
@@ -157,57 +213,134 @@ const UsuarioPage = () => {
                             <PuffLoader size={120} color="#6D8AFD" loading={loading} speedMultiplier={5} />
                         </div>
                     ) : pacientes && pacientes.length > 0 ? (
-                        <table className="min-w-full bg-white rounded-lg shadow">
-                            <thead>
-                                <tr className="bg-[#6D8AFD] text-white">
-                                    <th className="px-6 py-3">#</th>
-                                    {headerTableUser.map((item, key) => (
-                                        <th key={key} className="px-6 py-3">{item}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {pacientes.map((paciente, index) => (
-                                    <tr key={index} className="border-b hover:bg-gray-50">
-                                        <td className="px-6 py-4">{(currentPageFromUrl - 1) * pagination.itemsPerPage + index + 1}</td>
-                                        <td className="px-6 py-4">{paciente.nombre_usuario}</td>
-                                        <td className="px-6 py-4">{paciente.apellido_usuario}</td>
-                                        <td className="px-6 py-4">{paciente.identificacion_usuario}</td>
-                                        <td className="px-6 py-4">{paciente.correo_usuario?.substring(0, 15)}</td>
-                                        <td className="px-6 py-4">
-                                            {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
-                                                {paciente?.suscripcion.estado}
-                                            </span> : "Sin suscripcion"}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
-                                                {paciente?.suscripcion.tipo}
-                                            </span> : "Sin suscripcion"}
-                                        </td>
-                                        <td className="px-6 py-4 space-x-2">
-                                            <button className="text-blue-600 cursor-pointer" onClick={() => handleEditUser(paciente)}><i className="fa-solid fa-pencil text-xl"></i></button>
-                                            <button className="text-red-600 cursor-pointer" onClick={() => handleRemoveUser(paciente.id_usuario)}><i className="fa-solid fa-trash text-xl"></i></button>
-                                            <button className="text-green-600 cursor-pointer" onClick={() => handleShowInfoUser(paciente)}><i className="fa-solid fa-eye text-xl"></i></button>
-                                        </td>
+                            <table className="min-w-full bg-white rounded-lg shadow">
+                                <thead>
+                                    <tr className="bg-[#6D8AFD] text-white">
+                                        <th className="px-6 py-3">#</th>
+                                        {headerTableUser.map((item, key) => (
+                                            <th key={key} className="px-6 py-3">{item}</th>
+                                        ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {pacientes.map((paciente, index) => (
+                                        <tr key={index} className="border-b hover:bg-gray-50">
+                                            <td className="px-6 py-4 text-center">{paciente.id_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.nombre_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.apellido_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.identificacion_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.correo_usuario}</td>
+                                            {/* <td className="px-6 py-4 text-center">{paciente.direccion_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.telefono_usuario}</td> */}
+                                            <td className="px-6 py-4">
+                                                {paciente.suscripcion ? <span className={`
+                                                    px-2 py-1 text-lg rounded-full text-center w-full block
+                                                    ${paciente?.suscripcion.estado === "active" ? "bg-[#2ECC71]" : ""}
+                                                    ${paciente?.suscripcion.estado === "pending" ? "bg-[#F1C40F]" : ""}
+                                                    ${paciente?.suscripcion.estado === "paused" ? "bg-[#3498DB]" : ""}
+                                                    ${paciente?.suscripcion.estado === "cancelled" ? "bg-[#E74C3C]" : ""}
+                                                `}>
+                                                    {paciente?.suscripcion.estado}
+                                                </span> : <span className='px-2 py-1 text-lg rounded-full block text-center line-through'>Sin suscripcion</span>}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full block text-center`}>
+                                                    {paciente?.suscripcion.tipo}
+                                                </span> : <span className='px-2 py-1 text-lg rounded-full block text-center line-through'>Sin suscripcion</span>}
+                                            </td>
+                                            <td className="px-6 py-4 space-x-2">
+                                                <button className="text-blue-600 cursor-pointer" onClick={() => handleEditUser(paciente)}><i className="fa-solid fa-pencil text-xl"></i></button>
+                                                <button className="text-red-600 cursor-pointer" onClick={() => handleRemoveUser(paciente.id_usuario)}><i className="fa-solid fa-trash text-xl"></i></button>
+                                                <button className="text-green-600 cursor-pointer" onClick={() => handleShowInfoUser(paciente)}><i className="fa-solid fa-eye text-xl"></i></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                     ) : (
                         <div className="flex justify-center items-center h-48 text-gray-500">No hay usuarios para mostrar.</div>
                     )}
 
-                    {pagination && pagination.totalPages > 0 && (
-                        <div className="flex flex-col items-center mt-6">
-                            <span className="text-md text-gray-700">
-                                Mostrando <span className="font-semibold">{(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}</span> a <span className="font-semibold">{Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}</span> de <span className="font-semibold">{pagination.totalItems}</span> Usuarios
-                            </span>
-                            <div className="inline-flex mt-2">
-                                <button onClick={() => goToPage(currentPageFromUrl - 1)} disabled={currentPageFromUrl === 1} className="px-4 h-8 bg-gray-800 text-white rounded-l-md">Anterior</button>
-                                <button onClick={() => goToPage(currentPageFromUrl + 1)} disabled={currentPageFromUrl === pagination.totalPages} className="px-4 h-8 bg-gray-800 text-white rounded-r-md">Siguiente</button>
-                            </div>
-                        </div>
-                    )}
+<div className="flex justify-between w-full items-center flex-wrap gap-4 mt-6">
+  {!searchData ? pagination && pagination.totalPages > 0 && (
+    <div className="flex flex-col items-center">
+      <span className="text-md text-gray-700">
+        Mostrando <span className="font-semibold">{(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}</span> a <span className="font-semibold">{Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}</span> de <span className="font-semibold">{pagination.totalItems}</span> Usuarios
+      </span>
+      <div className="inline-flex mt-2">
+        <button
+          onClick={() => goToPage(currentPageFromUrl - 1)}
+          disabled={currentPageFromUrl === 1}
+          className={`px-4 h-8 rounded-l-md font-medium ${
+            currentPageFromUrl === 1
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-blue-700 text-white hover:bg-blue-800"
+          }`}
+        >
+          Anterior
+        </button>
+        <button
+          onClick={() => goToPage(currentPageFromUrl + 1)}
+          disabled={currentPageFromUrl === pagination.totalPages}
+          className={`px-4 h-8 rounded-r-md font-medium ${
+            currentPageFromUrl === pagination.totalPages
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-blue-700 text-white hover:bg-blue-800"
+          }`}
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  ) : <button class="bg-[#505ABB] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md inline-flex items-center shadow-md transition duration-300 ease-in-out" onClick={fetchPacientes}>
+    <i class="fas fa-users mr-2"></i> Lista de Usuarios/Registros
+    </button>}
+
+  <form className="w-full max-w-md" onSubmit={handleSubmitSearch(hanldeSearchUser)}>
+    <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
+      Buscar
+    </label>
+    <div className="relative">
+      <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+        <svg
+          className="w-5 h-5 text-blue-600"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 20 20"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </div>
+      <input
+        type="search"
+        id="default-search"
+        className="block w-full p-3 ps-10 text-sm text-gray-800 placeholder-gray-500 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Buscar usuarios..."
+        {...registerSeach(
+          "nombre_usuario",
+          { required: true }
+        )}
+      />
+      <button
+        type="submit"
+        className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1.5"
+        >
+        Buscar
+      </button>
+    </div>
+    {errorSearch.nombre_usuario?.message && (
+      <p className="text-red-500">{errorSearch.nombre_usuario?.message}</p>
+    )}
+  </form>
+</div>
+
                 </div>
             </div>
 
@@ -358,6 +491,45 @@ const UsuarioPage = () => {
                             <p className="text-red-500">{errors.correo_usuario?.message}</p>
                         )}
                     </div>
+                    {userEdit && <><div className="flex flex-col mb-3">
+                        <Label htmlFor="estado_suscripcion">Estado de suscripción:</Label>
+                        <select
+                            name="estado_suscripcion"
+                            id="estado_suscripcion"
+                            {...register(
+                                "estado_suscripcion",
+                                { required: true }
+                            )}
+                        >
+                            <option value="">--- Seleccionar ---</option>
+                            <option value="active">Activa</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="paused">En pausa</option>
+                            <option value="cancelled">Cancelado</option>
+                        </select>
+                        {errors.estado_suscripcion?.message && (
+                            <p className="text-red-500">{errors.estado_suscripcion?.message}</p>
+                        )}
+                    </div>
+                    <div className="flex flex-col mb-3">
+                        <Label htmlFor="tipo_suscripcion">Tipo de suscripción:</Label>
+                        <select
+                            name="tipo_suscripcion"
+                            id="tipo_suscripcion"
+                            {...register(
+                                "tipo_suscripcion",
+                                { required: true }
+                            )}
+                        >
+                            <option value="">--- Seleccionar ---</option>
+                            <option value="free">Free</option>
+                            <option value="plus">Plus</option>
+                            <option value="pro">Pro</option>
+                        </select>
+                        {errors.tipo_suscripcion?.message && (
+                            <p className="text-red-500">{errors.tipo_suscripcion?.message}</p>
+                        )}
+                    </div></>}
                     {/* Solo muestra el campo de contraseña si no estamos editando un usuario */}
                     {!userEdit && (
                         <div className="flex flex-col mb-3">

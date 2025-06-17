@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronDown, LogOut, User } from 'lucide-react';
 import Swal from 'sweetalert2';
 
-import { getUsers, registerUser, editUser, removeUser, buscarUsuario } from '../../services/UserService';
+import { getUsers, registerUser, editUser, removeUser, buscarUsuario, listarAdmin } from '../../services/UserService';
 import { userSchema, searchUser, userSchemaAct } from '../../schemas/users';
 import { Input, Label } from '../../components/ui';
 import moment from 'moment';
@@ -78,9 +78,9 @@ const SuperAdmin = () => {
     const fetchPacientes = useCallback(async (pageNumber) => {
         setLoading(true);
         try {
-            const response = await getUsers(pageNumber);
+            const response = await listarAdmin(pageNumber);
             if (response?.status === 200) {
-                searchData(false)
+                setSearchData(false)
                 setPacientes(response.data.data);
                 setPagination(response.data.meta.pagination);
             } else {
@@ -89,6 +89,7 @@ const SuperAdmin = () => {
                 StatusAlertService.showError("No se pudieron cargar los usuarios.");
             }
         } catch (error) {
+            console.log(error)
             setPacientes([]);
             setPagination(null);
             StatusAlertService.showError("Hubo un problema de conexión al cargar usuarios.");
@@ -102,7 +103,6 @@ const SuperAdmin = () => {
     }, [currentPageFromUrl, fetchPacientes]);
 
     const handleSendData = async (data) => {
-        alert("lkjsnsdnflk")
         try {
             let response;
             if (userEdit) {
@@ -117,7 +117,7 @@ const SuperAdmin = () => {
                     StatusAlertService.showError("Hubo un error en el servidor.");
                 }
             } else {
-                response = await registerUser(data);
+                response = await registerUser({...data, tipo_usuario: "Administrador"});
                 if (response.status === 200) {
                     reset({});
                     close();
@@ -179,11 +179,11 @@ const SuperAdmin = () => {
             }else{
                 StatusAlertService.showInfo(`No existen registros con valor "${data.nombre_usuario}"`);
                 fetchPacientes();
-                setSearchData(false);
             }
         } catch (error) {
             console.log("Hubo un error al buscar el usuario: ", error);
         }finally{
+            setSearchData(false);
             setLoading(false)
         }
     }
@@ -194,7 +194,8 @@ const SuperAdmin = () => {
         }
     };
 
-    const headerTableUser = ["nombre", "apellido", "identificacion", "correo", "estado", "tipo", ""];
+    //const headerTableUser = ["nombre", "apellido", "identificacion", "correo", "estado", "tipo", ""];
+    const headerTableUser = ["nombre", "apellido", "identificacion", "correo", "direccion", "telefono", ""];
 
     return (
         <>
@@ -235,7 +236,7 @@ const SuperAdmin = () => {
 
                 <div className="mb-6 flex justify-between">
                     <h1 className="text-2xl font-semibold text-[#374957]">Lista de Usuarios</h1>
-                    <button className='bg-verdebtn py-1 px-2 rounded-lg text-white hover:bg-verde1' onClick={() => { reset({}); setUserEdit(null); open(); }}>
+                    <button className='bg-verdebtn py-1 px-2 rounded-lg text-white hover:bg-verde1 cursor-pointer' onClick={() => { reset({}); setUserEdit(null); open(); }}>
                         <i className="fa-solid fa-user-plus mr-2"></i>Agregar Usuario
                     </button>
                 </div>
@@ -257,12 +258,14 @@ const SuperAdmin = () => {
                                 <tbody>
                                     {pacientes.map((paciente, index) => (
                                         <tr key={index} className="border-b hover:bg-gray-50">
-                                            <td className="px-6 py-4">{paciente.id_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.nombre_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.apellido_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.identificacion_usuario}</td>
-                                            <td className="px-6 py-4">{paciente.correo_usuario?.substring(0, 15)}</td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 text-center">{paciente.id_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.nombre_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.apellido_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.identificacion_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.correo_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.direccion_usuario}</td>
+                                            <td className="px-6 py-4 text-center">{paciente.telefono_usuario}</td>
+                                            {/* <td className="px-6 py-4">
                                                 {paciente.suscripcion ? <span className={`
                                                     px-2 py-1 text-lg rounded-full text-center w-full block
                                                     ${paciente?.suscripcion.estado === "active" ? "bg-[#2ECC71]" : ""}
@@ -277,7 +280,7 @@ const SuperAdmin = () => {
                                                 {paciente.suscripcion ? <span className={`px-2 py-1 text-lg rounded-full`}>
                                                     {paciente?.suscripcion.tipo}
                                                 </span> : "Sin suscripcion"}
-                                            </td>
+                                            </td> */}
                                             <td className="px-6 py-4 space-x-2">
                                                 <button className="text-blue-600 cursor-pointer" onClick={() => handleEditUser(paciente)}><i className="fa-solid fa-pencil text-xl"></i></button>
                                                 <button className="text-red-600 cursor-pointer" onClick={() => handleRemoveUser(paciente.id_usuario)}><i className="fa-solid fa-trash text-xl"></i></button>

@@ -224,12 +224,12 @@ const Layout = () => {
           <img src="/images/logo.png" alt="Logo QfindeR" className="logo-img" />
         </div>
         <div className="right-topbar flex justify-center items-center relative"> {/* Añadimos 'relative' aquí */}
-          <button className={`cursor-pointer text-white text-xl px-4 py-2 rounded-xl border-[#7D0000] border-2 bg-[#FF4949]`}>
+          {/* <button className={`cursor-pointer text-white text-xl px-4 py-2 rounded-xl border-[#7D0000] border-2 bg-[#FF4949]`}>
             Emergencia
           </button>
           <button className="mx-5 cursor-pointer">
             <i className="fa-regular fa-bell text-grisAzul text-3xl"></i>
-          </button>
+          </button> */}
           <button
             type="button"
             ref={avatarButtonRef}

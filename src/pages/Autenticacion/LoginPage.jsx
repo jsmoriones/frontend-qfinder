@@ -155,12 +155,12 @@ const LoginPage = () => {
                             <hr className="flex-1 border-.8 border-[rgba(102,102,102,45%)]" />
                         </div>
 
-                        <div className="">
+                        {/* <div className="">
                             <button className='flex flex-row justify-center cursor-pointer bg-white text-[#333333] text-lg rounded-4xl w-full border-1 py-3'>
                                 <img src="/images/logo-gmail.png" className="hidden sm3:block" />
                                 <span className='ml-4 text-[#333333] text-lg'>Continuar con Google</span>
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="w-3/5 justify-center items-center hidden lg:flex">
                         <img src="/images/grandfather-doctor.png" alt="Imagen de login, se encuentra anciano con doctores" />

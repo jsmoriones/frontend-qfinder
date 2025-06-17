@@ -21,7 +21,7 @@ export const registerUser = async (data) => {
     console.log("getUsers: ", token)
     const response = await axios.post(
       `/auth/registrarUsuario`,
-      {...data, tipo_usuario: "Usuario"},
+      data,
       token
     )
     return response;
@@ -84,6 +84,20 @@ export const buscarUsuario = async (data) => {
     const response = await axios.post(
       `/auth/buscarUsuario`,
       data,
+      token
+    )
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const listarAdmin = async (page) => {
+  try {
+    const token = Cookies.get('login');
+    console.log("listarAdmin: ", token)
+    const response = await axios.get(
+      `/auth/listarAdmin?page=${page}`,
       token
     )
     return response

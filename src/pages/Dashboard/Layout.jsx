@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/PacienteContext/AuthContext";
 
 const Layout = () => {
@@ -12,6 +12,7 @@ const Layout = () => {
 
   const navigate = useNavigate();
   const {logout, infoUser} = useAuth();
+  const location = useLocation();
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -69,24 +70,6 @@ const Layout = () => {
       ),
       link: "dashboard",
     },
-    /*{
-      name: "Paciente",
-      icon: <i className="fa-regular fa-user text-2xl text-[#374957]"></i>,
-      badge: (
-        <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-          3
-        </span>
-      ),
-      link: "registro-paciente",
-    },
-    {
-      name: "Recordatorio",
-      icon: (
-        <i className="fa-regular fa-calendar-days text-2xl text-[#374957]"></i>
-      ),
-      badge: null,
-      link: "recordatorio",
-    },*/
     {
       name: "Comunidades",
       icon: (
@@ -119,20 +102,6 @@ const Layout = () => {
       badge: null,
       link: "medicamentos"
     },
-    /*{
-      name: "Products",
-      icon: (
-        <i className="fa-solid fa-magnifying-glass text-2xl text-[#374957]"></i>
-      ),
-      badge: null,
-    },
-    {
-      name: "Sign In",
-      icon: (
-        <i className="fa-solid fa-gear text-2xl text-[#374957]"></i>
-      ),
-      badge: null,
-    }*/
   ];
 
   const handleLogout = () => {
@@ -194,25 +163,31 @@ const Layout = () => {
                 {/*isExpanded && item.badge*/}
               </a>
             </li>
-            {menuItems.map((item, index) => (
-              <li key={index}>
-                <Link
-                  to={item.link}
-                  className={`flex items-center p-2 ${isExpanded ? "" : "bg-white"} text-gray-900 rounded-full dark:text-white hover:bg-[#5879ff] group`}
-                  onClick={index === 0 ? toggleSidebar : undefined}
-                >
-                  {item.icon}
-                  <span
-                    className={`ms-3 whitespace-nowrap transition-opacity duration-300 text-white ${
-                      isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
-                    }`}
+            {menuItems.map((item, index) => {
+              const isActive = location.pathname.includes(item.link);
+              return (
+                <li key={index}>
+                  <Link
+                    to={`/${item.link}`}
+                    className={`flex items-center p-2 rounded-full group transition-colors duration-300 ${
+                      isActive ? "bg-[#4a68e0] text-white" : "text-gray-900"
+                    } hover:bg-[#5879ff]`}
+                    onClick={index === 0 ? toggleSidebar : undefined}
                   >
-                    {item.name}
-                  </span>
-                  {/*isExpanded && item.badge*/}
-                </Link>
-              </li>
-            ))}
+                    <div className={`text-2xl transition-colors duration-300 ${isActive ? "text-white" : "text-[#374957]"} group-hover:text-white`}>
+                      {item.icon}
+                    </div>
+                    <span
+                      className={`ms-3 whitespace-nowrap transition-opacity duration-300 ${
+                        isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
+                      } ${isActive ? "text-white" : "text-[#374957]"} group-hover:text-white`}
+                    >
+                      {item.name}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </nav>
@@ -266,9 +241,9 @@ const Layout = () => {
             </div>
             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
               <li>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/cuidador-perfil" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">

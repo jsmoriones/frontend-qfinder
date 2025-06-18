@@ -16,15 +16,25 @@ import UsuarioPage from "../pages/Dashboard/UsuarioPage";
 import Medicamentos from "../pages/Dashboard/Medicamentos";
 import ProtectedRouteAdmin from "../ProtectedRouteAdmin";
 import SuperAdmin from "../pages/SuperAdmin/SuperAdmin";
+import Home from "../pages/Home";
 
 const AppRoutes = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" index={true} element={<Home />} />
+
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify" element={<ConfirmationCodePage />} />
+
+          {/** Escenario del Super Admin */}
+          <Route path="/superAdmin" element={<ProtectedRouteAdmin />} />
+          <Route path="/superAdmin/dash" element={<SuperAdmin />} />
+
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
-              <Route path="/" element={<h1>Home</h1>} />
               <Route path="/paciente" element={<PacientePage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/cuidador-perfil" element={<PerfilCuidador />} />
@@ -37,13 +47,6 @@ const AppRoutes = () => {
               <Route path="/medicamentos" element={<Medicamentos/>}/>
             </Route>
           </Route>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify" element={<ConfirmationCodePage />} />
-
-          {/** Escenario del Super Admin */}
-          <Route path="/superAdmin" element={<ProtectedRouteAdmin />} />
-          <Route path="/superAdmin/dash" element={<SuperAdmin />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

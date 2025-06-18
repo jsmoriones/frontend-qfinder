@@ -13,6 +13,7 @@ import { createCommunity, deleteCommunity, editCommunity, getCommunity } from ".
 import { comunidadSchema } from "../../schemas/comunidad"; // Asegúrate de que esta ruta es correcta y el esquema
 import { Label, Input, TextArea } from "../../components/ui";
 import Swal from "sweetalert2";
+import { useAuth } from "../../context/PacienteContext/AuthContext";
 
 const Comunidad = () => {
   const [comunidades, setComunidades] = useState(null);
@@ -48,6 +49,8 @@ const Comunidad = () => {
       imagen_red: '', // Valor por defecto para la URL de la imagen
     }
   });
+  
+  const {logout} = useAuth();
 
   const fetchCommunities = async () => {
     try {
@@ -63,6 +66,7 @@ const Comunidad = () => {
         setCleanRedes(true)
       }
     } catch (error) {
+      logout();
       console.log("Hubo un error en la consulta a las comunidades: ", error);
     }
   }

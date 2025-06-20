@@ -32,6 +32,7 @@
     "react-time-picker-field": "^1.2.2",
     "react-verification-input": "^4.2.2",
     "recharts": "^2.15.3",
+    "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.22.0",
     "sweetalert2-react-content": "^5.1.0",
     "tailwindcss": "^4.1.4",

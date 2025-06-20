@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import Cookies from "js-cookie";
 import CardPaciente from "../../components/CardPaciente";
@@ -11,6 +11,8 @@ import DashboardAnalitico from "../../components/DashboardStats";
 import DashboardGraficos from "../../components/DashboardStats";
 
 const Dashboard = () => {
+  const [dataGraficos, setDataGraficos] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const {isAuthenticated} = useAuth();
   const navigate = useNavigate();
@@ -79,8 +81,18 @@ const Dashboard = () => {
   };
 
   const fetchEstadisticas = async () => {
-    const response = await estadisticas();
-    console.log(response)
+    setLoading(true)
+    try {
+      const response = await estadisticas();
+      if(response.status === 200){
+        setDataGraficos(response.data);
+      }
+      console.log(response)
+    } catch (error) {
+      console.log("hubo un error en la informacion de los graficos: ", error);
+    } finally {
+      setLoading(false)
+    }
   }
   
   useEffect(() => {
@@ -91,7 +103,11 @@ const Dashboard = () => {
     <>
       {/* Carousel Pacientes */}
       <div className="container p-5">
-        <DashboardGraficos/>
+        {
+          loading ?
+            <p>Cargando...</p>
+          : <DashboardGraficos data={dataGraficos} />
+        }
       </div>
     </>
   );

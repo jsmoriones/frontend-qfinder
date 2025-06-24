@@ -102,7 +102,7 @@ const Dashboard = () => {
   return (
     <>
       {/* Carousel Pacientes */}
-      <div className="container p-5">
+      <div className="container p-5 mx-auto">
         {
           loading ?
             <p>Cargando...</p>

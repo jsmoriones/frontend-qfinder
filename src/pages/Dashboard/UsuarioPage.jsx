@@ -46,15 +46,29 @@ const UsuarioPage = () => {
         resolver: zodResolver(userEdit ? userSchemaAct : userSchema)
     });
 
+    
     const {
-      register: registerSeach,
-      handleSubmit: handleSubmitSearch,
-      formState: { errors: errorSearch },
-      reset: resetSeach
+        register: registerSeach,
+        handleSubmit: handleSubmitSearch,
+        formState: { errors: errorSearch },
+        reset: resetSeach,
+        watch
     } = useForm({
-      resolver: zodResolver(searchUser)
+        resolver: zodResolver(searchUser)
     })
+    const nombreUsuario = watch("nombre_usuario");
 
+    useEffect(() => {
+        if (nombreUsuario?.trim() === "") {
+            console.log("El campo está vacío");
+            fetchPacientes()
+            // Aquí puedes resetear los resultados, mostrar mensaje, etc.
+        } else {
+        console.log("Texto:", nombreUsuario);
+        // Aquí puedes ejecutar tu lógica de búsqueda
+        }
+    }, [nombreUsuario]);
+    
     useEffect(() => {
         if (userEdit) reset({...userEdit, estado_suscripcion: userEdit.suscripcion?.estado || "", tipo_suscripcion: userEdit.suscripcion?.tipo || ""});
         else reset({});

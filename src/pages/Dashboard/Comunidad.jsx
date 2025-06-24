@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form'; // Importa Controller
 import { zodResolver } from '@hookform/resolvers/zod';
 import StatusAlert, { StatusAlertService } from 'react-status-alert';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import moment from "moment/moment";
 import { storage } from '../../services/firebase/firebase';
 
 import { TitleDashboardSection } from "../../components/ui/TitleDashboardSection";
@@ -14,13 +15,17 @@ import { comunidadSchema } from "../../schemas/comunidad"; // Asegúrate de que 
 import { Label, Input, TextArea } from "../../components/ui";
 import Swal from "sweetalert2";
 import { useAuth } from "../../context/PacienteContext/AuthContext";
+import { eliminarMiembroW, listarMembresiaW } from "../../services/MembresiaService";
 
 const Comunidad = () => {
   const [comunidades, setComunidades] = useState(null);
   const [communityEdit, setCommunityEdit] = useState(null);
   const [getComunidad, setGetCommunity] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingUserRed, setLoadingUserRed] = useState(true);
+  const [listRedesUser, setListRedesUser] = useState([]);
   const [cleanRedes, setCleanRedes] = useState(false);
+  const [currentComm, setCurrentComm] = useState(null);
   
   // Estado para el archivo seleccionado por el usuario
   const [fileToUpload, setFileToUpload] = useState(null); 
@@ -90,14 +95,6 @@ const Comunidad = () => {
 
       // 1. Si hay un nuevo archivo seleccionado, súbelo a Firebase
       if (fileToUpload) {
-        // setIsUploadingImage(true); // Opcional si isSubmitting cubre esto
-        StatusAlertService.showAlert({
-            type: 'info',
-            message: 'Subiendo imagen a Firebase...',
-            showProgress: true,
-            timeout: 0 // Mantener hasta que termine la subida o error
-        });
-
         try {
           const uploadRef = ref(storage, `redes/${fileToUpload.name}`);
           const snapshot = await uploadBytes(uploadRef, fileToUpload);
@@ -204,28 +201,56 @@ const Comunidad = () => {
 
   // Captura el archivo seleccionado del input[type="file"]
   const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setFileToUpload(e.target.files[0]);
-      // setImageUploadError(null); // Limpiar errores anteriores
-      // Muestra una vista previa si es posible (opcional)
+    const file = e.target.files[0];
+
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+      if (!allowedTypes.includes(file.type)) {
+        StatusAlertService.showError("Formato no permitido. Solo se permiten imágenes JPG, JPEG o PNG.");
+        setFileToUpload(null);
+        setCurrentImageUrl(null);
+        return;
+      }
+
+      setFileToUpload(file);
+
       const reader = new FileReader();
       reader.onload = (event) => {
-        setCurrentImageUrl(event.target.result); // Muestra la imagen seleccionada temporalmente
+        setCurrentImageUrl(event.target.result);
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
     } else {
       setFileToUpload(null);
-      // Si no se selecciona archivo en edición, mantén la URL existente si hay
       if (!communityEdit || !communityEdit.imagen_red) {
-        setCurrentImageUrl(null); 
+        setCurrentImageUrl(null);
       }
     }
   };
 
-  const handleGetCommunity = com => {
+  const getUsersForCommuny = async (id) => {
+    try {
+      const response = await listarMembresiaW(id);
+      console.log(response)
+      if(response.status === 200){
+        setListRedesUser(response.data.data);
+        console.log(listRedesUser)
+      }
+    } catch (error) {
+      console.log("error en el controller de comunidad: ", error)
+    } finally {
+      setLoadingUserRed(false);
+    }
+  }
+
+  const handleGetCommunity = async (com) => {
+    
     openGetCom()
     setGetCommunity(com);
     console.log(com)
+    setCurrentComm(com);
+
+    getUsersForCommuny(com.id_red);
   }
 
   const handleCloseGetCom = () => {
@@ -258,6 +283,21 @@ const Comunidad = () => {
         }
       }
     });
+  }
+
+  const handleRemoveUserCommunity = async (red, user) => {
+    const yesOrNot = confirm("¿Estas seguro de eliminar a este usuario de la red?");
+    if(yesOrNot){
+      try {
+        const response = await eliminarMiembroW(red, user);
+        console.log(response)
+        if(response.status === 200){
+          getUsersForCommuny(currentComm.id_red);
+        }
+      } catch (error) {
+        console.log("Error de eliminar usuario: ", error)
+      }
+    }
   }
 
   return (
@@ -354,6 +394,25 @@ const Comunidad = () => {
           <div className="flex justify-start w-full mt-6">
             <p className="text-lg text-gray-900 text-justify">{getComunidad.descripcion_red}</p>
           </div>
+          { loadingUserRed ? <p>Cargando...</p> :
+            <div className="w-full">
+              <p className="mt-5 text-xl text-gray-800 font-semibold text-left mb-5">Listado de usuarios</p>
+              {
+                listRedesUser.length >= 1 ? listRedesUser.map((item, key) => (
+                  <div key={key} className="border-b-[1px] border-b-cyan-500 flex justify-between">
+                    <div>
+                      <p className="text-md text-gray-950">{item.usuario.nombre_usuario} {item.usuario.apellido_usuario}</p>
+                      <p className="text-sm text-gray-950">{item.usuario.correo_usuario}</p>
+                    </div>
+                    <div className="flex flex-col items-end justify-between">
+                      <p className="text-xs text-gray-500">{moment(item.fecha_union).format('LL')}</p>
+                      <button className="text-red-700 cursor-pointer" onClick={() => handleRemoveUserCommunity(item.id_red, item.id_usuario)}>Eliminar</button>
+                    </div>
+                  </div>
+                )) : <p>No hay usuarios en la red</p>
+              }
+            </div>
+          }
         </div>
       </AnimatedModal>}
       <AnimatedModal isOpen={isOpen} close={close} style={{maxWidth: "700px", width: "100%", marginTop: 20, marginBottom: 20, overflowY: "scroll"}} onClose={handleCloseAlert}>
@@ -390,12 +449,9 @@ const Comunidad = () => {
               type="file"
               id="imagen_red_file"
               className="w-full text-slate-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded"
-              onChange={handleFileChange} // Capturamos el archivo aquí
-              // !!! IMPORTANTE: NO USES {...register("imagen_red")} AQUI EN EL INPUT[TYPE="FILE"] !!!
-              // Dejamos que RHF maneje el campo 'imagen_red' (la URL) a través del Controller
-              // y setValue, no directamente con este input de archivo.
+              onChange={handleFileChange}
             />
-            {/* Si necesitas mostrar un error específico para la selección de archivo */}
+            <label className="text-xs text-gray-400">Formatos de imagen permitidos: jpg, png, jpeg</label>
             {fileToUpload && <p className="text-sm text-gray-500 mt-1">Archivo seleccionado: {fileToUpload.name}</p>}
             
             {currentImageUrl && (
@@ -405,7 +461,6 @@ const Comunidad = () => {
               </div>
             )}
             
-            {/* ESTE ES EL CAMPO OCULTO QUE REACT HOOK FORM GESTIONARÁ CON LA URL FINAL */}
             <Controller
                 name="imagen_red" // Este es el nombre del campo en tu Zod schema (la URL)
                 control={control} // Viene de useForm

@@ -69,6 +69,10 @@ const DashboardGraficos = ({ data }) => {
               ))}
             </Pie>
             <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#4bbffa">
+              <LabelList dataKey="value" position="top" />
+            </Bar>
           </PieChart>
         </ResponsiveContainer>
       </section>
@@ -108,6 +112,10 @@ const DashboardGraficos = ({ data }) => {
                 ))}
               </Pie>
               <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#4bbffa">
+                <LabelList dataKey="value" position="top" />
+              </Bar>
             </PieChart>
           </ResponsiveContainer>
         </section>
@@ -128,6 +136,10 @@ const DashboardGraficos = ({ data }) => {
                 ))}
               </Pie>
               <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#4bbffa">
+                <LabelList dataKey="value" position="top" />
+              </Bar>
             </PieChart>
           </ResponsiveContainer>
         </section>

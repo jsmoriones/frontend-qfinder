@@ -282,39 +282,72 @@ const UsuarioPage = () => {
                     )}
 
 <div className="flex justify-between w-full items-center flex-wrap gap-4 mt-6">
-  {!searchData ? pagination && pagination.totalPages > 0 && (
-    <div className="flex flex-col items-center">
-      <span className="text-md text-gray-700">
-        Mostrando <span className="font-semibold">{(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}</span> a <span className="font-semibold">{Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}</span> de <span className="font-semibold">{pagination.totalItems}</span> Usuarios
-      </span>
-      <div className="inline-flex mt-2">
-        <button
-          onClick={() => goToPage(currentPageFromUrl - 1)}
-          disabled={currentPageFromUrl === 1}
-          className={`px-4 h-8 rounded-l-md font-medium ${
-            currentPageFromUrl === 1
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-blue-700 text-white hover:bg-blue-800"
-          }`}
-        >
-          Anterior
-        </button>
-        <button
-          onClick={() => goToPage(currentPageFromUrl + 1)}
-          disabled={currentPageFromUrl === pagination.totalPages}
-          className={`px-4 h-8 rounded-r-md font-medium ${
-            currentPageFromUrl === pagination.totalPages
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-blue-700 text-white hover:bg-blue-800"
-          }`}
-        >
-          Siguiente
-        </button>
-      </div>
+  {/* Paginación estilo Google con números */}
+{pagination && pagination.totalPages > 0 && (
+  <div className="flex flex-col items-center mt-6">
+
+    <div className="flex mt-4 space-x-1">
+      {/* Botón Anterior */}
+      <button
+        onClick={() => goToPage(currentPageFromUrl - 1)}
+        disabled={currentPageFromUrl === 1}
+        className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-all"
+      >
+        Anterior
+      </button>
+
+      {/* Páginas dinámicas */}
+      {Array.from({ length: Math.min(5, pagination.totalPages) }).map((_, i) => {
+        const startPage = Math.max(
+          1,
+          currentPageFromUrl - 2
+        );
+        const page = startPage + i;
+
+        if (page > pagination.totalPages) return null;
+
+        return (
+          <button
+            key={i}
+            onClick={() => goToPage(page)}
+            className={`px-3 py-1 mx-1 text-sm rounded-md ${
+              currentPageFromUrl === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            {page}
+          </button>
+        );
+      })}
+
+      {/* Puntos suspensivos si hay más páginas */}
+      {pagination.totalPages > 5 && currentPageFromUrl < pagination.totalPages - 2 && (
+        <span className="px-3 py-1 mx-1 text-sm">...</span>
+      )}
+
+      {/* Última página si no está mostrada */}
+      {pagination.totalPages > 5 &&
+        currentPageFromUrl < pagination.totalPages - 1 && (
+          <button
+            onClick={() => goToPage(pagination.totalPages)}
+            className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 hover:bg-gray-300"
+          >
+            {pagination.totalPages}
+          </button>
+        )}
+
+      {/* Botón Siguiente */}
+      <button
+        onClick={() => goToPage(currentPageFromUrl + 1)}
+        disabled={currentPageFromUrl === pagination.totalPages}
+        className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-all"
+      >
+        Siguiente
+      </button>
     </div>
-  ) : <button class="bg-[#505ABB] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md inline-flex items-center shadow-md transition duration-300 ease-in-out" onClick={fetchPacientes}>
-    <i class="fas fa-users mr-2"></i> Lista de Usuarios/Registros
-    </button>}
+  </div>
+)}
 
   <form className="w-full max-w-md" onSubmit={handleSubmitSearch(hanldeSearchUser)}>
     <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">

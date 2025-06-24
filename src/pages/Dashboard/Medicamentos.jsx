@@ -211,35 +211,80 @@ const Medicamentos = () => {
                         )}
 
                         {/* Componente de Paginación */}
+                        {/* Paginación estilo Google con números */}
                         {pagination && pagination.totalPages > 0 && (
-                            <div className="flex flex-col items-center mt-6">
-                                <span className="text-md text-gray-700">
-                                    Mostrando <span className="font-semibold text-gray-600">
-                                        {(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}
-                                    </span> a <span className="font-semibold text-gray-600">
-                                        {Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}
-                                    </span> de <span className="font-semibold text-gray-700">
-                                        {pagination.totalItems}
-                                    </span> Medicamentos
-                                </span>
+                        <div className="flex flex-col items-center mt-6">
+                            {/* <span className="text-md text-gray-700">
+                            Mostrando <span className="font-semibold text-gray-600">
+                                {(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}
+                            </span> a <span className="font-semibold text-gray-600">
+                                {Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}
+                            </span> de <span className="font-semibold text-gray-700">
+                                {pagination.totalItems}
+                            </span> Medicamentos
+                            </span> */}
 
-                                <div className="inline-flex mt-2 xs:mt-0">
-                                    <button
-                                        className="flex items-center justify-center px-4 h-8 text-sm font-medium text-white bg-gray-800 rounded-l-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        onClick={() => goToPage(currentPageFromUrl - 1)}
-                                        disabled={currentPageFromUrl === 1}
-                                    >
-                                        Anterior
-                                    </button>
-                                    <button
-                                        className="flex items-center justify-center px-4 h-8 text-sm font-medium text-white bg-gray-800 rounded-r-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        onClick={() => goToPage(currentPageFromUrl + 1)}
-                                        disabled={currentPageFromUrl === pagination.totalPages}
-                                    >
-                                        Siguiente
-                                    </button>
-                                </div>
+                            <div className="flex mt-4 space-x-1">
+                            {/* Botón Anterior */}
+                            <button
+                                onClick={() => goToPage(currentPageFromUrl - 1)}
+                                disabled={currentPageFromUrl === 1}
+                                className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-all"
+                            >
+                                Anterior
+                            </button>
+
+                            {/* Páginas dinámicas */}
+                            {Array.from({ length: Math.min(5, pagination.totalPages) }).map((_, i) => {
+                                const startPage = Math.max(
+                                1,
+                                currentPageFromUrl - 2
+                                );
+                                const page = startPage + i;
+
+                                if (page > pagination.totalPages) return null;
+
+                                return (
+                                <button
+                                    key={i}
+                                    onClick={() => goToPage(page)}
+                                    className={`px-3 py-1 mx-1 text-sm rounded-md ${
+                                    currentPageFromUrl === page
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-gray-200 hover:bg-gray-300'
+                                    }`}
+                                >
+                                    {page}
+                                </button>
+                                );
+                            })}
+
+                            {/* Puntos suspensivos si hay más páginas */}
+                            {pagination.totalPages > 5 && currentPageFromUrl < pagination.totalPages - 2 && (
+                                <span className="px-3 py-1 mx-1 text-sm">...</span>
+                            )}
+
+                            {/* Última página si no está mostrada */}
+                            {pagination.totalPages > 5 &&
+                                currentPageFromUrl < pagination.totalPages - 1 && (
+                                <button
+                                    onClick={() => goToPage(pagination.totalPages)}
+                                    className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 hover:bg-gray-300"
+                                >
+                                    {pagination.totalPages}
+                                </button>
+                                )}
+
+                            {/* Botón Siguiente */}
+                            <button
+                                onClick={() => goToPage(currentPageFromUrl + 1)}
+                                disabled={currentPageFromUrl === pagination.totalPages}
+                                className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-all"
+                            >
+                                Siguiente
+                            </button>
                             </div>
+                        </div>
                         )}
                     </div>
 

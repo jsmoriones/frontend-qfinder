@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
 export const PacienteSchema = z.object({
+  id_usuario: z.string({
+    message: "El ID de usuario es requerido"
+  }),
   nombre: z.string()
     .min(2, {
       message: "El nombre del paciente debe tener al menos 2 carácteres"

@@ -1,11 +1,26 @@
 import axios from "./axios";
 import Cookies from 'js-cookie';
 
-export const listPatients = async () => {
+export const listPatients = async (pageNumber) => {
   try {
     const token = Cookies.get("login");
     const response = await axios.get(
-      "/paciente/todosPacientes",
+      `/paciente/todosPacientes?page=${pageNumber}`,
+      token
+    );
+
+    return response;
+  } catch (error) {
+    console.log("Error al listar los pacientes: ", error);
+    return error;
+  }
+}
+export const buscarPaciente = async (data) => {
+  try {
+    const token = Cookies.get("login");
+    const response = await axios.post(
+      `/paciente/buscarPaciente`,
+      {nombre: data.nombre_usuario},
       token
     );
 

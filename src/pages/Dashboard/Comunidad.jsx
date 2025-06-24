@@ -26,15 +26,12 @@ const Comunidad = () => {
   const [listRedesUser, setListRedesUser] = useState([]);
   const [cleanRedes, setCleanRedes] = useState(false);
   const [currentComm, setCurrentComm] = useState(null);
+  const [pagination, setPagination] = useState(null);
   
-  // Estado para el archivo seleccionado por el usuario
+  
   const [fileToUpload, setFileToUpload] = useState(null); 
-  // Estado para la URL de la imagen que se usará para mostrar o enviar
-  const [currentImageUrl, setCurrentImageUrl] = useState(null); 
   
-  // Estados para la carga de imagen (serán cubiertos por isSubmitting ahora)
-  // const [isUploadingImage, setIsUploadingImage] = useState(false); // No es tan necesario si usas isSubmitting
-  // const [imageUploadError, setImageUploadError] = useState(null); // Los errores se mostrarán con StatusAlertService
+  const [currentImageUrl, setCurrentImageUrl] = useState(null); 
 
   const { isOpen, open, close } = useModal();
   const { isOpen: isOpenGetCom, open: openGetCom, close: closeGetCom } = useModal();
@@ -228,12 +225,13 @@ const Comunidad = () => {
     }
   };
 
-  const getUsersForCommuny = async (id) => {
+  const getUsersForCommuny = async (id, pageNumber) => {
     try {
-      const response = await listarMembresiaW(id);
+      const response = await listarMembresiaW(id, pageNumber);
       console.log(response)
       if(response.status === 200){
         setListRedesUser(response.data.data);
+        setPagination(response.data.meta.pagination);
         console.log(listRedesUser)
       }
     } catch (error) {
@@ -242,6 +240,12 @@ const Comunidad = () => {
       setLoadingUserRed(false);
     }
   }
+
+  const goToPage = (pageNumber) => {
+    if (pageNumber >= 1 && pagination && pageNumber <= pagination.totalPages) {
+      getUsersForCommuny(currentComm.id_red, pageNumber);
+    }
+  };
 
   const handleGetCommunity = async (com) => {
     
@@ -411,6 +415,37 @@ const Comunidad = () => {
                   </div>
                 )) : <p>No hay usuarios en la red</p>
               }
+              {pagination && pagination.totalPages >= 1 && (
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-sm text-gray-700">
+                    Mostrando <span className="font-semibold">{(pagination.currentPage - 1) * pagination.itemsPerPage + 1}</span> a{" "}
+                    <span className="font-semibold">{Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)}</span> de{" "}
+                    <span className="font-semibold">{pagination.totalItems}</span> usuarios
+                  </span>
+                  <div className="inline-flex">
+                    <button
+                      onClick={() => goToPage(pagination.currentPage - 1)}
+                      disabled={pagination.currentPage === 1}
+                      className={`px-3 py-1 rounded-l-md text-white cursor-pointer ${
+                        pagination.currentPage === 1 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      Anterior
+                    </button>
+                    <button
+                      onClick={() => goToPage(pagination.currentPage + 1)}
+                      disabled={pagination.currentPage === pagination.totalPages}
+                      className={`px-3 py-1 rounded-r-md text-white cursor-pointer ${
+                        pagination.currentPage === pagination.totalPages
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           }
         </div>

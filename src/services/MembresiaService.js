@@ -1,10 +1,10 @@
 import axios from "./axios";
 import Cookies from 'js-cookie';
 
-export const listarMembresiaW = async (id) => {
+export const listarMembresiaW = async (id, pageNumber) => {
     try {
         const token = Cookies.get("login");
-        const response = await axios.get(`/membresiaRed/listarMembresiaW/${id}`, token);
+        const response = await axios.get(`/membresiaRed/listarMembresiaW/${id}?page=${pageNumber}`, token);
         console.log("Membresia response: ", response);
         return response;
     } catch (error) {

@@ -78,6 +78,7 @@ const DashboardGraficos = ({ data }) => {
       </section>
 
       {/* Suscripciones por tipo y estado */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <section className="w-full bg-white p-4 rounded-2xl shadow">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">Suscripciones por Tipo y Estado</h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -93,10 +94,34 @@ const DashboardGraficos = ({ data }) => {
           </BarChart>
         </ResponsiveContainer>
       </section>
+      <section className="bg-white p-4 rounded-2xl shadow">
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">Medicamentos por Tipo</h2>
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart>
+            <Pie
+              data={formatMedicamentos()}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={90}
+              label
+            >
+              {formatMedicamentos().map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#4bbffa">
+              <LabelList dataKey="value" position="top" />
+            </Bar>
+          </PieChart>
+        </ResponsiveContainer>
+      </section>
+      </div>
 
       {/* Dos columnas: Autonomía y Medicamentos */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <section className="bg-white p-4 rounded-2xl shadow">
+        {/* <section className="bg-white p-4 rounded-2xl shadow">
           <h2 className="text-lg font-semibold mb-4 text-gray-700">Pacientes por Nivel de Autonomía</h2>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -118,31 +143,9 @@ const DashboardGraficos = ({ data }) => {
               </Bar>
             </PieChart>
           </ResponsiveContainer>
-        </section>
+        </section> */}
 
-        <section className="bg-white p-4 rounded-2xl shadow">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">Medicamentos por Tipo</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={formatMedicamentos()}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={90}
-                label
-              >
-                {formatMedicamentos().map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#4bbffa">
-                <LabelList dataKey="value" position="top" />
-              </Bar>
-            </PieChart>
-          </ResponsiveContainer>
-        </section>
+        
       </div>
 
       {/* Redes con más usuarios */}

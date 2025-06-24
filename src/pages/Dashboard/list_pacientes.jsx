@@ -10,7 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import CreatableSelect from 'react-select/creatable';
 
 import { PacienteSchema } from "../../schemas/patient";
-import { editPatient, listAllUsers, listPatients, registerPatient, removePatient } from "../../services/PacienteService";
+import { buscarPaciente, editPatient, listAllUsers, listPatients, registerPatient, removePatient } from "../../services/PacienteService";
 import { Label, Input, TextArea } from "../../components/ui";
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -18,8 +18,13 @@ import { storage } from '../../services/firebase/firebase';
 import Swal from "sweetalert2";
 import { getUsers } from "../../services/UserService";
 import { useAuth } from "../../context/PacienteContext/AuthContext";
+import { z } from "zod";
 
 moment.locale('es');
+const searchUser = z
+  .object({
+    nombre_usuario: z.string().min(3, { message: "Debes ingresar el nombre de un usuario" })
+  })
 
 const ListPacientes = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +52,28 @@ const ListPacientes = () => {
     } = useForm({
         resolver: zodResolver(PacienteSchema)
     });
+
+    const {
+        register: registerSeach,
+        handleSubmit: handleSubmitSearch,
+        formState: { errors: errorSearch },
+        reset: resetSeach,
+        watch
+    } = useForm({
+        resolver: zodResolver(searchUser)
+    })
+    const nombreUsuario = watch("nombre_usuario");
+
+    useEffect(() => {
+        if (nombreUsuario?.trim() === "") {
+            console.log("El campo está vacío");
+            fetchPacientes()
+            // Aquí puedes resetear los resultados, mostrar mensaje, etc.
+        } else {
+        console.log("Texto:", nombreUsuario);
+        // Aquí puedes ejecutar tu lógica de búsqueda
+        }
+    }, [nombreUsuario]);
 
     const {logout} = useAuth();
 
@@ -161,6 +188,7 @@ const ListPacientes = () => {
                     setPaciente(null);
                 }
             } else {
+                console.log(payload)
                 response = await registerPatient(payload); // Usa payload
                 if (response.status === 201) {
                     reset({});
@@ -181,6 +209,25 @@ const ListPacientes = () => {
             setLoadSave(false);
         }
     };
+
+    const hanldeSearchUser = async (data) => {
+
+        setLoading(true)
+        try {
+            const response = await buscarPaciente(data)
+            console.log(response)
+            if(response.status === 200 || response.data.length > 0){
+                setPacientes(response.data.data);
+            }else{
+                StatusAlertService.showInfo(`No existen registros con valor "${data.nombre_usuario}"`);
+                fetchPacientes();
+            }
+        } catch (error) {
+            console.log("Hubo un error al buscar el usuario: ", error);
+        }finally{
+            setLoading(false)
+        }
+    }
 
     const handleEditPatient = data => {
         open2();
@@ -337,37 +384,117 @@ const ListPacientes = () => {
                             No hay pacientes para mostrar.
                         </div>
                     )}
-
-                    {pagination && pagination.totalPages > 0 && (
+                    <div className="flex justify-between w-full items-center flex-wrap gap-4 mt-6">
+                        {/* Paginación estilo Google con números */}
+                        {pagination && pagination.totalPages > 0 && (
                         <div className="flex flex-col items-center mt-6">
-                            <span className="text-md text-gray-700">
-                                Mostrando <span className="font-semibold text-gray-600">
-                                    {(currentPageFromUrl - 1) * pagination.itemsPerPage + 1}
-                                </span> a <span className="font-semibold text-gray-600">
-                                    {Math.min(currentPageFromUrl * pagination.itemsPerPage, pagination.totalItems)}
-                                </span> de <span className="font-semibold text-gray-700">
-                                    {pagination.totalItems}
-                                </span> Pacientes
-                            </span>
 
-                            <div className="inline-flex mt-2 xs:mt-0">
+                            <div className="flex mt-4 space-x-1">
+                            {/* Botón Anterior */}
+                            <button
+                                onClick={() => goToPage(currentPageFromUrl - 1)}
+                                disabled={currentPageFromUrl === 1}
+                                className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-all"
+                            >
+                                Anterior
+                            </button>
+
+                            {/* Páginas dinámicas */}
+                            {Array.from({ length: Math.min(5, pagination.totalPages) }).map((_, i) => {
+                                const startPage = Math.max(
+                                1,
+                                currentPageFromUrl - 2
+                                );
+                                const page = startPage + i;
+
+                                if (page > pagination.totalPages) return null;
+
+                                return (
                                 <button
-                                    className="flex items-center justify-center px-4 h-8 text-sm font-medium text-white bg-gray-800 rounded-l-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={() => goToPage(currentPageFromUrl - 1)}
-                                    disabled={currentPageFromUrl === 1}
+                                    key={i}
+                                    onClick={() => goToPage(page)}
+                                    className={`px-3 py-1 mx-1 text-sm rounded-md ${
+                                    currentPageFromUrl === page
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-gray-200 hover:bg-gray-300'
+                                    }`}
                                 >
-                                    Anterior
+                                    {page}
                                 </button>
+                                );
+                            })}
+
+                            {/* Puntos suspensivos si hay más páginas */}
+                            {pagination.totalPages > 5 && currentPageFromUrl < pagination.totalPages - 2 && (
+                                <span className="px-3 py-1 mx-1 text-sm">...</span>
+                            )}
+
+                            {/* Última página si no está mostrada */}
+                            {pagination.totalPages > 5 &&
+                                currentPageFromUrl < pagination.totalPages - 1 && (
                                 <button
-                                    className="flex items-center justify-center px-4 h-8 text-sm font-medium text-white bg-gray-800 rounded-r-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={() => goToPage(currentPageFromUrl + 1)}
-                                    disabled={currentPageFromUrl === pagination.totalPages}
+                                    onClick={() => goToPage(pagination.totalPages)}
+                                    className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 hover:bg-gray-300"
                                 >
-                                    Siguiente
+                                    {pagination.totalPages}
                                 </button>
+                                )}
+
+                            {/* Botón Siguiente */}
+                            <button
+                                onClick={() => goToPage(currentPageFromUrl + 1)}
+                                disabled={currentPageFromUrl === pagination.totalPages}
+                                className="px-3 py-1 mx-1 text-sm rounded-md bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-all"
+                            >
+                                Siguiente
+                            </button>
                             </div>
                         </div>
-                    )}
+                        )}
+                        <form className="w-full max-w-md" onSubmit={handleSubmitSearch(hanldeSearchUser)}>
+                            <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
+                            Buscar
+                            </label>
+                            <div className="relative">
+                            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg
+                                className="w-5 h-5 text-blue-600"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 20"
+                                >
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                                />
+                                </svg>
+                            </div>
+                            <input
+                                type="search"
+                                id="default-search"
+                                className="block w-full p-3 ps-10 text-sm text-gray-800 placeholder-gray-500 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Buscar usuarios..."
+                                {...registerSeach(
+                                "nombre_usuario",
+                                { required: true }
+                                )}
+                            />
+                            <button
+                                type="submit"
+                                className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1.5"
+                                >
+                                Buscar
+                            </button>
+                            </div>
+                            {errorSearch.nombre_usuario?.message && (
+                            <p className="text-red-500">{errorSearch.nombre_usuario?.message}</p>
+                            )}
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -570,7 +697,7 @@ const ListPacientes = () => {
                             <p className="text-red-500">{errors.diagnostico_principal?.message}</p>
                         )}
                     </div>
-                    <div className="flex flex-col gap-2">
+                    {/* <div className="flex flex-col gap-2">
                         <Label htmlFor="autonomia">Nivel de Autonomía:</Label>
                         <select
                             name="autonomia"
@@ -589,7 +716,7 @@ const ListPacientes = () => {
                         {errors.autonomia?.message && (
                             <p className="text-red-500">{errors.autonomia?.message}</p>
                         )}
-                    </div>
+                    </div> */}
                     <div className="flex w-full justify-end space-x-2 mt-6">
                         <button type="submit" className='cursor-pointer bg-grisAzul py-2 px-3 rounded-lg text-white hover:bg-oscurity transition-all' disabled={loadSave}>
                             {

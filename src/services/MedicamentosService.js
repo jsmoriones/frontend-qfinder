@@ -1,11 +1,11 @@
 import axios from "./axios";
 import Cookies from 'js-cookie';
 
-export const listMedications = async () => {
+export const listMedications = async (pageNumber) => {
   try {
     const token = Cookies.get("login");
     const response = await axios.get(
-      "/medicamentos/listar2?page=1",
+      `/medicamentos/listar2?page=${pageNumber}`,
       token
     );
 

@@ -195,8 +195,9 @@ const Layout = () => {
       {/* Contenido principal */}
       <main className="flex-1 transition-all duration-300 ease-in-out">
       <div className="px-4 py-3 flex justify-between items-center bg-blancoGris">
-        <div className="logo">
+        <div className="logo flex items-center">
           <img src="/images/logo.png" alt="Logo QfindeR" className="logo-img" />
+          <p className="text-3xl font-semibold ml-3">Qfinder</p>
         </div>
         <div className="right-topbar flex justify-center items-center relative"> {/* Añadimos 'relative' aquí */}
           {/* <button className={`cursor-pointer text-white text-xl px-4 py-2 rounded-xl border-[#7D0000] border-2 bg-[#FF4949]`}>
@@ -242,7 +243,7 @@ const Layout = () => {
             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
               <li>
                 <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                  Dashboard
+                  Panel de Control
                 </Link>
               </li>
               <li>
@@ -255,7 +256,7 @@ const Layout = () => {
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left cursor-pointer"
                   onClick={handleLogout}
                 >
-                  Sign out
+                  Cerrar sesión
                 </button>
               </li>
             </ul>

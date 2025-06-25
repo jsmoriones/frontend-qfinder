@@ -72,12 +72,12 @@ const Home = () => {
                         backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url(/images/${slide.image})`,
                     }}
                     >
-                    <div className="h-full flex flex-col justify-center items-center text-white px-6 text-center">
+                    <div className="h-full flex flex-col justify-center items-center text-white px-6 text-center animate-fade-up duration-2000">
                         <h1 className="text-4xl md:text-6xl font-bold drop-shadow">{slide.title}</h1>
                         <p className="text-xl md:text-2xl mt-4 max-w-xl">{slide.text}</p>
                         <a
                         href="#"
-                        className="mt-8 py-3 px-8 bg-verdeClaro border-verdeOscuro border-4 rounded-xl text-lg"
+                        className="mt-8 py-3 px-8 bg-verdeClaro border-verdeOscuro border-4 rounded-xl text-lg animate-bounce-in delay-300"
                         >
                         Descargar Aquí
                         </a>

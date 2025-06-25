@@ -108,7 +108,7 @@ const ConfirmationCodePage = () => {
                     console.log(result);
                     StatusAlertService.showSuccess(result.data.message);
                     setTimeout(() => {
-                        navigate("/dashboard")
+                        navigate("/UserMessageRegister")
                     }, 4000)
                     /*try {
                         const authToken = jwtDecode(result.data.token)

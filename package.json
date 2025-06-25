@@ -36,6 +36,7 @@
     "sweetalert2": "^11.22.0",
     "sweetalert2-react-content": "^5.1.0",
     "tailwindcss": "^4.1.4",
+    "tailwindcss-animated": "^2.0.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {

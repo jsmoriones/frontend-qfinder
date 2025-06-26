@@ -163,7 +163,7 @@ const LoginPage = () => {
                         </form>
                         <div className="flex flex-col sm2:flex-row justify-center sm2:justify-between items-center">
                             <p className="text-[#333333] text-base text-center sm2:text-left">¿No tienes una cuenta? <Link to={"/register"} className='underline'>Registrate</Link> </p>
-                            <a href="#" className='text-[#666666] text-base text-center sm2:text-right w-full'>Olvidaste tu contraseña</a>
+                            <Link to={"/recoveryPassword"} className='text-[#666666] text-base text-center sm2:text-right w-full'>Olvidaste tu contraseña</Link>
                         </div>
                         <div className="flex flex-row items-center justify-between my-8">
                             <hr className="flex-1 border-.8 border-[rgba(102,102,102,45%)]" />

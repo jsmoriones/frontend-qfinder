@@ -39,3 +39,44 @@ export const loginService = async (data) => {
         }
     }
 }
+
+/** Service para recuperar contraseña */
+
+export const recuperarW = async (data) => {
+    try {
+        const response = await axios.post("/auth/recuperarW", data);
+        console.log("recuperarW: ", response);
+        return response;
+    } catch (error) {
+        console.log(error)
+        if(error.status === 404){
+            throw new Error(error.response.data.mensaje)
+        }
+    }
+}
+
+export const verificarCodigoW = async (data) => {
+    try {
+        const response = await axios.post("/auth/verificar-codigoW", data);
+        console.log("verificarCodigoW: ", response);
+        return response;
+    } catch (error) {
+        console.log(error)
+        if(error.status === 404){
+            throw new Error(error.response.data.mensaje)
+        }
+    }
+}
+
+export const cambiarPasswordW = async (data) => {
+    try {
+        const response = await axios.post("/auth/cambiar-passwordW", data);
+        console.log("cambiarPasswordW: ", response);
+        return response;
+    } catch (error) {
+        console.log(error)
+        if(error.status === 404){
+            throw new Error(error.response.data.mensaje)
+        }
+    }
+}

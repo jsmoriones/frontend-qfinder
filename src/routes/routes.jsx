@@ -18,6 +18,7 @@ import ProtectedRouteAdmin from "../ProtectedRouteAdmin";
 import SuperAdmin from "../pages/SuperAdmin/SuperAdmin";
 import Home from "../pages/Home";
 import UserMessageRegister from "../pages/Autenticacion/UserMessageRegister";
+import RecoveryPassword, { PasswordProvider } from "../pages/Autenticacion/RecoveryPassword";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +31,8 @@ const AppRoutes = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify" element={<ConfirmationCodePage />} />
           <Route path="/UserMessageRegister" element={<UserMessageRegister />} />
+          
+            <Route path="/recoveryPassword" element={<PasswordProvider><RecoveryPassword /></PasswordProvider>} />
 
           {/** Escenario del Super Admin */}
           <Route path="/superAdmin" element={<ProtectedRouteAdmin />} />

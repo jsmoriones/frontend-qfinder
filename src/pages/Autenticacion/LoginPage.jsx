@@ -75,7 +75,7 @@ const LoginPage = () => {
             // Si el error viene de loginService o getUserInfo directamente, no tiene status
             // Puedes verificar si error.response existe para obtener un mensaje más específico
             if (error.response && error.response.data && error.response.data.message) {
-                StatusAlertService.showError(error.response.data.message);
+                StatusAlertService.showError("Hubo un error con la conexión del servidor");
             } else {
                 StatusAlertService.showError(error.message || "Error de conexión o servidor.");
             }

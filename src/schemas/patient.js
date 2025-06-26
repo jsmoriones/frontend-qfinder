@@ -1,8 +1,15 @@
 import { z } from 'zod';
 
 export const PacienteSchema = z.object({
-  id_usuario: z.string({
-    message: "El ID de usuario es requerido"
+  id_usuario: z.number({
+    required_error: "El ID de usuario es requerido",
+    invalid_type_error: "El ID de usuario debe ser un número"
+  })
+  .int({
+    message: "El ID de usuario debe ser un número entero"
+  })
+  .positive({
+    message: "El ID de usuario debe ser un número positivo"
   }),
   nombre: z.string()
     .min(2, {
@@ -19,8 +26,8 @@ export const PacienteSchema = z.object({
       message: "El apellido del paciente no puede exceder los 100 carácteres"
     }),
   identificacion: z.string()
-    .min(5, {
-      message: "La identificación del paciente debe tener al menos 5 carácteres"
+    .regex(/^[1-9]\d{7,10}$/, {
+      message: "La identificación debe tener entre 8 y 11 dígitos numéricos y no puede comenzar con cero",
     }),
   fecha_nacimiento: z.string()
     .transform((str) => new Date(str))
@@ -33,8 +40,8 @@ export const PacienteSchema = z.object({
     message: "La orientación sexual debe ser obligatoria"
   }),
   diagnostico_principal: z.string()
-    .min(10, {
-      message: "El Diagnostico Principal debe tener almenos 10 carácteres"
+    .min(3, {
+      message: "El Diagnostico Principal debe tener almenos 3 carácteres"
     })
     .max(100, {
       message: "La escritura del diagnostico no puede exceder los 100 carácteres"

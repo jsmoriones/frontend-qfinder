@@ -291,7 +291,7 @@ const ListPacientes = () => {
         let response = await listAllUsers();
         if (response.status === 200) {
             const transformedUsers = response.data.map(user => ({
-                value: user.id_usuario,
+                value: parseInt(user.id_usuario),
                 label: user.nombre_usuario + " " + user.apellido_usuario,
                 id_usuario: user.id_usuario
             }));
@@ -578,17 +578,17 @@ const ListPacientes = () => {
                     {!paciente && <div className="flex flex-col mb-3">
                         <Label htmlFor="familiar">Seleccionar Familiar:</Label>
                         <Controller
-                            name="id_usuario" // <--- ¡Importante que este sea el nombre correcto que Zod espera!
+                            name="id_usuario"
                             control={control}
-                            rules={{ required: true }} // Si el campo es requerido
+                            rules={{ required: true }}
                             render={({ field }) => (
                                 <CreatableSelect
-                                    {...field} // Esto pasa value, onChange, onBlur a CreatableSelect
-                                    id="familiar"
-                                    isClearable
-                                    options={users} // Asegúrate de que 'users' tiene 'value' y 'label'
-                                    placeholder="Busca un usuario..."
-                                    noOptionsMessage={() => "No hay usuarios disponibles"}
+                                {...field}
+                                options={users}
+                                isClearable
+                                placeholder="Busca un usuario..."
+                                onChange={(selectedOption) => field.onChange(selectedOption?.value || '')}
+                                value={users.find(user => user.value === field.value) || null}
                                 />
                             )}
                         />

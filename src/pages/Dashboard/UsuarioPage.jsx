@@ -193,9 +193,10 @@ const UsuarioPage = () => {
         setLoading(true)
         try {
             const response = await buscarUsuario(data)
-            if(response.status === 200 && response.data.length > 0){
+            console.log(response.data.data)
+            if(response.status === 200 && response.data.data.length > 0){
                 setSearchData(true);
-                setPacientes(response.data);
+                setPacientes(response.data.data);
             }else{
                 StatusAlertService.showInfo(`No existen registros con valor "${data.nombre_usuario}"`);
                 fetchPacientes();

@@ -26,6 +26,7 @@ export const registerUser = async (data) => {
     )
     return response;
   } catch (error) {
+    console.log("registerUser: ", error)
     return error;
   }
 }

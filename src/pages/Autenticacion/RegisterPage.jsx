@@ -39,6 +39,13 @@ const RegisterPage = () => {
   return (
     <>
       <StatusAlert />
+      <Link
+          to="/"
+          className='absolute top-5 left-10 flex items-center space-x-3 bg-blue-900 px-3  py-1 rounded-3xl'
+      >
+          <i className="fa-solid fa-arrow-left text-3xl text-white"></i>
+          <span className='text-white'>Inicio</span>
+      </Link>
       <div className="line-bg">
         <div className="mx-16 min-h-screen flex items-center">
           <div className="container mx-auto flex flex-col lg:flex-row gap-12 h-full">

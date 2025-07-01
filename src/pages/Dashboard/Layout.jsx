@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+
 import { useAuth } from "../../context/PacienteContext/AuthContext";
 
 const Layout = () => {
@@ -173,6 +175,8 @@ const Layout = () => {
                       isActive ? "bg-[#4a68e0] text-white" : "text-gray-900"
                     } hover:bg-[#5879ff]`}
                     onClick={index === 0 ? toggleSidebar : undefined}
+                    data-tooltip-id="sidebar-tooltip"
+                    data-tooltip-content={!isExpanded ? item.name : null}
                   >
                     <div className={`text-2xl transition-colors duration-300 ${isActive ? "text-white" : "text-[#374957]"} group-hover:text-white`}>
                       {item.icon}
@@ -271,6 +275,11 @@ const Layout = () => {
           <Outlet />
         </div>
       </main>
+      <ReactTooltip
+        id="sidebar-tooltip"
+        place="right"
+        style={{ zIndex: 9999 }}
+      />
     </div>
   );
 };

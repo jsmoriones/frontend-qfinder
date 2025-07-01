@@ -24,6 +24,7 @@ const UsuarioPage = () => {
     const [userView, setUserView] = useState(null);
     const [searchData, setSearchData] = useState(false);
     const [loadSave, setLoadSave] = useState(false);
+    const [typePassword, setTypePassword] = useState(false);
     
     
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -150,6 +151,7 @@ const UsuarioPage = () => {
         } catch (error) {
             close();
             StatusAlertService.showError("Hay un error desde el servidor.");
+            console.log(error)
         }finally {
             setLoadSave(false);
         }
@@ -587,9 +589,19 @@ const UsuarioPage = () => {
                     {/* Solo muestra el campo de contraseña si no estamos editando un usuario */}
                     {!userEdit && (
                         <div className="flex flex-col mb-3">
-                            <Label htmlFor="password">Contraseña:</Label>
+                            <div className="flex justify-between items-center mb-1">
+                                <Label htmlFor="password">Tu contraseña:</Label>
+                                <button
+                                    type='button'
+                                    className='cursor-pointer'
+                                    onClick={() => setTypePassword(prev => !prev)}
+                                >
+                                    <i className={`fa-solid ${!typePassword ? "fa-eye" : "fa-eye-slash"} text-[rgba(102,102,102,80%)]`}></i>
+                                    <span className='text-[rgba(102,102,102,80%)] ml-2'>{typePassword ? "Ocultar": "Mostrar"}</span>
+                                </button>
+                            </div>
                             <Input
-                                type="password"
+                                type={typePassword ? "text" : "password"}
                                 id="password"
                                 name="password"
                                 {...register(

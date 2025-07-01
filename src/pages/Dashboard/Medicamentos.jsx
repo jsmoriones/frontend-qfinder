@@ -22,6 +22,8 @@ const Medicamentos = () => {
     const [medicationEdit, setMedicationEdit] = useState(null);
     const [pagination, setPagination] = useState(null);
     const [loadSave, setLoadSave] = useState(false);
+    const [selectedMedication, setSelectedMedication] = useState(null);
+    const [isViewOpen, setIsViewOpen] = useState(false);
 
     const { isOpen, open, close } = useModal();
 
@@ -158,6 +160,11 @@ const Medicamentos = () => {
         }
     };
 
+    const handleViewMedication = (medication) => {
+        setSelectedMedication(medication);
+        setIsViewOpen(true);
+    };
+
     return (
         <>
             <StatusAlert />
@@ -189,6 +196,12 @@ const Medicamentos = () => {
                                             <td className="px-4 py-2">{medication.descripcion.substring(0, 50)}...</td>
                                             <td className="px-4 py-2">{medication.tipo}</td>
                                             <td className="px-6 py-4 space-x-2">
+                                                <button
+                                                    className="text-gray-600 hover:text-gray-400 transition-all cursor-pointer"
+                                                    onClick={() => handleViewMedication(medication)}
+                                                >
+                                                    <i className="fa-solid fa-eye text-xl"></i>
+                                                </button>
                                                 <button
                                                     className="text-blue-600 hover:text-blue-400 transition-all cursor-pointer"
                                                     onClick={() => handleEditMedication(medication)}>
@@ -378,6 +391,37 @@ const Medicamentos = () => {
                         </button>
                     </div>
                 </form>
+            </AnimatedModal>
+            <AnimatedModal
+                isOpen={isViewOpen}
+                close={() => setIsViewOpen(false)}
+                style={{ maxWidth: "500px", width: "100%", marginTop: 20, marginBottom: 20 }}
+            >
+                <div className="space-y-4">
+                    <h2 className="text-xl font-semibold text-center text-[#111111]">Detalles del Medicamento</h2>
+                    {selectedMedication && (
+                        <>
+                            <div>
+                                <h3 className="font-semibold text-gray-700">Nombre:</h3>
+                                <p className="text-gray-900">{selectedMedication.nombre}</p>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-700">Descripción:</h3>
+                                <p className="text-gray-900 break-words whitespace-pre-wrap max-h-[200px] overflow-y-auto">
+                                {selectedMedication.descripcion}
+                                </p>
+                            </div>
+                        </>
+                    )}
+                    <div className="flex justify-end pt-4">
+                        <button
+                            onClick={() => setIsViewOpen(false)}
+                            className="bg-grisAzul hover:bg-oscurity text-white px-4 py-2 rounded-lg transition-all"
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
             </AnimatedModal>
         </>
     );

@@ -76,7 +76,8 @@ const Home = () => {
                         <h1 className="text-4xl md:text-6xl font-bold drop-shadow">{slide.title}</h1>
                         <p className="text-xl md:text-2xl mt-4 max-w-xl">{slide.text}</p>
                         <a
-                        href="#"
+                        href="https://qfinder-deploy-4ktr.vercel.app/app-debug.apk"
+                        target='_blank'
                         className="mt-8 py-3 px-8 bg-verdeClaro border-verdeOscuro border-4 rounded-xl text-lg animate-bounce-in delay-300"
                         >
                         Descargar Aquí
@@ -205,9 +206,12 @@ const Home = () => {
                     <h2 class="font-normal text-center lg:text-left text-purpuraAzul text-4xl md:text-[40px]">Descarga La App QfindeR</h2>
                     <p class="text-2xl text-center xl:text-left text-textoGris">Disponible en todos los dispositivos mobiles en Android y IOS</p>
                     <div class="flex gap-x-6 justify-center">
-                        <button class="w-3/12">
+                        <a
+                            href="https://qfinder-deploy-4ktr.vercel.app/app-debug.apk"
+                            target='_blank'
+                            class="w-3/12">
                             <img src="/images/g-play.png" alt="" />
-                        </button>
+                        </a>
                         {/* <button class="w-3/12">
                             <img src="/images/app-store.png" alt="" />
                         </button> */}

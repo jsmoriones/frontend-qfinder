@@ -27,6 +27,28 @@
 }
 .bg-92{background-size: 92%;}
 .bg-65{background-size: 65%;}
+
+.seccion-mision{
+  background-image: url("/images/mision.jpg");
+  padding: 4rem 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  min-height: 500px;
+  position: relative;
+}
+.seccion-mision-overlay{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,.4)
+}
+.seccion-mision-contenido{
+  max-width: 600px;
+  width: 90%;
+}
+
 @keyframes celular {
   0% { transform: translateY(0); }
   50% { transform: translateY(-20px); }

@@ -218,7 +218,7 @@ const Layout = () => {
             aria-expanded={isDropdownOpen}
             aria-controls="userDropdown"
           >
-            <img src="/images/avatar-dashboard.png" alt="Avatar de registrado en dashboard" />
+            <img src={infoUser.imagen_usuario ? infoUser.imagen_usuario : "/images/avatar-dashboard.png"} alt="Avatar de registrado en dashboard" />
           </button>
           {/* Dropdown menu */}
           <div

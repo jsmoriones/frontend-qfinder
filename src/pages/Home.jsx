@@ -62,7 +62,7 @@ const Home = () => {
                 <img src="/images/menu.png" alt="Icono de menu movil" />
             </button>
         </header>
-        <div className="relative">
+        <div className="relative overflow-hidden">
             <Slider {...settings}>
                 {images.map((slide, index) => (
                 <div key={index} className="h-[80vh] relative bg-black">
@@ -98,7 +98,7 @@ const Home = () => {
                     <img src="/images/ayuda.png" alt="" />
                 </figure>
                 <p className="text-rojo text-2xl my-6 text-center">Comunicación Efectica</p>
-                <p className="text-xl text-center mq1360:text-left">Ayuda al contacto entre el colaborador y el ususario para tener una comunicación más efectiva.</p>
+                <p className="text-xl text-center mq1360:text-left">Ayuda al contacto entre el colaborador y el usuario para tener una comunicación más efectiva.</p>
                 </div>
 
                 <div className="flex-[40%] flex flex-col items-center md:flex-1">
@@ -157,7 +157,7 @@ const Home = () => {
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
                         <img src="images/lapiz1.png" alt="Logo de Doctor" class="w-24" />
                         <p class=" text-2xl mb-1 mt-8">Notas</p>
-                        <p class="text-grisTexto text-lg">Se cambia la descripción por esto “Usuarios y colaboradores podrán agregar notas relacionadas con el cuidado y control del paciente, facilitando el seguimiento y la comunicación.</p>
+                        <p class="text-grisTexto text-lg">Usuarios y colaboradores podrán agregar notas relacionadas con el cuidado y control del paciente, facilitando el seguimiento y la comunicación.</p>
                     </div>
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
                         <img src="images/medios-de-comunicacion-en-masa1.png" alt="Logo de Doctor" class="w-24" />
@@ -192,9 +192,11 @@ const Home = () => {
             <div class="mx-auto p-10 flex flex-col lg:flex-row">
                 <div class="w-12/12 lg:w-6/12">
                     <div class="w-12/12 lg:w-10/12 h-full flex flex-col justify-center">
-                        <h2 class="font-normal text-center lg:text-left text-purpuraAzul text-4xl md:text-[40px]">ACERCA DE NOSOTROS</h2>
+                        <h2 class="font-normal text-center lg:text-left text-purpuraAzul text-4xl md:text-[40px] flex items-center"><i className="fa-solid fa-heart text-red-400 text-3xl"></i> ACERCA DE NOSOTROS</h2>
+                        
+                        <p class="text-xl text-center xl:text-justify mt-6">QfindeR es una aplicación pensada para apoyar a familias que cuidan a personas dependientes.</p>
 
-                        <p class="text-2xl text-center xl:text-left mt-6">Brindará una forma rápida de contactar o contratar a auxiliares de distintas empresas.</p>
+                        <p class="text-xl text-center xl:text-justify mt-3">Facilitamos la organización de medicamentos, citas médicas y actividades diarias, ayudando a compartir el cuidado y reducir la carga del cuidador principal.</p>                    
                     </div>
                 </div>
                 <div class="w-12/12 lg:w-6/12 flex justify-center items-center mt-20 lg:mt-0">
@@ -205,11 +207,28 @@ const Home = () => {
             </div>
         </section>
 
+        <section className="seccion-mision flex flex-col justify-center items-center">
+            <div className="seccion-mision-overlay">
+            </div>
+            <div className="seccion-mision-contenido relative flex flex-col items-center justify-center z-10">
+                <h2 class="font-semibold text-center lg:text-left text-white text-4xl md:text-[40px] flex items-center mb-5"><i className="fa-solid fa-rocket text-blue-500 text-3xl mr-3"></i> Nuestra Misión</h2>
+
+                <p className="text-center text-xl text-white">Empoderar a cuidadores familiares mediante tecnología sencilla, útil y accesible, mejorando la calidad del cuidado y fortaleciendo el bienestar de quienes cuidan y son cuidados.</p>
+            </div>
+
+            <div className="seccion-mision-contenido relative flex flex-col items-start justify-center z-10 mt-6">
+                <h2 class="font-semibold text-center lg:text-left text-white text-xl md:text-[25px] flex items-center"><i className="fa-solid fa-square-check text-green-500 text-xl mr-3"></i> Empieza hoy</h2>
+                <p className="text-left text-lg text-white">Únete a QfindeR y transforma la forma en que cuidas a quienes más amas.</p>
+                <div className="mt-3 mb-3"></div>
+                <h2 class="font-semibold text-center lg:text-left text-white text-xl md:text-[25px] flex items-center justify-center w-full"><i className="fa-solid fa-mobile-screen-button text-cyan-700 text-3xl mr-3"></i> ¡Más apoyo, menos carga!</h2>
+            </div>
+        </section>
+
         <section class="bg-descarga py-20">
             <div class="container flex justify-between items-center mx-auto">
                 <div class="w-5/12 gap-y-7 flex flex-col">
                     <h2 class="font-normal text-center lg:text-left text-purpuraAzul text-4xl md:text-[40px]">Descarga La App QfindeR</h2>
-                    <p class="text-2xl text-center xl:text-left text-textoGris">Disponible en todos los dispositivos mobiles en Android</p>
+                    <p class="text-2xl text-center xl:text-left text-textoGris">Disponible en  dispositivos Android</p>
                     <div class="flex gap-x-6 justify-center">
                         <a
                             href="https://qfinder-deploy-4ktr.vercel.app/app-debug.apk"

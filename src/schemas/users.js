@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+
+
 export const userSchema = z
   .object({
     nombre_usuario: z.string().min(3, { message: "El nombre del usuario debe tener por lo menos 3 caracteres." }),

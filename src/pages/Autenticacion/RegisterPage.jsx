@@ -39,17 +39,19 @@ const RegisterPage = () => {
   return (
     <>
       <StatusAlert />
-      <Link
-          to="/"
-          className='absolute top-5 left-10 flex items-center space-x-3 bg-blue-900 px-3  py-1 rounded-3xl'
-      >
-          <i className="fa-solid fa-arrow-left text-3xl text-white"></i>
-          <span className='text-white'>Inicio</span>
-      </Link>
       <div className="line-bg">
         <div className="mx-16 min-h-screen flex items-center">
           <div className="container mx-auto flex flex-col lg:flex-row gap-12 h-full">
               <div className="w-full lg:w-2/5 py-8">
+                <div className="flex justify-start">
+                    <Link
+                        to="/"
+                        className='flex items-center space-x-3 bg-blue-900 px-3  py-1 rounded-3xl'
+                    >
+                        <i className="fa-solid fa-arrow-left text-3xl text-white"></i>
+                        <span className='text-white'>Inicio</span>
+                    </Link>
+                </div>
                 <h1 className="text-4xl md:text-5xl text-[#111111] font-semibold my-6 text-center lg:text-left">Bienvenido a QfindeR</h1>
                 <p className="text-[rgba(102,102,102,80%)] text-lg md:text-2xl text-center lg:text-left">Para un mejor despertar, soñemos con la protección social</p>
 

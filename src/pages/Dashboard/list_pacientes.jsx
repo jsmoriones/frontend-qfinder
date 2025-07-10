@@ -9,7 +9,7 @@ import StatusAlert, { StatusAlertService } from 'react-status-alert';
 import { useSearchParams } from 'react-router-dom';
 import CreatableSelect from 'react-select/creatable';
 
-import { PacienteSchema } from "../../schemas/patient";
+import { PacienteSchema, PacienteSchemaEdit } from "../../schemas/patient";
 import { buscarPaciente, editPatient, listAllUsers, listPatients, registerPatient, removePatient } from "../../services/PacienteService";
 import { Label, Input, TextArea } from "../../components/ui";
 
@@ -48,9 +48,10 @@ const ListPacientes = () => {
         formState: { errors },
         reset,
         control, // <-- ¡Importa control de useForm!
-        setValue // <-- También es útil para establecer valores programáticamente
+        setValue, // <-- También es útil para establecer valores programáticamente
+        watch: watchPaciente
     } = useForm({
-        resolver: zodResolver(PacienteSchema)
+        resolver: zodResolver(paciente ? PacienteSchemaEdit  : PacienteSchema)
     });
 
     const {
@@ -195,6 +196,12 @@ const ListPacientes = () => {
                     close2();
                     fetchPacientes(currentPageFromUrl);
                     StatusAlertService.showSuccess("Se registró correctamente el usuario");
+                }
+
+                if(response.status === 500){
+                    reset({});
+                    close2();
+                    StatusAlertService.showAlert(response.response.data.error);
                 }
             }
             if (response.status === 400) {
@@ -562,190 +569,176 @@ const ListPacientes = () => {
                 }
             </AnimatedModal>
             <AnimatedModal isOpen={isOpen2} close={close2} style={{ maxWidth: "700px", width: "100%", marginTop: 20, marginBottom: 20, overflowY: "scroll" }}>
-                <h1 className="text-lg md:text-2xl text-[#111111] font-semibold text-center">{paciente == null ? "Registrar paciente" : "Editar paciente"}</h1>
-                <form className='mt-6' onSubmit={handleSubmit(handleSendData)}>
+    <h1 className="text-lg md:text-2xl text-[#111111] font-semibold text-center">{paciente == null ? "Registrar paciente" : "Editar paciente"}</h1>
+    <form className='mt-6' onSubmit={handleSubmit(handleSendData)}>
 
-                    {/* <div className="flex flex-col items-center max-w-[150px] mx-auto mb-6 relative">
-                        <img src={currentImageUrl || "/images/avatar.png"} alt="Imagen de perfil" className="rounded-full aspect-square w-full" />
-                        {paciente && <label htmlFor="imagen_paciente_file" className="absolute bottom-0 right-0 cursor-pointer">
-                            <i className="fa-solid fa-camera text-xl text-white bg-gray-600 aspect-square rounded-full p-2 hover:scale-105 transition-all"></i>
-                            <input type="file" id="imagen_paciente_file" className="hidden" onChange={handleFileChange} accept="image/*" />
-                        </label>}
-                        {errors.imagen_paciente?.message && (
-                            <p className="text-red-500">{errors.imagen_paciente?.message}</p>
-                        )}
-                    </div> */}
-                    {!paciente && <div className="flex flex-col mb-3">
-                        <Label htmlFor="familiar">Seleccionar Familiar:</Label>
-                        <Controller
-                            name="id_usuario"
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field }) => (
-                                <CreatableSelect
-                                {...field}
-                                options={users}
-                                isClearable
-                                placeholder="Busca un usuario..."
-                                onChange={(selectedOption) => field.onChange(selectedOption?.value || '')}
-                                value={users.find(user => user.value === field.value) || null}
-                                />
-                            )}
-                        />
-                        {errors.id_usuario?.message && (
-                            <p className="text-red-500">{errors.id_usuario?.message}</p>
-                        )}
-                        {/* Puedes agregar un mensaje de error personalizado si es requerido */}
-                        {errors.id_usuario && errors.id_usuario.type === "required" && (
-                            <p className="text-red-500">Este campo es requerido.</p>
-                        )}
-                    </div>}
-                    <div className="flex flex-col mb-3">
-                        <Label htmlFor="name">Nombre de paciente:</Label>
-                        <Input
-                            type="text"
-                            id="name"
-                            name="name"
-                            {...register(
-                                "nombre",
-                                { required: true }
-                            )}
-                            autoFocus
-                        />
-                        {errors.nombre?.message && (
-                            <p className="text-red-500">{errors.nombre?.message}</p>
-                        )}
+        {!paciente && <div className="flex flex-col mb-3">
+            <Label htmlFor="familiar">Seleccionar Familiar:</Label>
+            <Controller
+                name="id_usuario"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                    <CreatableSelect
+                    {...field}
+                    options={users}
+                    isClearable
+                    placeholder="Busca un usuario..."
+                    onChange={(selectedOption) => field.onChange(selectedOption?.value || '')}
+                    value={users.find(user => user.value === field.value) || null}
+                    />
+                )}
+            />
+            {errors.id_usuario?.message && (
+                <p className="text-red-500">{errors.id_usuario?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                Selecciona el familiar responsable del paciente (opcional)
+            </span>
+        </div>}
+        
+        <div className="flex flex-col mb-3">
+            <Label htmlFor="name">Nombre de paciente:</Label>
+            <Input
+                type="text"
+                id="name"
+                name="name"
+                {...register("nombre", { required: true })}
+                autoFocus
+            />
+            {errors.nombre?.message && (
+                <p className="text-red-500">{errors.nombre?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                Mínimo 2 caracteres, máximo 100 caracteres
+            </span>
+        </div>
+        
+        <div className="flex flex-col mb-3">
+            <Label htmlFor="apellido">Apellido de paciente:</Label>
+            <Input
+                type="text"
+                id="apellido"
+                name="apellido"
+                {...register("apellido", { required: true })}
+            />
+            {errors.apellido?.message && (
+                <p className="text-red-500">{errors.apellido?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                Mínimo 2 caracteres, máximo 100 caracteres
+            </span>
+        </div>
+        
+        <div className="flex flex-col mb-3">
+            <Label htmlFor="identificacion">Identificación:</Label>
+            <Input
+                type="text"
+                id="identificacion"
+                name="identificacion"
+                {...register("identificacion", { required: true })}
+            />
+            {errors.identificacion?.message && (
+                <p className="text-red-500">{errors.identificacion?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                Entre 8 y 11 dígitos numéricos (no puede comenzar con cero)
+            </span>
+        </div>
+        
+        <div className="flex flex-col gap-2 mb-3">
+            <Label htmlFor="fecha_nacimiento">Fecha de nacimiento:</Label>
+            <Input
+                type="date"
+                id="fecha_nacimiento"
+                name="fecha_nacimiento"
+                {...register("fecha_nacimiento", { required: true })}
+            />
+            {errors.fecha_nacimiento && (
+                <p className="text-red-500">{errors.fecha_nacimiento?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                La fecha no puede estar en el futuro
+            </span>
+        </div>
+        
+        <div className="flex flex-col my-3">
+            <Label htmlFor="sexo">Género:</Label>
+            <select
+                name="sexo"
+                id="sexo"
+                className="p-2 border rounded"
+                {...register("sexo", { required: true })}
+            >
+                <option value="">--- Seleccionar ---</option>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+                <option value="prefiero_no_decir">Prefiero no decir</option>
+            </select>
+            {errors.sexo?.message && (
+                <p className="text-red-500">{errors.sexo?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                Selecciona una opción (campo obligatorio)
+            </span>
+        </div>
+        
+        <div className="flex flex-col gap-2 mb-3">
+            <Label htmlFor="diagnostico_principal">Diagnóstico Principal:</Label>
+            <div className="relative">
+                <TextArea
+                    {...register("diagnostico_principal", { required: true })}
+                    id="diagnostico_principal"
+                    rows={3}
+                    maxLength={100}
+                    onChange={(e) => {
+                        // Actualiza el valor en react-hook-form
+                        register("diagnostico_principal").onChange(e);
+                        // Puedes agregar lógica adicional aquí si necesitas
+                    }}
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-500 bg-white px-1 rounded">
+                    {watchPaciente("diagnostico_principal")?.length || 0}/100
+                </div>
+            </div>
+            {errors.diagnostico_principal?.message && (
+                <p className="text-red-500">{errors.diagnostico_principal?.message}</p>
+            )}
+            <span className="text-sm text-gray-500 mt-1">
+                Mínimo 3 caracteres, máximo 100 caracteres
+            </span>
+        </div>
+        
+        <div className="flex w-full justify-end space-x-2 mt-6">
+            <button type="submit" className='cursor-pointer bg-grisAzul py-2 px-3 rounded-lg text-white hover:bg-oscurity transition-all' disabled={loadSave}>
+                {loadSave ? (
+                    <div className="w-full flex justify-center items-center">
+                        <svg ariaHidden="true" className="w-8 h-8 text-blue-100 animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                        </svg>
                     </div>
-                    <div className="flex flex-col mb-3">
-                        <Label htmlFor="apellido">Apellido de apellido:</Label>
-                        <Input
-                            type="text"
-                            id="apellido"
-                            name="apellido"
-                            {...register(
-                                "apellido",
-                                { required: true }
-                            )}
-                            autoFocus
-                        />
-                        {errors.apellido?.message && (
-                            <p className="text-red-500">{errors.apellido?.message}</p>
-                        )}
-                    </div>
-                    <div className="flex flex-col mb-3">
-                        <Label htmlFor="identificacion">Identificación:</Label>
-                        <Input
-                            type="text"
-                            id="identificacion"
-                            name="identificacion"
-                            {...register(
-                                "identificacion",
-                                { required: true }
-                            )}
-                            autoFocus
-                        />
-                        {errors.identificacion?.message && (
-                            <p className="text-red-500">{errors.identificacion?.message}</p>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="fecha_nacimiento">Fecha de nacimiento:</Label>
-                        <Input
-                            type="date"
-                            id="fecha_nacimiento"
-                            name="fecha_nacimiento"
-                            {...register(
-                                "fecha_nacimiento",
-                                { required: true }
-                            )}
-                            autoFocus
-                        />
-                        {errors.fecha_nacimiento && (
-                            <p className="text-red-500">{errors.fecha_nacimiento?.message}</p>
-                        )}
-                    </div>
-                    <div className="flex flex-col my-3">
-                        <Label htmlFor="sexo">Género:</Label>
-                        <select
-                            name="sexo"
-                            id="sexo"
-                            {...register(
-                                "sexo",
-                                { required: true }
-                            )}
-                        >
-                            <option value="">--- Seleccionar ---</option>
-                            <option value="masculino">Masculino</option>
-                            <option value="femenino">Femenino</option>
-                            <option value="otro">Otro</option>
-                            <option value="prefiero_no_decir">Prefiero no decir</option>
-                        </select>
-                        {errors.sexo?.message && (
-                            <p className="text-red-500">{errors.sexo?.message}</p>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="diagnostico_principal">Diagnóstico Principal:</Label>
-                        <TextArea
-                            {...register(
-                                "diagnostico_principal",
-                                { required: true }
-                            )}
-                            id="diagnostico_principal"
-                        />
-                        {errors.diagnostico_principal?.message && (
-                            <p className="text-red-500">{errors.diagnostico_principal?.message}</p>
-                        )}
-                    </div>
-                    {/* <div className="flex flex-col gap-2">
-                        <Label htmlFor="autonomia">Nivel de Autonomía:</Label>
-                        <select
-                            name="autonomia"
-                            id="autonomia"
-                            className="text-center w-full"
-                            {...register(
-                                "nivel_autonomia",
-                                { required: true }
-                            )}
-                        >
-                            <option value="">--- Seleccionar ---</option>
-                            <option value="alta">Alta</option>
-                            <option value="baja">Baja</option>
-                            <option value="media">Media</option>
-                        </select>
-                        {errors.autonomia?.message && (
-                            <p className="text-red-500">{errors.autonomia?.message}</p>
-                        )}
-                    </div> */}
-                    <div className="flex w-full justify-end space-x-2 mt-6">
-                        <button type="submit" className='cursor-pointer bg-grisAzul py-2 px-3 rounded-lg text-white hover:bg-oscurity transition-all' disabled={loadSave}>
-                            {
-                                loadSave ?
-                                    <div className="w-full flex justify-center items-center">
-                                        <svg ariaHidden="true" className="w-8 h-8 text-blue-100 animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                                        </svg>
-                                    </div>
-                                : <span className='text-md'>Aceptar</span>
-                            }
-                        </button>
-                        <button
-                            type="button"
-                            className='cursor-pointer bg-rojobtn py-2 px-3 rounded-lg text-white hover:bg-rojo1 transition-all'
-                            disabled={loadSave}
-                            onClick={() => {
-                                close2();
-                                reset();
-                                setPaciente(null);
-                                setFileToUpload(null);
-                                setCurrentImageUrl(null);
-                            }}>
-                            <span className='text-md'>Cancelar</span>
-                        </button>
-                    </div>
-                </form>
-            </AnimatedModal>
+                ) : (
+                    <span className='text-md'>Aceptar</span>
+                )}
+            </button>
+            <button
+                type="button"
+                className='cursor-pointer bg-rojobtn py-2 px-3 rounded-lg text-white hover:bg-rojo1 transition-all'
+                disabled={loadSave}
+                onClick={() => {
+                    close2();
+                    reset();
+                    setPaciente(null);
+                    setFileToUpload(null);
+                    setCurrentImageUrl(null);
+                }}>
+                <span className='text-md'>Cancelar</span>
+            </button>
+        </div>
+    </form>
+</AnimatedModal>
         </>
     );
 };

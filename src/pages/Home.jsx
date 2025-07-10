@@ -97,32 +97,32 @@ const Home = () => {
                 <figure className="bg-azulAgua w-60 h-60 p-10 rounded-full">
                     <img src="/images/ayuda.png" alt="" />
                 </figure>
-                <p className="text-rojo text-2xl my-6">Comunicación Efectica</p>
-                <p className="text-xl text-center mq1360:text-left">Ayuda al contacto entre auxiliar y familiar para tener una comunicación mas efectiva.</p>
+                <p className="text-rojo text-2xl my-6 text-center">Comunicación Efectica</p>
+                <p className="text-xl text-center mq1360:text-left">Ayuda al contacto entre el colaborador y el ususario para tener una comunicación más efectiva.</p>
                 </div>
 
-                <div className="flex-[40%] flex flex-col items-center    md:flex-1">
+                <div className="flex-[40%] flex flex-col items-center md:flex-1">
                 <figure className="bg-azulAgua w-60 h-60 p-10 rounded-full">
                     <img src="/images/obrero.png" alt="" />
                 </figure>
-                <p className="text-rojo text-2xl my-6">Servicio de auxiliares</p>
-                <p className="text-xl leading-relaxed text-center mq1360:text-left">Brindará una forma rápida de contactar o contratar a auxiliares de distintas empresas.</p>
+                <p className="text-rojo text-2xl my-6 text-center">Apoyo de Colaboradores</p>
+                <p className="text-xl leading-relaxed text-center mq1360:text-left">Permitirá agregar colaboradores para brindar apoyo en el seguimiento y control del cuidado del paciente.</p>
                 </div>
 
                 <div className="flex-[40%] flex flex-col items-center    md:flex-1">
                 <figure className="bg-azulAgua w-60 h-60 p-10 rounded-full">
-                    <img src="/images/telefono-inteligente.png" alt="" />
+                    <img src="/images/image-redes.png" alt="" />
                 </figure>
-                <p className="text-rojo text-2xl my-6">Ubicación en tiempo real</p>
-                <p className="text-xl leading-relaxed text-center mq1360:text-left">Los familiares tendrán acceso a la ubicación del paciente todo el tiempo, para brindar  mayor seguridad y tranquilidad.</p>
+                <p className="text-rojo text-2xl my-6 text-center">Comunidad</p>
+                <p className="text-xl leading-relaxed text-center mq1360:text-left">Permitirá que usuarios y colaboradores se unan a una comunidad para compartir experiencias, resolver dudas e intercambiar apoyo relacionado con el cuidado del paciente.</p>
                 </div>
 
                 <div className="flex-[40%] flex flex-col items-center    md:flex-1">
                 <figure className="bg-azulAgua w-60 h-60 p-10 rounded-full">
                     <img src="/images/servicio-al-cliente.png" alt="" />
                 </figure>
-                <p className="text-rojo text-2xl my-6">Atención al cliente</p>
-                <p className="text-xl leading-relaxed text-center mq1360:text-left">Se contactara con  las empresas y con el servicio de QfindeR para atender solicitudes, quejas y reclamos</p>
+                <p className="text-rojo text-2xl my-6 text-center">Soporte</p>
+                <p className="text-xl leading-relaxed text-center mq1360:text-left">Ofrecerá soporte técnico y funcional a usuarios y colaboradores en la creación de nuevos medicamentos, manejo de pacientes y uso de la plataforma</p>
                 </div>
             </div>
         </section>
@@ -151,33 +151,38 @@ const Home = () => {
                 <div class="w-12/12 flex flex-wrap flex-row items-stretch justify-center gap-x-20 mq1360:gap-x-28 gap-y-10 mq1360:gap-y-20">
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
                         <img src="images/obrero.png" alt="Logo de Doctor" class="w-24" />
-                        <p class=" text-2xl mb-1 mt-8">Auxiliares</p>
-                        <p class="text-grisTexto text-lg">Tendrás contacto con auxiliares de diferentes empresas juntos sus recomendaciones y calificación.</p>
+                        <p class=" text-2xl mb-1 mt-8">Colaboradores</p>
+                        <p class="text-grisTexto text-lg">Brinda la opción de sumar colaboradores para mejorar la organización y monitoreo del cuidado del paciente.</p>
                     </div>
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
                         <img src="images/lapiz1.png" alt="Logo de Doctor" class="w-24" />
                         <p class=" text-2xl mb-1 mt-8">Notas</p>
-                        <p class="text-grisTexto text-lg">Se tendrá un registro de notas donde el auxiliar redactara sus cuidados y rutinas que se realicen al paciente.</p>
+                        <p class="text-grisTexto text-lg">Se cambia la descripción por esto “Usuarios y colaboradores podrán agregar notas relacionadas con el cuidado y control del paciente, facilitando el seguimiento y la comunicación.</p>
                     </div>
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
                         <img src="images/medios-de-comunicacion-en-masa1.png" alt="Logo de Doctor" class="w-24" />
-                        <p class=" text-2xl mb-1 mt-8">Medios de comunicación</p>
-                        <p class="text-grisTexto text-lg">La app posee diferentes medios de comunicación, entre familiares- auxiliares, auxiliar-empresa, y familiar- empresa</p>
+                        <p class=" text-2xl mb-1 mt-8">Comunidades</p>
+                        <p class="text-grisTexto text-lg">Permitirá que usuarios y colaboradores se unan a una comunidad para compartir experiencias, resolver dudas e intercambiar apoyo relacionado con el cuidado del paciente.</p>
                     </div>
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
-                        <img src="images/telefono-inteligente.png" alt="Logo de Doctor" class="w-24" />
+                        <img src="images/codigo-qr1.png" alt="Logo de Doctor" class="w-30" />
                         <p class=" text-2xl mb-1 mt-8">Escaneo QR</p>
-                        <p class="text-grisTexto text-lg">Facilitar por medio de un código QR el ingreso y revisión de las notas que realicen los auxiliares.</p>
+                        <p class="text-grisTexto text-lg">Incluye un código QR que proporciona acceso rápido a información de contacto en situaciones de emergencia relacionadas con el paciente.</p>
                     </div>
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
-                        <img src="images/lapiz1.png" alt="Logo de Doctor" class="w-24" />
-                        <p class=" text-2xl mb-1 mt-8">Notas</p>
-                        <p class="text-grisTexto text-lg">Se tendrá un registro de notas donde el auxiliar redactara sus cuidados y rutinas que se realicen al paciente.</p>
+                        <img src="images/notificaciones.png" alt="Logo de Doctor" class="w-24" />
+                        <p class=" text-2xl mb-1 mt-8">Notificaciones</p>
+                        <p class="text-grisTexto text-lg">El sistema enviará notificaciones a la persona a cargo del paciente para recordar citas médicas y la toma de medicamentos.</p>
                     </div>
                     <div class="w-11/12 lg:w-3/12 p-8 bg-grisTrasparente border-[1px] border-black rounded-xl">
-                        <img src="images/medios-de-comunicacion-en-masa1.png" alt="Logo de Doctor" class="w-24" />
-                        <p class=" text-2xl mb-1 mt-8">Medios de comunicación</p>
-                        <p class="text-grisTexto text-lg">La app posee diferentes medios de comunicación, entre familiares- auxiliares, auxiliar-empresa, y familiar- empresa</p>
+                        <img src="images/suscripcion.png" alt="Logo de Doctor" class="w-30" />
+                        <p class=" text-2xl mb-1 mt-8">Suscripción</p>
+                        <p class="text-grisTexto text-lg">La aplicación contará con un servicio de suscripción que ofrece distintos planes según las necesidades del usuario:</p>
+                        <ul className="pl-5">
+                            <li className="list-disc">Versión Free: permite gestionar hasta 2 pacientes y no incluye colaboradores.</li>
+                            <li className="list-disc">Versión Plus: permite hasta 5 pacientes y hasta 5 colaboradores.</li>
+                            <li className="list-disc">Versión Pro: sin límites en la cantidad de pacientes ni de colaboradores</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -204,13 +209,15 @@ const Home = () => {
             <div class="container flex justify-between items-center mx-auto">
                 <div class="w-5/12 gap-y-7 flex flex-col">
                     <h2 class="font-normal text-center lg:text-left text-purpuraAzul text-4xl md:text-[40px]">Descarga La App QfindeR</h2>
-                    <p class="text-2xl text-center xl:text-left text-textoGris">Disponible en todos los dispositivos mobiles en Android y IOS</p>
+                    <p class="text-2xl text-center xl:text-left text-textoGris">Disponible en todos los dispositivos mobiles en Android</p>
                     <div class="flex gap-x-6 justify-center">
                         <a
                             href="https://qfinder-deploy-4ktr.vercel.app/app-debug.apk"
                             target='_blank'
-                            class="w-3/12">
-                            <img src="/images/g-play.png" alt="" />
+                            class="bg-blue-600 py-2 px-4 rounded-xl flex items-center justify-center">
+                            <i className="fa-solid fa-arrow-right text-white text-lg"></i>
+                            <span className="mx-2 text-white text-lg">Descargar</span>
+                            <i className="fa-solid fa-arrow-left text-white text-lg"></i>
                         </a>
                         {/* <button class="w-3/12">
                             <img src="/images/app-store.png" alt="" />

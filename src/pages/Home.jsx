@@ -76,7 +76,7 @@ const Home = () => {
                         <h1 className="text-4xl md:text-6xl font-bold drop-shadow">{slide.title}</h1>
                         <p className="text-xl md:text-2xl mt-4 max-w-xl">{slide.text}</p>
                         <a
-                        href="https://qfinder-deploy-4ktr.vercel.app/app-debug.apk"
+                        href="https://qfinder-deploy-4ktr.vercel.app/Qfinder.apk"
                         target='_blank'
                         className="mt-8 py-3 px-8 bg-verdeClaro border-verdeOscuro border-4 rounded-xl text-lg animate-bounce-in delay-300"
                         >
@@ -231,7 +231,7 @@ const Home = () => {
                     <p class="text-2xl text-center xl:text-left text-textoGris">Disponible en  dispositivos Android</p>
                     <div class="flex gap-x-6 justify-center">
                         <a
-                            href="https://qfinder-deploy-4ktr.vercel.app/app-debug.apk"
+                            href="https://qfinder-deploy-4ktr.vercel.app/Qfinder.apk"
                             target='_blank'
                             class="bg-blue-600 py-2 px-4 rounded-xl flex items-center justify-center">
                             <i className="fa-solid fa-arrow-right text-white text-lg"></i>

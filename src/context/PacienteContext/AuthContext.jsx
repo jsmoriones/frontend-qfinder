@@ -107,12 +107,13 @@ export const AuthProvider = ({children}) => {
       
       setUser(res.data.user);
       setIsAuthenticated(true);
-      return res.data.message;
+      return res;
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       if (error.status === 400) {
-        throw new Error(error.response.data.error);
+        //throw new Error(error.response.data.error);
       }
+      return error
     }
   };
 

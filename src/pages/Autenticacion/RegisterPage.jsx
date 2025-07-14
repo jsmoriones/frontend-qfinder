@@ -24,18 +24,29 @@ const RegisterPage = () => {
   const hanldeSendData = async (data) => {
     try {
       const response = await signup({...data, tipo_usuario: "Usuario"})
-      StatusAlertService.showSuccess(response);
+      console.log(response)
+      if(response.status == 409){
+        StatusAlertService.showAlert("El Usuario ya esta registrado en Qfinder");
+        return;
+      }else if(response.status === 400){
+        response.response.data.message.map(err => {
+          StatusAlertService.showError(err);
+        });
+        return
+      }else{
+        StatusAlertService.showSuccess(response);
+        setTimeout(() => {
+          navigate("/verify");
+        }, 4000)
+      }
 
-      setTimeout(() => {
-        navigate("/verify");
-      }, 4000)
       
     } catch (error) {
-      const errorAwait = await error;
-      console.log(errorAwait)
-      errorAwait.response.data.message.map(err => {
+      //const errorAwait = await error;
+      console.log(error);
+      /*errorAwait.response.data.message.map(err => {
         StatusAlertService.showError(err);
-      })
+      })*/
     }
   }
 

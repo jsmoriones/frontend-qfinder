@@ -33,7 +33,9 @@ const RegisterPage = () => {
     } catch (error) {
       const errorAwait = await error;
       console.log(errorAwait)
-      StatusAlertService.showError(errorAwait.message);
+      errorAwait.response.data.message.map(err => {
+        StatusAlertService.showError(err);
+      })
     }
   }
 

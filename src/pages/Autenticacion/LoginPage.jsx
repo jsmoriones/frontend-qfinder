@@ -77,7 +77,7 @@ const LoginPage = () => {
             if (error.response && error.response.data && error.response.data.message) {
                 StatusAlertService.showError("Hubo un error con la conexión del servidor");
             } else {
-                StatusAlertService.showError(error.message || "Error de conexión o servidor.");
+                StatusAlertService.showError("Error de conexión o servidor.");
             }
         } finally {
             setLoadSave(false);

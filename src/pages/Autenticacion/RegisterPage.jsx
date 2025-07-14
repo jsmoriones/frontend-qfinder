@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import { useAuth } from "../../context/PacienteContext/AuthContext";
 import 'react-status-alert/dist/status-alert.css'
 
 const RegisterPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -60,113 +61,124 @@ const RegisterPage = () => {
                 </div>
 
                 <form className='mt-10 lg:mt-14' onSubmit={handleSubmit(hanldeSendData)}>
-                  <div className="flex flex-col mb-3">
-                    <Label htmlFor="names">Nombres:</Label>
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="names">Nombres:</Label>
+                  <Input
+                    type="text"
+                    id="names"
+                    {...register("nombre_usuario", { required: true })}
+                  />
+                  {!errors.nombre_usuario?.message && (
+                    <p className="text-gray-500 text-sm">Ej: Carlos. Mínimo 3 caracteres.</p>
+                  )}
+                  {errors.nombre_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.nombre_usuario.message}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="lastName">Apellidos:</Label>
+                  <Input
+                    type="text"
+                    id="lastName"
+                    {...register("apellido_usuario", { required: true })}
+                  />
+                  {!errors.apellido_usuario?.message && (
+                    <p className="text-gray-500 text-sm">Ej: Rodríguez. Mínimo 3 caracteres.</p>
+                  )}
+                  {errors.apellido_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.apellido_usuario.message}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="identification">Identificación:</Label>
+                  <Input
+                    type="text"
+                    id="identification"
+                    {...register("identificacion_usuario", { required: true })}
+                  />
+                  {!errors.identificacion_usuario?.message && (
+                    <p className="text-gray-500 text-sm">Ej: 123456789. Mínimo 9 caracteres.</p>
+                  )}
+                  {errors.identificacion_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.identificacion_usuario.message}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="address">Dirección residencial:</Label>
+                  <Input
+                    type="text"
+                    id="address"
+                    {...register("direccion_usuario", { required: true })}
+                  />
+                  {!errors.direccion_usuario?.message && (
+                    <p className="text-gray-500 text-sm">Ej: Calle 10 #23-45. Mínimo 3 caracteres.</p>
+                  )}
+                  {errors.direccion_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.direccion_usuario.message}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="telephone">Teléfono:</Label>
+                  <Input
+                    type="phone"
+                    id="telephone"
+                    {...register("telefono_usuario", { required: true })}
+                  />
+                  {!errors.telefono_usuario?.message && (
+                    <p className="text-gray-500 text-sm">Ej: 3112345678. Mínimo 8 dígitos.</p>
+                  )}
+                  {errors.telefono_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.telefono_usuario.message}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="email">Correo Electrónico:</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    {...register("correo_usuario", { required: true })}
+                  />
+                  {!errors.correo_usuario?.message && (
+                    <p className="text-gray-500 text-sm">Ej: ejemplo@correo.com</p>
+                  )}
+                  {errors.correo_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.correo_usuario.message}</p>
+                  )}
+                </div>
+
+                
+                <div className="flex flex-col mb-3 relative">
+                  <Label htmlFor="password">Tu Contraseña:</Label>
+                  <div className="relative">
                     <Input
-                      type="text"
-                      id="names"
-                      name="nombre_usuario"
-                      {...register(
-                        "nombre_usuario",
-                        {required: true}
-                      )}
-                      
-                      autoFocus
-                    />
-                    {errors.nombre_usuario?.message && (
-                      <p className="text-red-500">{errors.nombre_usuario?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col mb-3">
-                    <Label htmlFor="lastName">Apellidos:</Label>
-                    <Input
-                      type="text"
-                      id="lastName"
-                      name="apellido_usuario"
-                      {...register("apellido_usuario",
-                        {required: true})}
-                      
-                      autoFocus
-                    />
-                    {errors.apellido_usuario?.message && (
-                      <p className="text-red-500">{errors.apellido_usuario?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col mb-3">
-                    <Label htmlFor="identification">Identificación:</Label>
-                    <Input
-                      type="text"
-                      id="identification"
-                      name="identificacion_usuario"
-                      {...register("identificacion_usuario",
-                        {required: true})}
-                        
-                      autoFocus
-                    />
-                    {errors.identificacion_usuario?.message && (
-                      <p className="text-red-500">{errors.identificacion_usuario?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col mb-3">
-                    <Label htmlFor="address">Dirección residencial:</Label>
-                    <Input
-                      type="text"
-                      id="address"
-                      name="direccion_usuario"
-                      {...register("direccion_usuario",
-                        {required: true})}
-                      
-                      autoFocus
-                    />
-                    {errors.direccion_usuario?.message && (
-                      <p className="text-red-500">{errors.direccion_usuario?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col mb-3">
-                      <Label htmlFor="telephone">Teléfono:</Label>
-                      <Input
-                        type="phone"
-                        id="telephone"
-                        name="telefono_usuario"
-                        {...register("telefono_usuario",
-                          {required: true})}
-                        
-                        autoFocus
-                      />
-                      {errors.telefono_usuario?.message && (
-                      <p className="text-red-500">{errors.telefono_usuario?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col mb-3">
-                    <Label htmlFor="email">Correo Eléctronico:</Label>
-                    <Input
-                      type="email"
-                      id="email"
-                      name="correo_usuario"
-                      {...register("correo_usuario",
-                        {required: true})}
-                      
-                      autoFocus
-                    />
-                    {errors.correo_usuario?.message && (
-                      <p className="text-red-500">{errors.correo_usuario?.message}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col mb-3">
-                    <Label htmlFor="password">Tu Contraseña:</Label>
-                    <Input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="password"
-                      name="contrasena_usuario"
-                      {...register("contrasena_usuario",
-                        {required: true})}
-                        
-                      autoFocus
+                      {...register("contrasena_usuario", { required: true })}
+                      className="pr-10"
                     />
-                    {errors.contrasena_usuario?.message && (
-                      <p className="text-red-500">{errors.contrasena_usuario?.message}</p>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                      <i className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                    </button>
                   </div>
+                  {!errors.contrasena_usuario?.message && (
+                    <p className="text-gray-500 text-sm">
+                      Mínimo 8 caracteres, incluye una mayúscula y un símbolo.
+                    </p>
+                  )}
+                  {errors.contrasena_usuario?.message && (
+                    <p className="text-red-500 text-sm">{errors.contrasena_usuario.message}</p>
+                  )}
+                </div>
+
                   <div className="flex justify-between items-center">
                       <p className="text-[#333333] text-base">¿No tienes una cuenta? <Link to={"/login"} className='underline'>Iniciar sesión</Link></p>
                   </div>
